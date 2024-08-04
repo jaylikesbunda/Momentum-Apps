@@ -20,15 +20,10 @@ extern const struct _mp_obj_module_t flipperzero_module;
 #undef MODULE_DEF_FLIPPERZERO
 #define MODULE_DEF_FLIPPERZERO { MP_ROM_QSTR(MP_QSTR_flipperzero), MP_ROM_PTR(&flipperzero_module) },
 
-extern const struct _mp_obj_module_t mp_module_gc;
-#undef MODULE_DEF_GC
-#define MODULE_DEF_GC { MP_ROM_QSTR(MP_QSTR_gc), MP_ROM_PTR(&mp_module_gc) },
-
 
 #define MICROPY_REGISTERED_MODULES \
     MODULE_DEF_BUILTINS \
     MODULE_DEF_FLIPPERZERO \
-    MODULE_DEF_GC \
     MODULE_DEF___MAIN__ \
 // MICROPY_REGISTERED_MODULES
 
