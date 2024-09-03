@@ -80,6 +80,11 @@ for octave in range(9):
         print("static const struct _mp_obj_float_t flipperzero_speaker_note_%s%s_obj = {{&mp_type_float}, (mp_float_t)MP_FLIPPER_SPEAKER_NOTE_%s%s};" % (name.lower(),octave,name,octave))
 */
 
+typedef struct _mp_obj_float_t {
+    mp_obj_base_t base;
+    mp_float_t value;
+} mp_obj_float_t;
+
 static const struct _mp_obj_float_t flipperzero_speaker_note_c0_obj = {{&mp_type_float}, (mp_float_t)MP_FLIPPER_SPEAKER_NOTE_C0};
 static const struct _mp_obj_float_t flipperzero_speaker_note_cs0_obj = {{&mp_type_float}, (mp_float_t)MP_FLIPPER_SPEAKER_NOTE_CS0};
 static const struct _mp_obj_float_t flipperzero_speaker_note_d0_obj = {{&mp_type_float}, (mp_float_t)MP_FLIPPER_SPEAKER_NOTE_D0};
