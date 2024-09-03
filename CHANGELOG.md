@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Constants for all musical notes from C0 up to B8.
 * Constants for minimum and maximum speaker volumes.
+* Simple GPIO support for the `flipperzero` module:
+  * Initialize a pin.
+  * Read from a pin.
+  * Write to a pin.
 
 ### Fixed
 
