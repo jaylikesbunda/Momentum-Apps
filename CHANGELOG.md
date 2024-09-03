@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+* Constants for all musical notes from C0 up to B8.
+* Constants for minimum and maximum speaker volumes.
+
 ### Fixed
 
 * Message box alignment parameters `h` and `v` are now correctly evaluated.
