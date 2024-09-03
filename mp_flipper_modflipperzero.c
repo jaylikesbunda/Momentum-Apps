@@ -194,6 +194,9 @@ static const struct _mp_obj_float_t flipperzero_speaker_note_a8_obj = {{&mp_type
 static const struct _mp_obj_float_t flipperzero_speaker_note_as8_obj = {{&mp_type_float}, (mp_float_t)MP_FLIPPER_SPEAKER_NOTE_AS8};
 static const struct _mp_obj_float_t flipperzero_speaker_note_b8_obj = {{&mp_type_float}, (mp_float_t)MP_FLIPPER_SPEAKER_NOTE_B8};
 
+static const struct _mp_obj_float_t flipperzero_speaker_volume_min_obj = {{&mp_type_float}, (mp_float_t)MP_FLIPPER_SPEAKER_VOLUME_MIN};
+static const struct _mp_obj_float_t flipperzero_speaker_volume_max_obj = {{&mp_type_float}, (mp_float_t)MP_FLIPPER_SPEAKER_VOLUME_MAX};
+
 static mp_obj_t flipperzero_speaker_start(mp_obj_t frequency_obj, mp_obj_t volume_obj) {
     mp_float_t frequency = mp_obj_get_float(frequency_obj);
     mp_float_t volume = mp_obj_get_float(volume_obj);
@@ -606,6 +609,9 @@ for octave in range(9):
     {MP_ROM_QSTR(MP_QSTR_SPEAKER_NOTE_A8), MP_ROM_PTR(&flipperzero_speaker_note_a8_obj)},
     {MP_ROM_QSTR(MP_QSTR_SPEAKER_NOTE_AS8), MP_ROM_PTR(&flipperzero_speaker_note_as8_obj)},
     {MP_ROM_QSTR(MP_QSTR_SPEAKER_NOTE_B8), MP_ROM_PTR(&flipperzero_speaker_note_b8_obj)},
+
+    {MP_ROM_QSTR(MP_QSTR_SPEAKER_VOLUME_MIN), MP_ROM_PTR(&flipperzero_speaker_volume_min_obj)},
+    {MP_ROM_QSTR(MP_QSTR_SPEAKER_VOLUME_MAX), MP_ROM_PTR(&flipperzero_speaker_volume_max_obj)},
 
     {MP_ROM_QSTR(MP_QSTR_speaker_start), MP_ROM_PTR(&flipperzero_speaker_start_obj)},
     {MP_ROM_QSTR(MP_QSTR_speaker_set_volume), MP_ROM_PTR(&flipperzero_speaker_set_volume_obj)},

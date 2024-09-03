@@ -168,6 +168,9 @@ for octave in range(9):
 #define MP_FLIPPER_SPEAKER_NOTE_AS8 MICROPY_FLOAT_CONST(7458.62)
 #define MP_FLIPPER_SPEAKER_NOTE_B8 MICROPY_FLOAT_CONST(7902.13)
 
+#define MP_FLIPPER_SPEAKER_VOLUME_MIN MICROPY_FLOAT_CONST(0.0)
+#define MP_FLIPPER_SPEAKER_VOLUME_MAX MICROPY_FLOAT_CONST(1.0)
+
 bool mp_flipper_speaker_start(float frequency, float volume);
 bool mp_flipper_speaker_set_volume(float volume);
 bool mp_flipper_speaker_stop();
