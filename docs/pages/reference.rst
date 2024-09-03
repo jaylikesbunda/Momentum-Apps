@@ -205,6 +205,29 @@ Display message dialogs on the display for user infos and confirm actions.
 .. autofunction:: flipperzero.dialog_message_set_button
 .. autofunction:: flipperzero.dialog_message_show
 
+GPIO
+----
+
+Access to the GPIO pins of your Flipper.
+
+.. autodata:: flipperzero.GPIO_PIN_PC0
+.. autodata:: flipperzero.GPIO_PIN_PC1
+.. autodata:: flipperzero.GPIO_PIN_PC3
+.. autodata:: flipperzero.GPIO_PIN_PB2
+.. autodata:: flipperzero.GPIO_PIN_PB3
+.. autodata:: flipperzero.GPIO_PIN_PA4
+.. autodata:: flipperzero.GPIO_PIN_PA6
+.. autodata:: flipperzero.GPIO_PIN_PA7
+.. autodata:: flipperzero.GPIO_MODE_INPUT
+.. autodata:: flipperzero.GPIO_MODE_OUTPUT_PUSH_PULL
+.. autodata:: flipperzero.GPIO_MODE_OUTPUT_OPEN_DRAIN
+.. autodata:: flipperzero.GPIO_MODE_ANALOG
+.. autodata:: flipperzero.GPIO_MODE_INTERRUPT_RISE
+.. autodata:: flipperzero.GPIO_MODE_INTERRUPT_FALL
+.. autofunction:: flipperzero.gpio_init_pin
+.. autofunction:: flipperzero.gpio_set_pin
+.. autofunction:: flipperzero.gpio_get_pin
+
 Built-In
 --------
 
@@ -225,4 +248,3 @@ They're members of the global namespace instead.
       
       This function prints to the internal log buffer.
       Check out the `Flipper Zero docs <https://docs.flipper.net/development/cli#_yZ2E>`_ on how to reveal them in the CLI interface.
-
