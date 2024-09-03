@@ -194,8 +194,12 @@ static const struct _mp_obj_float_t flipperzero_speaker_note_a8_obj = {{&mp_type
 static const struct _mp_obj_float_t flipperzero_speaker_note_as8_obj = {{&mp_type_float}, (mp_float_t)MP_FLIPPER_SPEAKER_NOTE_AS8};
 static const struct _mp_obj_float_t flipperzero_speaker_note_b8_obj = {{&mp_type_float}, (mp_float_t)MP_FLIPPER_SPEAKER_NOTE_B8};
 
-static const struct _mp_obj_float_t flipperzero_speaker_volume_min_obj = {{&mp_type_float}, (mp_float_t)MP_FLIPPER_SPEAKER_VOLUME_MIN};
-static const struct _mp_obj_float_t flipperzero_speaker_volume_max_obj = {{&mp_type_float}, (mp_float_t)MP_FLIPPER_SPEAKER_VOLUME_MAX};
+static const struct _mp_obj_float_t flipperzero_speaker_volume_min_obj = {
+    {&mp_type_float},
+    (mp_float_t)MP_FLIPPER_SPEAKER_VOLUME_MIN};
+static const struct _mp_obj_float_t flipperzero_speaker_volume_max_obj = {
+    {&mp_type_float},
+    (mp_float_t)MP_FLIPPER_SPEAKER_VOLUME_MAX};
 
 static mp_obj_t flipperzero_speaker_start(mp_obj_t frequency_obj, mp_obj_t volume_obj) {
     mp_float_t frequency = mp_obj_get_float(frequency_obj);
@@ -476,7 +480,41 @@ static mp_obj_t flipperzero_dialog_message_clear() {
 }
 static MP_DEFINE_CONST_FUN_OBJ_0(flipperzero_dialog_message_clear_obj, flipperzero_dialog_message_clear);
 
+static mp_obj_t flipperzero_gpio_init_pin(size_t n_args, const mp_obj_t* args) {
+    if(n_args != 2) {
+        return mp_const_none;
+    }
+
+    mp_int_t pin = mp_obj_get_int(args[0]);
+    mp_int_t mode = mp_obj_get_int(args[1]);
+
+    mp_flipper_gpio_init_pin(pin, mode);
+
+    return mp_const_none;
+}
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(flipperzero_gpio_init_pin_obj, 2, 2, flipperzero_gpio_init_pin);
+
+static mp_obj_t flipperzero_gpio_set_pin(mp_obj_t pin_obj, mp_obj_t state_obj) {
+    mp_int_t pin = mp_obj_get_int(pin_obj);
+    bool state = mp_obj_is_true(state_obj);
+
+    mp_flipper_gpio_set_pin(pin, state);
+
+    return mp_const_none;
+}
+static MP_DEFINE_CONST_FUN_OBJ_2(flipperzero_gpio_set_pin_obj, flipperzero_gpio_set_pin);
+
+static mp_obj_t flipperzero_gpio_get_pin(mp_obj_t pin_obj) {
+    mp_int_t pin = mp_obj_get_int(pin_obj);
+
+    bool state = mp_flipper_gpio_get_pin(pin);
+
+    return state ? mp_const_true : mp_const_false;
+}
+static MP_DEFINE_CONST_FUN_OBJ_1(flipperzero_gpio_get_pin_obj, flipperzero_gpio_get_pin);
+
 static const mp_rom_map_elem_t flipperzero_module_globals_table[] = {
+    // light
     {MP_OBJ_NEW_QSTR(MP_QSTR___name__), MP_OBJ_NEW_QSTR(MP_QSTR_flipperzero)},
     {MP_ROM_QSTR(MP_QSTR_LIGHT_RED), MP_ROM_INT(MP_FLIPPER_LED_RED)},
     {MP_ROM_QSTR(MP_QSTR_LIGHT_GREEN), MP_ROM_INT(MP_FLIPPER_LED_GREEN)},
@@ -486,6 +524,7 @@ static const mp_rom_map_elem_t flipperzero_module_globals_table[] = {
     {MP_ROM_QSTR(MP_QSTR_light_blink_start), MP_ROM_PTR(&flipperzero_light_blink_start_obj)},
     {MP_ROM_QSTR(MP_QSTR_light_blink_set_color), MP_ROM_PTR(&flipperzero_light_blink_set_color_obj)},
     {MP_ROM_QSTR(MP_QSTR_light_blink_stop), MP_ROM_PTR(&flipperzero_light_blink_stop_obj)},
+    // vibro
     {MP_ROM_QSTR(MP_QSTR_vibro_set), MP_ROM_PTR(&flipperzero_vibro_set_obj)},
     /*
 Python script for notes generation
@@ -616,6 +655,7 @@ for octave in range(9):
     {MP_ROM_QSTR(MP_QSTR_speaker_start), MP_ROM_PTR(&flipperzero_speaker_start_obj)},
     {MP_ROM_QSTR(MP_QSTR_speaker_set_volume), MP_ROM_PTR(&flipperzero_speaker_set_volume_obj)},
     {MP_ROM_QSTR(MP_QSTR_speaker_stop), MP_ROM_PTR(&flipperzero_speaker_stop_obj)},
+    // canvas
     {MP_ROM_QSTR(MP_QSTR_CANVAS_BLACK), MP_ROM_INT(MP_FLIPPER_COLOR_BLACK)},
     {MP_ROM_QSTR(MP_QSTR_CANVAS_WHITE), MP_ROM_INT(MP_FLIPPER_COLOR_WHITE)},
     {MP_ROM_QSTR(MP_QSTR_canvas_width), MP_ROM_PTR(&flipperzero_canvas_width_obj)},
@@ -639,6 +679,7 @@ for octave in range(9):
     {MP_ROM_QSTR(MP_QSTR_canvas_set_text_align), MP_ROM_PTR(&flipperzero_canvas_set_text_align_obj)},
     {MP_ROM_QSTR(MP_QSTR_canvas_update), MP_ROM_PTR(&flipperzero_canvas_update_obj)},
     {MP_ROM_QSTR(MP_QSTR_canvas_clear), MP_ROM_PTR(&flipperzero_canvas_clear_obj)},
+    // input
     {MP_ROM_QSTR(MP_QSTR_on_input), MP_ROM_PTR(&flipperzero_on_input_obj)},
     {MP_ROM_QSTR(MP_QSTR__input_trigger_handler), MP_ROM_PTR(&flipperzero_input_trigger_handler_obj)},
     {MP_ROM_QSTR(MP_QSTR_INPUT_BUTTON_BACK), MP_ROM_INT(MP_FLIPPER_INPUT_BUTTON_BACK)},
@@ -652,11 +693,32 @@ for octave in range(9):
     {MP_ROM_QSTR(MP_QSTR_INPUT_TYPE_SHORT), MP_ROM_INT(MP_FLIPPER_INPUT_TYPE_SHORT)},
     {MP_ROM_QSTR(MP_QSTR_INPUT_TYPE_LONG), MP_ROM_INT(MP_FLIPPER_INPUT_TYPE_LONG)},
     {MP_ROM_QSTR(MP_QSTR_INPUT_TYPE_REPEAT), MP_ROM_INT(MP_FLIPPER_INPUT_TYPE_REPEAT)},
+    // dialog
     {MP_ROM_QSTR(MP_QSTR_dialog_message_set_text), MP_ROM_PTR(&flipperzero_dialog_message_set_text_obj)},
     {MP_ROM_QSTR(MP_QSTR_dialog_message_set_header), MP_ROM_PTR(&flipperzero_dialog_message_set_header_obj)},
     {MP_ROM_QSTR(MP_QSTR_dialog_message_set_button), MP_ROM_PTR(&flipperzero_dialog_message_set_button_obj)},
     {MP_ROM_QSTR(MP_QSTR_dialog_message_show), MP_ROM_PTR(&flipperzero_dialog_message_show_obj)},
     {MP_ROM_QSTR(MP_QSTR_dialog_message_clear), MP_ROM_PTR(&flipperzero_dialog_message_clear_obj)},
+    // gpio - pins
+    {MP_ROM_QSTR(MP_QSTR_GPIO_PIN_PC0), MP_ROM_INT(MP_FLIPPER_GPIO_PIN_PC0)},
+    {MP_ROM_QSTR(MP_QSTR_GPIO_PIN_PC1), MP_ROM_INT(MP_FLIPPER_GPIO_PIN_PC1)},
+    {MP_ROM_QSTR(MP_QSTR_GPIO_PIN_PC3), MP_ROM_INT(MP_FLIPPER_GPIO_PIN_PC3)},
+    {MP_ROM_QSTR(MP_QSTR_GPIO_PIN_PB2), MP_ROM_INT(MP_FLIPPER_GPIO_PIN_PB2)},
+    {MP_ROM_QSTR(MP_QSTR_GPIO_PIN_PB3), MP_ROM_INT(MP_FLIPPER_GPIO_PIN_PB3)},
+    {MP_ROM_QSTR(MP_QSTR_GPIO_PIN_PA4), MP_ROM_INT(MP_FLIPPER_GPIO_PIN_PA4)},
+    {MP_ROM_QSTR(MP_QSTR_GPIO_PIN_PA6), MP_ROM_INT(MP_FLIPPER_GPIO_PIN_PA6)},
+    {MP_ROM_QSTR(MP_QSTR_GPIO_PIN_PA7), MP_ROM_INT(MP_FLIPPER_GPIO_PIN_PA7)},
+    // gpio - modes
+    {MP_ROM_QSTR(MP_QSTR_GPIO_MODE_INPUT), MP_ROM_INT(MP_FLIPPER_GPIO_MODE_INPUT)},
+    {MP_ROM_QSTR(MP_QSTR_GPIO_MODE_OUTPUT_PUSH_PULL), MP_ROM_INT(MP_FLIPPER_GPIO_MODE_OUTPUT_PUSH_PULL)},
+    {MP_ROM_QSTR(MP_QSTR_GPIO_MODE_OUTPUT_OPEN_DRAIN), MP_ROM_INT(MP_FLIPPER_GPIO_MODE_OUTPUT_OPEN_DRAIN)},
+    {MP_ROM_QSTR(MP_QSTR_GPIO_MODE_ANALOG), MP_ROM_INT(MP_FLIPPER_GPIO_MODE_ANALOG)},
+    {MP_ROM_QSTR(MP_QSTR_GPIO_MODE_INTERRUPT_RISE), MP_ROM_INT(MP_FLIPPER_GPIO_MODE_INTERRUPT_RISE)},
+    {MP_ROM_QSTR(MP_QSTR_GPIO_MODE_INTERRUPT_FALL), MP_ROM_INT(MP_FLIPPER_GPIO_MODE_INTERRUPT_FALL)},
+    // gpio - functions
+    {MP_ROM_QSTR(MP_QSTR_gpio_init_pin), MP_ROM_PTR(&flipperzero_gpio_init_pin_obj)},
+    {MP_ROM_QSTR(MP_QSTR_gpio_set_pin), MP_ROM_PTR(&flipperzero_gpio_set_pin_obj)},
+    {MP_ROM_QSTR(MP_QSTR_gpio_get_pin), MP_ROM_PTR(&flipperzero_gpio_get_pin_obj)},
 };
 static MP_DEFINE_CONST_DICT(flipperzero_module_globals, flipperzero_module_globals_table);
 

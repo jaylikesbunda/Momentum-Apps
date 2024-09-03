@@ -199,3 +199,23 @@ void mp_flipper_dialog_message_set_header(const char* text, uint8_t x, uint8_t y
 void mp_flipper_dialog_message_set_button(const char* text, uint8_t button);
 uint8_t mp_flipper_dialog_message_show();
 void mp_flipper_dialog_message_clear();
+
+#define MP_FLIPPER_GPIO_PIN_PC0 (0)
+#define MP_FLIPPER_GPIO_PIN_PC1 (1)
+#define MP_FLIPPER_GPIO_PIN_PC3 (2)
+#define MP_FLIPPER_GPIO_PIN_PB2 (3)
+#define MP_FLIPPER_GPIO_PIN_PB3 (4)
+#define MP_FLIPPER_GPIO_PIN_PA4 (5)
+#define MP_FLIPPER_GPIO_PIN_PA6 (6)
+#define MP_FLIPPER_GPIO_PIN_PA7 (7)
+
+#define MP_FLIPPER_GPIO_MODE_INPUT (1 << 0)
+#define MP_FLIPPER_GPIO_MODE_OUTPUT_PUSH_PULL (1 << 1)
+#define MP_FLIPPER_GPIO_MODE_OUTPUT_OPEN_DRAIN (1 << 2)
+#define MP_FLIPPER_GPIO_MODE_ANALOG (1 << 3)
+#define MP_FLIPPER_GPIO_MODE_INTERRUPT_RISE (1 << 4)
+#define MP_FLIPPER_GPIO_MODE_INTERRUPT_FALL (1 << 5)
+
+void mp_flipper_gpio_init_pin(uint8_t pin, uint8_t mode);
+void mp_flipper_gpio_set_pin(uint8_t pin, bool state);
+bool mp_flipper_gpio_get_pin(uint8_t pin);
