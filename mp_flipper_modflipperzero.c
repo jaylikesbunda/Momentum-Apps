@@ -65,7 +65,7 @@ static mp_obj_t flipperzero_vibro_set(mp_obj_t state) {
 }
 static MP_DEFINE_CONST_FUN_OBJ_1(flipperzero_vibro_set_obj, flipperzero_vibro_set);
 
-const mp_obj_float_t flipperzero_speaker_note_c0 = {{&mp_type_float}, (mp_float_t)MP_FLIPPER_SPEAKER_NOTE_C0};
+const _mp_obj_float_t flipperzero_speaker_note_c0 = {{&mp_type_float}, (mp_float_t)MP_FLIPPER_SPEAKER_NOTE_C0};
 
 static mp_obj_t flipperzero_speaker_start(mp_obj_t frequency_obj, mp_obj_t volume_obj) {
     mp_float_t frequency = mp_obj_get_float(frequency_obj);
