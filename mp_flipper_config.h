@@ -105,6 +105,9 @@ typedef long mp_off_t;
 #define MICROPY_HELPER_REPL (0)
 #endif
 
+#define MICROPY_ENABLE_SOURCE_LINE (0)
+#define MICROPY_ENABLE_DOC_STRING (0)
+
 #define MICROPY_REPL_INFO (0)
 #define MICROPY_REPL_EMACS_KEYS (0)
 #define MICROPY_REPL_EMACS_WORDS_MOVE (0)

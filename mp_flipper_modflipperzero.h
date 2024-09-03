@@ -40,6 +40,8 @@ void mp_flipper_light_blink_stop();
 
 void mp_flipper_vibro(bool state);
 
+#define MP_FLIPPER_SPEAKER_NOTE_C0 16.35f
+
 bool mp_flipper_speaker_start(float frequency, float volume);
 bool mp_flipper_speaker_set_volume(float volume);
 bool mp_flipper_speaker_stop();

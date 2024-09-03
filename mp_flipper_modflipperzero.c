@@ -65,6 +65,8 @@ static mp_obj_t flipperzero_vibro_set(mp_obj_t state) {
 }
 static MP_DEFINE_CONST_FUN_OBJ_1(flipperzero_vibro_set_obj, flipperzero_vibro_set);
 
+const mp_obj_float_t flipperzero_speaker_note_c0 = {{&mp_type_float}, (mp_float_t)MP_FLIPPER_SPEAKER_NOTE_C0};
+
 static mp_obj_t flipperzero_speaker_start(mp_obj_t frequency_obj, mp_obj_t volume_obj) {
     mp_float_t frequency = mp_obj_get_float(frequency_obj);
     mp_float_t volume = mp_obj_get_float(volume_obj);
@@ -355,6 +357,7 @@ static const mp_rom_map_elem_t flipperzero_module_globals_table[] = {
     {MP_ROM_QSTR(MP_QSTR_light_blink_set_color), MP_ROM_PTR(&flipperzero_light_blink_set_color_obj)},
     {MP_ROM_QSTR(MP_QSTR_light_blink_stop), MP_ROM_PTR(&flipperzero_light_blink_stop_obj)},
     {MP_ROM_QSTR(MP_QSTR_vibro_set), MP_ROM_PTR(&flipperzero_vibro_set_obj)},
+    {MP_ROM_QSTR(MP_QSTR_SPEAKER_NOTE_C0), MP_ROM_PTR(&flipperzero_speaker_note_c0)},
     {MP_ROM_QSTR(MP_QSTR_speaker_start), MP_ROM_PTR(&flipperzero_speaker_start_obj)},
     {MP_ROM_QSTR(MP_QSTR_speaker_set_volume), MP_ROM_PTR(&flipperzero_speaker_set_volume_obj)},
     {MP_ROM_QSTR(MP_QSTR_speaker_stop), MP_ROM_PTR(&flipperzero_speaker_stop_obj)},
