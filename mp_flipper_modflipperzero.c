@@ -467,32 +467,6 @@ static mp_obj_t flipperzero_dialog_message_clear() {
 static MP_DEFINE_CONST_FUN_OBJ_0(flipperzero_dialog_message_clear_obj, flipperzero_dialog_message_clear);
 
 static void* mp_flipper_on_gpio_callback = NULL;
-static void* mp_flipper_on_gpio_callbacks[] = {
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-};
-
-static void* flipperzero_gpio_interrupt_make_callback(uint8_t pin, bool rising) {
-    void callback() {
-        mp_flipper_on_gpio(pin, rising);
-    }
-
-    return callback;
-}
 
 static mp_obj_t flipperzero_gpio_init_pin(size_t n_args, const mp_obj_t* args) {
     if(n_args != 2) {
@@ -503,22 +477,6 @@ static mp_obj_t flipperzero_gpio_init_pin(size_t n_args, const mp_obj_t* args) {
     mp_int_t mode = mp_obj_get_int(args[1]);
 
     mp_flipper_gpio_init_pin(pin, mode);
-
-    uint8_t index = pin * 2;
-
-    if(mode & MP_FLIPPER_GPIO_MODE_INTERRUPT_RISE) {
-        mp_flipper_on_gpio_callbacks[index] = flipperzero_gpio_interrupt_make_callback(pin, true);
-    } else {
-        mp_flipper_on_gpio_callbacks[index] = NULL;
-    }
-
-    index += 1;
-
-    if(mode & MP_FLIPPER_GPIO_MODE_INTERRUPT_FALL) {
-        mp_flipper_on_gpio_callbacks[index] = flipperzero_gpio_interrupt_make_callback(pin, false);
-    } else {
-        mp_flipper_on_gpio_callbacks[index] = NULL;
-    }
 
     return mp_const_none;
 }
@@ -550,14 +508,9 @@ static mp_obj_t flipperzero_on_gpio(mp_obj_t callback_obj) {
 }
 static MP_DEFINE_CONST_FUN_OBJ_1(flipperzero_on_gpio_obj, flipperzero_on_gpio);
 
-static mp_obj_t flipperzero_gpio_trigger_handler(mp_obj_t flags_obj) {
+static mp_obj_t flipperzero_gpio_trigger_handler(mp_obj_t pin_obj) {
     if(mp_flipper_on_gpio_callback != NULL) {
-        mp_int_t flags = mp_obj_get_int(flags_obj);
-
-        mp_obj_t rising_obj = flags & 1 ? mp_const_false : mp_const_true;
-        mp_obj_t pin_obj = mp_obj_new_int(flags >> 1);
-
-        mp_call_function_2_protected(mp_flipper_on_gpio_callback, rising_obj, pin_obj);
+        mp_call_function_1_protected(mp_flipper_on_gpio_callback, pin_obj);
     }
 
     return mp_const_none;
@@ -800,13 +753,10 @@ void mp_flipper_on_input(uint16_t button, uint16_t type) {
     }
 }
 
-void mp_flipper_on_gpio(uint8_t pin, bool rising) {
-    uint8_t index = pin * 2 + (rising ? 0 : 1);
+void mp_flipper_on_gpio(uint8_t pin) {
+    if(mp_flipper_on_gpio_callback != NULL) {
+        mp_obj_t pin_obj = mp_obj_new_int_from_uint(pin);
 
-    if(mp_flipper_on_gpio_callbacks[index] != NULL) {
-        uint16_t flags = pin << 1 + (rising ? 0 : 1);
-        mp_obj_t flags_obj = mp_obj_new_int_from_uint(flags);
-
-        mp_sched_schedule(&flipperzero_gpio_trigger_handler_obj, flags_obj);
+        mp_sched_schedule(&flipperzero_gpio_trigger_handler_obj, pin_obj);
     }
 }
