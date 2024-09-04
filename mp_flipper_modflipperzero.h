@@ -228,4 +228,4 @@ void mp_flipper_dialog_message_clear();
 void mp_flipper_gpio_init_pin(uint8_t raw_pin, uint8_t raw_mode);
 void mp_flipper_gpio_set_pin(uint8_t raw_pin, bool state);
 bool mp_flipper_gpio_get_pin(uint8_t raw_pin);
-void mp_flipper_on_gpio(uint8_t pin);
+void mp_flipper_on_gpio(void* ctx);
