@@ -224,9 +224,17 @@ Access to the GPIO pins of your Flipper.
 .. autodata:: flipperzero.GPIO_MODE_ANALOG
 .. autodata:: flipperzero.GPIO_MODE_INTERRUPT_RISE
 .. autodata:: flipperzero.GPIO_MODE_INTERRUPT_FALL
+.. autodata:: flipperzero.GPIO_PULL_NO
+.. autodata:: flipperzero.GPIO_PULL_UP
+.. autodata:: flipperzero.GPIO_PULL_DOWN
+.. autodata:: flipperzero.GPIO_SPEED_LOW
+.. autodata:: flipperzero.GPIO_SPEED_MEDIUM
+.. autodata:: flipperzero.GPIO_SPEED_HIGH
+.. autodata:: flipperzero.GPIO_SPEED_VERY_HIGH
 .. autofunction:: flipperzero.gpio_init_pin
 .. autofunction:: flipperzero.gpio_set_pin
 .. autofunction:: flipperzero.gpio_get_pin
+.. autodecorator:: flipperzero.on_gpio
 
 Built-In
 --------

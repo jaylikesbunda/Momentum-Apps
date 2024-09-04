@@ -1,3 +1,5 @@
+from typing import Callable
+
 GPIO_PIN_PC0: int
 '''
 Constant identifier for GPIO pin PC0.
@@ -96,12 +98,63 @@ Constant configuration value for the GPIO interrupt on falling edges mode.
 .. versionadded:: 1.2.0
 '''
 
-def gpio_init_pin(pin: int, mode: int) -> None:
+GPIO_PULL_NO: int
+'''
+Constant configuration value for the GPIO internal pull resistor disabled.
+    
+.. versionadded:: 1.2.0
+'''
+
+GPIO_PULL_UP: int
+'''
+Constant configuration value for the GPIO internal pull-up resistor enabled.
+    
+.. versionadded:: 1.2.0
+'''
+
+GPIO_PULL_DOWN: int
+'''
+Constant configuration value for the GPIO internal pull-down resistor enabled.
+    
+.. versionadded:: 1.2.0
+'''
+
+GPIO_SPEED_LOW: int
+'''
+Constant configuration value for the GPIO in low speed.
+    
+.. versionadded:: 1.2.0
+'''
+
+GPIO_SPEED_MEDIUM: int
+'''
+Constant configuration value for the GPIO in medium speed.
+    
+.. versionadded:: 1.2.0
+'''
+
+GPIO_SPEED_HIGH: int
+'''
+Constant configuration value for the GPIO in high speed.
+    
+.. versionadded:: 1.2.0
+'''
+
+GPIO_SPEED_VERY_HIGH: int
+'''
+Constant configuration value for the GPIO in very high speed.
+    
+.. versionadded:: 1.2.0
+'''
+
+def gpio_init_pin(pin: int, mode: int, pull: int = None, speed: int = None) -> None:
     '''
     Initialize a GPIO pin.
 
     :param pin: The pin to initialize (e.g. :const:`GPIO_PIN_PA4`).
-    :param mode: The mode to use (e.g. :const:`GPIO_MODE_OUTPUT_PUSH_PULL`).
+    :param mode: The mode to use (e.g. :const:`GPIO_MODE_INPUT`).
+    :param pull: The pull resistor to use. Default is :const:`GPIO_PULL_NO`.
+    :param speed: The speed to use. Default is :const:`GPIO_SPEED_LOW`.
     
     .. versionadded:: 1.2.0
 
@@ -139,5 +192,28 @@ def gpio_get_pin(pin: int) -> bool:
     .. hint::
 
         Don't forget to initialize the pin first.
+    '''
+    pass
+
+def on_gpio() -> Callable[[int], None]:
+    '''
+    Decorate a function to be used as GPIO interrupt handler. The decorated function will be invoked upon a GPIO interrupt.
+
+    .. versionadded:: 1.0.0
+
+    .. code-block::
+
+        import flipperzero as f0
+
+        f0.gpio_init_pin(f0.GPIO_PIN_PC0, f0.GPIO_MODE_INTERRUPT_RISE, f0.GPIO_PULL_UP)
+
+        @f0.on_gpio
+        def interrupt_handler(pin):
+            if pin == f0.GPIO_PIN_PC0:
+                ...
+    
+    .. warning::
+
+        You can only decorate one function per application.
     '''
     pass
