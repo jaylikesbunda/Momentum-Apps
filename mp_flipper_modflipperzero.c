@@ -7,13 +7,6 @@
 
 #include "mp_flipper_modflipperzero.h"
 
-typedef struct {
-    uint8_t button;
-    uint8_t type;
-} on_input_arg_t;
-
-static void* mp_flipper_on_input_callback = NULL;
-
 static mp_obj_t flipperzero_light_set(mp_obj_t light_obj, mp_obj_t brightness_obj) {
     mp_int_t light = mp_obj_get_int(light_obj);
     mp_int_t brightness = mp_obj_get_int(brightness_obj);
@@ -389,6 +382,8 @@ static mp_obj_t flipperzero_canvas_clear() {
 }
 static MP_DEFINE_CONST_FUN_OBJ_0(flipperzero_canvas_clear_obj, flipperzero_canvas_clear);
 
+static void* mp_flipper_on_input_callback = NULL;
+
 static mp_obj_t flipperzero_on_input(mp_obj_t callback_obj) {
     mp_flipper_on_input_callback = callback_obj;
 
@@ -409,15 +404,6 @@ static mp_obj_t flipperzero_input_trigger_handler(mp_obj_t flags_obj) {
     return mp_const_none;
 }
 static MP_DEFINE_CONST_FUN_OBJ_1(flipperzero_input_trigger_handler_obj, flipperzero_input_trigger_handler);
-
-void mp_flipper_on_input(uint16_t button, uint16_t type) {
-    if(mp_flipper_on_input_callback != NULL) {
-        uint16_t flags = button | type;
-        mp_obj_t flags_obj = mp_obj_new_int_from_uint(flags);
-
-        mp_sched_schedule(&flipperzero_input_trigger_handler_obj, flags_obj);
-    }
-}
 
 static mp_obj_t flipperzero_dialog_message_set_text(size_t n_args, const mp_obj_t* args) {
     if(n_args < 3) {
@@ -480,6 +466,34 @@ static mp_obj_t flipperzero_dialog_message_clear() {
 }
 static MP_DEFINE_CONST_FUN_OBJ_0(flipperzero_dialog_message_clear_obj, flipperzero_dialog_message_clear);
 
+static void* mp_flipper_on_gpio_callback = NULL;
+static void* mp_flipper_on_gpio_callbacks[] = {
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+};
+
+static void* flipperzero_gpio_interrupt_make_callback(uint8_t pin, bool rising) {
+    void callback() {
+        mp_flipper_on_gpio(pin, rising);
+    }
+
+    return callback;
+}
+
 static mp_obj_t flipperzero_gpio_init_pin(size_t n_args, const mp_obj_t* args) {
     if(n_args != 2) {
         return mp_const_none;
@@ -489,6 +503,22 @@ static mp_obj_t flipperzero_gpio_init_pin(size_t n_args, const mp_obj_t* args) {
     mp_int_t mode = mp_obj_get_int(args[1]);
 
     mp_flipper_gpio_init_pin(pin, mode);
+
+    uint8_t index = pin * 2;
+
+    if(mode & MP_FLIPPER_GPIO_MODE_INTERRUPT_RISE) {
+        mp_flipper_on_gpio_callbacks[index] = flipperzero_gpio_interrupt_make_callback(pin, true);
+    } else {
+        mp_flipper_on_gpio_callbacks[index] = NULL;
+    }
+
+    index += 1;
+
+    if(mode & MP_FLIPPER_GPIO_MODE_INTERRUPT_FALL) {
+        mp_flipper_on_gpio_callbacks[index] = flipperzero_gpio_interrupt_make_callback(pin, false);
+    } else {
+        mp_flipper_on_gpio_callbacks[index] = NULL;
+    }
 
     return mp_const_none;
 }
@@ -512,6 +542,27 @@ static mp_obj_t flipperzero_gpio_get_pin(mp_obj_t pin_obj) {
     return state ? mp_const_true : mp_const_false;
 }
 static MP_DEFINE_CONST_FUN_OBJ_1(flipperzero_gpio_get_pin_obj, flipperzero_gpio_get_pin);
+
+static mp_obj_t flipperzero_on_gpio(mp_obj_t callback_obj) {
+    mp_flipper_on_gpio_callback = callback_obj;
+
+    return callback_obj;
+}
+static MP_DEFINE_CONST_FUN_OBJ_1(flipperzero_on_gpio_obj, flipperzero_on_gpio);
+
+static mp_obj_t flipperzero_gpio_trigger_handler(mp_obj_t flags_obj) {
+    if(mp_flipper_on_gpio_callback != NULL) {
+        mp_int_t flags = mp_obj_get_int(flags_obj);
+
+        mp_obj_t rising_obj = flags & 1 ? mp_const_false : mp_const_true;
+        mp_obj_t pin_obj = mp_obj_new_int(flags >> 1);
+
+        mp_call_function_2_protected(mp_flipper_on_gpio_callback, rising_obj, pin_obj);
+    }
+
+    return mp_const_none;
+}
+static MP_DEFINE_CONST_FUN_OBJ_1(flipperzero_gpio_trigger_handler_obj, flipperzero_gpio_trigger_handler);
 
 static const mp_rom_map_elem_t flipperzero_module_globals_table[] = {
     // light
@@ -715,10 +766,21 @@ for octave in range(9):
     {MP_ROM_QSTR(MP_QSTR_GPIO_MODE_ANALOG), MP_ROM_INT(MP_FLIPPER_GPIO_MODE_ANALOG)},
     {MP_ROM_QSTR(MP_QSTR_GPIO_MODE_INTERRUPT_RISE), MP_ROM_INT(MP_FLIPPER_GPIO_MODE_INTERRUPT_RISE)},
     {MP_ROM_QSTR(MP_QSTR_GPIO_MODE_INTERRUPT_FALL), MP_ROM_INT(MP_FLIPPER_GPIO_MODE_INTERRUPT_FALL)},
+    // gpio - pull
+    {MP_ROM_QSTR(MP_QSTR_GPIO_PULL_NO), MP_ROM_INT(MP_FLIPPER_GPIO_PULL_NO)},
+    {MP_ROM_QSTR(MP_QSTR_GPIO_PULL_UP), MP_ROM_INT(MP_FLIPPER_GPIO_PULL_UP)},
+    {MP_ROM_QSTR(MP_QSTR_GPIO_PULL_DOWN), MP_ROM_INT(MP_FLIPPER_GPIO_PULL_DOWN)},
+    // gpio - speed
+    {MP_ROM_QSTR(MP_QSTR_GPIO_SPEED_LOW), MP_ROM_INT(MP_FLIPPER_GPIO_SPEED_LOW)},
+    {MP_ROM_QSTR(MP_QSTR_GPIO_SPEED_MEDIUM), MP_ROM_INT(MP_FLIPPER_GPIO_SPEED_MEDIUM)},
+    {MP_ROM_QSTR(MP_QSTR_GPIO_SPEED_HIGH), MP_ROM_INT(MP_FLIPPER_GPIO_SPEED_HIGH)},
+    {MP_ROM_QSTR(MP_QSTR_GPIO_SPEED_VERY_HIGH), MP_ROM_INT(MP_FLIPPER_GPIO_SPEED_VERY_HIGH)},
     // gpio - functions
     {MP_ROM_QSTR(MP_QSTR_gpio_init_pin), MP_ROM_PTR(&flipperzero_gpio_init_pin_obj)},
     {MP_ROM_QSTR(MP_QSTR_gpio_set_pin), MP_ROM_PTR(&flipperzero_gpio_set_pin_obj)},
     {MP_ROM_QSTR(MP_QSTR_gpio_get_pin), MP_ROM_PTR(&flipperzero_gpio_get_pin_obj)},
+    {MP_ROM_QSTR(MP_QSTR_on_gpio), MP_ROM_PTR(&flipperzero_on_gpio_obj)},
+    {MP_ROM_QSTR(MP_QSTR__gpio_trigger_handler), MP_ROM_PTR(&flipperzero_gpio_trigger_handler_obj)},
 };
 static MP_DEFINE_CONST_DICT(flipperzero_module_globals, flipperzero_module_globals_table);
 
@@ -728,3 +790,23 @@ const mp_obj_module_t flipperzero_module = {
 };
 
 MP_REGISTER_MODULE(MP_QSTR_flipperzero, flipperzero_module);
+
+void mp_flipper_on_input(uint16_t button, uint16_t type) {
+    if(mp_flipper_on_input_callback != NULL) {
+        uint16_t flags = button | type;
+        mp_obj_t flags_obj = mp_obj_new_int_from_uint(flags);
+
+        mp_sched_schedule(&flipperzero_input_trigger_handler_obj, flags_obj);
+    }
+}
+
+void mp_flipper_on_gpio(uint8_t pin, bool rising) {
+    uint8_t index = pin * 2 + (rising ? 0 : 1);
+
+    if(mp_flipper_on_gpio_callbacks[index] != NULL) {
+        uint16_t flags = pin << 1 + (rising ? 0 : 1);
+        mp_obj_t flags_obj = mp_obj_new_int_from_uint(flags);
+
+        mp_sched_schedule(&flipperzero_gpio_trigger_handler_obj, flags_obj);
+    }
+}

@@ -216,6 +216,16 @@ void mp_flipper_dialog_message_clear();
 #define MP_FLIPPER_GPIO_MODE_INTERRUPT_RISE (1 << 4)
 #define MP_FLIPPER_GPIO_MODE_INTERRUPT_FALL (1 << 5)
 
+#define MP_FLIPPER_GPIO_PULL_NO (0)
+#define MP_FLIPPER_GPIO_PULL_UP (1)
+#define MP_FLIPPER_GPIO_PULL_DOWN (2)
+
+#define MP_FLIPPER_GPIO_SPEED_LOW (0)
+#define MP_FLIPPER_GPIO_SPEED_MEDIUM (1)
+#define MP_FLIPPER_GPIO_SPEED_HIGH (2)
+#define MP_FLIPPER_GPIO_SPEED_VERY_HIGH (3)
+
 void mp_flipper_gpio_init_pin(uint8_t raw_pin, uint8_t raw_mode);
 void mp_flipper_gpio_set_pin(uint8_t raw_pin, bool state);
 bool mp_flipper_gpio_get_pin(uint8_t raw_pin);
+void mp_flipper_on_gpio(uint8_t pin, bool rising);
