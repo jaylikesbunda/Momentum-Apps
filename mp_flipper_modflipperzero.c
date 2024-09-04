@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 
 #include "py/objint.h"
@@ -753,9 +754,9 @@ void mp_flipper_on_input(uint16_t button, uint16_t type) {
     }
 }
 
-void mp_flipper_on_gpio(uint8_t pin) {
+void mp_flipper_on_gpio(void* ctx) {
     if(mp_flipper_on_gpio_callback != NULL) {
-        mp_obj_t pin_obj = mp_obj_new_int_from_uint(pin);
+        mp_obj_t pin_obj = mp_obj_new_int_from_uint((uint8_t)ctx);
 
         mp_sched_schedule(&flipperzero_gpio_trigger_handler_obj, pin_obj);
     }
