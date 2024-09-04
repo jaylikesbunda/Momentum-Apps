@@ -470,18 +470,20 @@ static MP_DEFINE_CONST_FUN_OBJ_0(flipperzero_dialog_message_clear_obj, flipperze
 static void* mp_flipper_on_gpio_callback = NULL;
 
 static mp_obj_t flipperzero_gpio_init_pin(size_t n_args, const mp_obj_t* args) {
-    if(n_args != 2) {
-        return mp_const_none;
+    if(n_args < 2) {
+        return mp_const_false;
     }
 
     mp_int_t pin = mp_obj_get_int(args[0]);
     mp_int_t mode = mp_obj_get_int(args[1]);
+    mp_int_t pull = n_args > 2 ? mp_obj_get_int(args[2]) : MP_FLIPPER_GPIO_PULL_NO;
+    mp_int_t speed = n_args > 3 ? mp_obj_get_int(args[3]) : MP_FLIPPER_GPIO_SPEED_LOW;
 
-    mp_flipper_gpio_init_pin(pin, mode);
+    mp_flipper_gpio_init_pin(pin, mode, pull, speed);
 
-    return mp_const_none;
+    return mp_const_true;
 }
-static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(flipperzero_gpio_init_pin_obj, 2, 2, flipperzero_gpio_init_pin);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(flipperzero_gpio_init_pin_obj, 2, 4, flipperzero_gpio_init_pin);
 
 static mp_obj_t flipperzero_gpio_set_pin(mp_obj_t pin_obj, mp_obj_t state_obj) {
     mp_int_t pin = mp_obj_get_int(pin_obj);

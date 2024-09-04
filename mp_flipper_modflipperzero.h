@@ -225,7 +225,7 @@ void mp_flipper_dialog_message_clear();
 #define MP_FLIPPER_GPIO_SPEED_HIGH (2)
 #define MP_FLIPPER_GPIO_SPEED_VERY_HIGH (3)
 
-void mp_flipper_gpio_init_pin(uint8_t raw_pin, uint8_t raw_mode);
+void mp_flipper_gpio_init_pin(uint8_t raw_pin, uint8_t raw_mode, uint8_t raw_pull, uint8_t raw_speed);
 void mp_flipper_gpio_set_pin(uint8_t raw_pin, bool state);
 bool mp_flipper_gpio_get_pin(uint8_t raw_pin);
 void mp_flipper_on_gpio(void* ctx);
