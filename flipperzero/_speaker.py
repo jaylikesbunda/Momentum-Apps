@@ -773,14 +773,14 @@ The musical note B\ :sub:`0` as frequency in `Hz`.
 .. versionadded:: 1.2.0
 '''
 
-SPEAKER_VOLUME_MIN: float = 0.0
+SPEAKER_VOLUME_MIN: float
 '''
 The minimal volume value.
 
 .. versionadded:: 1.2.0
 '''
 
-SPEAKER_VOLUME_MAX: float = 1.0
+SPEAKER_VOLUME_MAX: float
 '''
 The maximum volume value.
 
