@@ -5,8 +5,8 @@ Here you can see what to expect from future releases.
 
 ## Next Release
 
-* Constants for musical notes
-* GPIO (and maybe ADC)
+* Extended GPIO (ADC, PWM)
+* Maybe infrared
 
 ## Planned
 

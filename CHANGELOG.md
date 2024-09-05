@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2024-09-05
+
 ### Added
 
 * Constants for all musical notes from C0 up to B8.
@@ -93,7 +95,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Basic build setup
 * Minimal working example
 
-[Unreleased]: https://github.com/ofabel/mp-flipper/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/ofabel/mp-flipper/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/ofabel/mp-flipper/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/ofabel/mp-flipper/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/ofabel/mp-flipper/compare/v0.5.0-beta.1...v1.0.0
 [0.5.0-beta.1]: https://github.com/ofabel/mp-flipper/compare/v0.4.0-beta.1...v0.5.0-beta.1

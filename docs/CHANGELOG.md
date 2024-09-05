@@ -1,3 +1,9 @@
+## 1.2
+
+* Added simple GPIO support: initialize, read, write, interrupts.
+* Added constants for musical note frequencies from C0 up to B8.
+* Some minor fixes in the dialog functions.
+
 ## 1.1
 
 * Display splash screen upon application start.
