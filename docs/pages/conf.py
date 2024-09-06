@@ -44,6 +44,7 @@ html_theme_options = {
 
     }
 }
+html_scaled_image_link = False
 html_copy_source = False
 html_show_copyright = False
 html_show_sphinx = False

@@ -15,8 +15,22 @@ Input
 .. literalinclude:: ../../examples/flipperzero_draw_on_input_test.py
    :language: python
 
-All Together
-------------
+Tic-Tac-Toe
+-----------
 
 .. literalinclude:: ../../examples/tic_tac_toe.py
    :language: python
+
+Interrupts
+----------
+
+.. literalinclude:: ../../examples/flipperzero_gpio_interrupt_test.py
+   :language: python
+
+This example drives an external LED upon interrupts: A rising edge on ``C0`` sets the pin ``A7`` to high, a rising edge on ``C1`` sets the pin ``A7`` to low.
+The following schematic circuit diagram shows the hardware setup for this example:
+
+.. figure:: ./assets/gpio_interrupt_circuit.svg
+   :width: 90%
+
+   Hardware setup for the GPIO interrupt example.
