@@ -15,10 +15,17 @@ Light
 
 Control the RGB LED and display backlight of your Flipper.
 
+Constants
+~~~~~~~~~
+
 .. autodata:: flipperzero.LIGHT_RED
 .. autodata:: flipperzero.LIGHT_GREEN
 .. autodata:: flipperzero.LIGHT_BLUE
 .. autodata:: flipperzero.LIGHT_BACKLIGHT
+
+Functions
+~~~~~~~~~
+
 .. autofunction:: flipperzero.light_set
 .. autofunction:: flipperzero.light_blink_start
 .. autofunction:: flipperzero.light_blink_set_color
@@ -28,6 +35,9 @@ Speaker
 -------
 
 Full control over the built-in speaker module.
+
+Musical Notes
+~~~~~~~~~~~~~
 
 ..
    for octave in range(9):
@@ -143,8 +153,14 @@ Full control over the built-in speaker module.
 .. autodata:: flipperzero.SPEAKER_NOTE_AS8
 .. autodata:: flipperzero.SPEAKER_NOTE_B8
 
+Volume
+~~~~~~
+
 .. autodata:: flipperzero.SPEAKER_VOLUME_MIN
 .. autodata:: flipperzero.SPEAKER_VOLUME_MAX
+
+Functions
+~~~~~~~~~
 
 .. autofunction:: flipperzero.speaker_start
 .. autofunction:: flipperzero.speaker_set_volume
@@ -155,17 +171,28 @@ Input
 
 Make your application interactive with full control over the Flipper's hardware buttons.
 
+Buttons
+~~~~~~~
+
 .. autodata:: flipperzero.INPUT_BUTTON_UP
 .. autodata:: flipperzero.INPUT_BUTTON_DOWN
 .. autodata:: flipperzero.INPUT_BUTTON_RIGHT
 .. autodata:: flipperzero.INPUT_BUTTON_LEFT
 .. autodata:: flipperzero.INPUT_BUTTON_OK
 .. autodata:: flipperzero.INPUT_BUTTON_BACK
+
+Events
+~~~~~~
+
 .. autodata:: flipperzero.INPUT_TYPE_PRESS
 .. autodata:: flipperzero.INPUT_TYPE_RELEASE
 .. autodata:: flipperzero.INPUT_TYPE_SHORT
 .. autodata:: flipperzero.INPUT_TYPE_LONG
 .. autodata:: flipperzero.INPUT_TYPE_REPEAT
+
+Functions
+~~~~~~~~~
+
 .. autodecorator:: flipperzero.on_input
 
 Canvas
@@ -173,21 +200,40 @@ Canvas
 
 Write text and draw dots and shapes on the the display.
 
+Basics
+~~~~~~
+
 .. autofunction:: flipperzero.canvas_update
 .. autofunction:: flipperzero.canvas_clear
 .. autofunction:: flipperzero.canvas_width
 .. autofunction:: flipperzero.canvas_height
+
+Colors
+~~~~~~
+
 .. autodata:: flipperzero.COLOR_BLACK
 .. autodata:: flipperzero.COLOR_WHITE
 .. autofunction:: flipperzero.canvas_set_color
+
+Alignment
+~~~~~~~~~
+
 .. autodata:: flipperzero.ALIGN_BEGIN
 .. autodata:: flipperzero.ALIGN_END
 .. autodata:: flipperzero.ALIGN_CENTER
 .. autofunction:: flipperzero.canvas_set_text_align
+
+Texts
+~~~~~
+
 .. autodata:: flipperzero.FONT_PRIMARY
 .. autodata:: flipperzero.FONT_SECONDARY
 .. autofunction:: flipperzero.canvas_set_font
 .. autofunction:: flipperzero.canvas_set_text
+
+Shapes
+~~~~~~
+
 .. autofunction:: flipperzero.canvas_draw_dot
 .. autofunction:: flipperzero.canvas_draw_box
 .. autofunction:: flipperzero.canvas_draw_frame
@@ -210,6 +256,9 @@ GPIO
 
 Access to the GPIO pins of your Flipper.
 
+Pins
+~~~~
+
 .. autodata:: flipperzero.GPIO_PIN_PC0
 .. autodata:: flipperzero.GPIO_PIN_PC1
 .. autodata:: flipperzero.GPIO_PIN_PC3
@@ -218,19 +267,35 @@ Access to the GPIO pins of your Flipper.
 .. autodata:: flipperzero.GPIO_PIN_PA4
 .. autodata:: flipperzero.GPIO_PIN_PA6
 .. autodata:: flipperzero.GPIO_PIN_PA7
+
+Modes
+~~~~~
+
 .. autodata:: flipperzero.GPIO_MODE_INPUT
 .. autodata:: flipperzero.GPIO_MODE_OUTPUT_PUSH_PULL
 .. autodata:: flipperzero.GPIO_MODE_OUTPUT_OPEN_DRAIN
 .. autodata:: flipperzero.GPIO_MODE_ANALOG
 .. autodata:: flipperzero.GPIO_MODE_INTERRUPT_RISE
 .. autodata:: flipperzero.GPIO_MODE_INTERRUPT_FALL
+
+Pull 
+~~~~
+
 .. autodata:: flipperzero.GPIO_PULL_NO
 .. autodata:: flipperzero.GPIO_PULL_UP
 .. autodata:: flipperzero.GPIO_PULL_DOWN
+
+Speed
+~~~~~
+
 .. autodata:: flipperzero.GPIO_SPEED_LOW
 .. autodata:: flipperzero.GPIO_SPEED_MEDIUM
 .. autodata:: flipperzero.GPIO_SPEED_HIGH
 .. autodata:: flipperzero.GPIO_SPEED_VERY_HIGH
+
+Functions
+~~~~~~~~~
+
 .. autofunction:: flipperzero.gpio_init_pin
 .. autofunction:: flipperzero.gpio_set_pin
 .. autofunction:: flipperzero.gpio_get_pin

@@ -13,3 +13,6 @@ Here you can see what to expect from future releases.
 * Infrared
 * Subghz
 * Bluetooth
+* ...
+
+Feel free to [file an issue](https://www.github.com/ofabel/mp-flipper/issues), if you miss any particular feature.
