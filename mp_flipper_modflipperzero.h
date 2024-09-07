@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -239,3 +240,8 @@ float mp_flipper_adc_convert_to_voltage(uint16_t value);
 bool mp_flipper_pwm_start(uint8_t raw_pin, uint32_t frequency, uint8_t duty);
 void mp_flipper_pwm_stop(uint8_t raw_pin);
 bool mp_flipper_pwm_is_running(uint8_t raw_pin);
+
+#define MP_FLIPPER_INFRARED_RX_DEFAULT_TIMEOUT (1000000)
+#define MP_FLIPPER_INFRARED_RX_BUFFER_SIZE (1024)
+
+uint32_t* mp_flipper_infrared_receive(uint32_t timeout, size_t* length);

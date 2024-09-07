@@ -575,6 +575,23 @@ static mp_obj_t flipperzero_pwm_is_running(mp_obj_t pin_obj) {
 }
 static MP_DEFINE_CONST_FUN_OBJ_1(flipperzero_pwm_is_running_obj, flipperzero_pwm_is_running);
 
+static mp_obj_t flipperzero_infrared_receive(size_t n_args, const mp_obj_t* args) {
+    mp_int_t timeout = n_args > 0 ? mp_obj_get_int(args[0]) : MP_FLIPPER_INFRARED_RX_DEFAULT_TIMEOUT;
+
+    size_t length = 0;
+    uint32_t* buffer = mp_flipper_infrared_receive(timeout, &length);
+    mp_obj_t* signal = malloc(length * sizeof(mp_obj_t));
+
+    for(uint16_t i = 0; i < length; i++) {
+        signal[i] = mp_obj_new_int(buffer[i]);
+    }
+
+    free(buffer);
+
+    return mp_obj_new_list(length, signal);
+}
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(flipperzero_infrared_receive_obj, 0, 1, flipperzero_infrared_receive);
+
 static const mp_rom_map_elem_t flipperzero_module_globals_table[] = {
     // light
     {MP_OBJ_NEW_QSTR(MP_QSTR___name__), MP_OBJ_NEW_QSTR(MP_QSTR_flipperzero)},
@@ -800,6 +817,8 @@ for octave in range(9):
     {MP_ROM_QSTR(MP_QSTR_pwm_start), MP_ROM_PTR(&flipperzero_pwm_start_obj)},
     {MP_ROM_QSTR(MP_QSTR_pwm_stop), MP_ROM_PTR(&flipperzero_pwm_stop_obj)},
     {MP_ROM_QSTR(MP_QSTR_pwm_is_running), MP_ROM_PTR(&flipperzero_pwm_is_running_obj)},
+    // infrared - functions
+    {MP_ROM_QSTR(MP_QSTR_infrared_receive), MP_ROM_PTR(&flipperzero_infrared_receive_obj)},
 };
 static MP_DEFINE_CONST_DICT(flipperzero_module_globals, flipperzero_module_globals_table);
 
