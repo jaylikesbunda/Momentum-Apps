@@ -520,6 +520,25 @@ static mp_obj_t flipperzero_gpio_trigger_handler(mp_obj_t pin_obj) {
 }
 static MP_DEFINE_CONST_FUN_OBJ_1(flipperzero_gpio_trigger_handler_obj, flipperzero_gpio_trigger_handler);
 
+static mp_obj_t flipperzero_adc_read_pin_value(mp_obj_t pin_obj) {
+    mp_int_t pin = mp_obj_get_int(pin_obj);
+
+    mp_int_t value = mp_flipper_adc_read_pin(pin);
+
+    return mp_obj_new_int(value);
+}
+static MP_DEFINE_CONST_FUN_OBJ_1(flipperzero_adc_read_pin_value_obj, flipperzero_adc_read_pin_value);
+
+static mp_obj_t flipperzero_adc_read_pin_voltage(mp_obj_t pin_obj) {
+    mp_int_t pin = mp_obj_get_int(pin_obj);
+
+    uint16_t value = mp_flipper_adc_read_pin(pin);
+    float voltage = mp_flipper_adc_convert_to_voltage(value);
+
+    return mp_obj_new_float(voltage);
+}
+static MP_DEFINE_CONST_FUN_OBJ_1(flipperzero_adc_read_pin_voltage_obj, flipperzero_adc_read_pin_voltage);
+
 static const mp_rom_map_elem_t flipperzero_module_globals_table[] = {
     // light
     {MP_OBJ_NEW_QSTR(MP_QSTR___name__), MP_OBJ_NEW_QSTR(MP_QSTR_flipperzero)},
@@ -737,6 +756,9 @@ for octave in range(9):
     {MP_ROM_QSTR(MP_QSTR_gpio_get_pin), MP_ROM_PTR(&flipperzero_gpio_get_pin_obj)},
     {MP_ROM_QSTR(MP_QSTR_on_gpio), MP_ROM_PTR(&flipperzero_on_gpio_obj)},
     {MP_ROM_QSTR(MP_QSTR__gpio_trigger_handler), MP_ROM_PTR(&flipperzero_gpio_trigger_handler_obj)},
+    // adc - functions
+    {MP_ROM_QSTR(MP_QSTR_adc_read_pin_value), MP_ROM_PTR(&flipperzero_adc_read_pin_value_obj)},
+    {MP_ROM_QSTR(MP_QSTR_adc_read_pin_voltage), MP_ROM_PTR(&flipperzero_adc_read_pin_voltage_obj)},
 };
 static MP_DEFINE_CONST_DICT(flipperzero_module_globals, flipperzero_module_globals_table);
 

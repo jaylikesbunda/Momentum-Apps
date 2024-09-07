@@ -229,3 +229,6 @@ void mp_flipper_gpio_init_pin(uint8_t raw_pin, uint8_t raw_mode, uint8_t raw_pul
 void mp_flipper_gpio_set_pin(uint8_t raw_pin, bool state);
 bool mp_flipper_gpio_get_pin(uint8_t raw_pin);
 void mp_flipper_on_gpio(void* ctx);
+
+uint16_t mp_flipper_adc_read_pin(uint8_t raw_pin);
+float mp_flipper_adc_convert_to_voltage(uint16_t value);
