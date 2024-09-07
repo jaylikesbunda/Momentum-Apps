@@ -6,7 +6,7 @@
 
 #include "mp_flipper_context.h"
 
-static void on_input_callback(InputEvent* event, void* ctx) {
+static void on_input_callback(const InputEvent* event, void* ctx) {
     uint16_t button = 1 << event->key;
     uint16_t type = 1 << (InputKeyMAX + event->type);
 
@@ -84,6 +84,14 @@ void* mp_flipper_context_alloc() {
     ctx->dialog_message_button_center = NULL;
     ctx->dialog_message_button_right = NULL;
 
+    ctx->adc_handle = NULL;
+
+    ctx->gpio_pins_used = malloc(MP_FLIPPER_GPIO_PINS * sizeof(bool));
+
+    for(uint8_t pin = 0; pin < MP_FLIPPER_GPIO_PINS; pin++) {
+        ctx->gpio_pins_used[pin] = false;
+    }
+
     return ctx;
 }
 
@@ -102,6 +110,18 @@ void mp_flipper_context_free(void* context) {
 
     furi_record_close(RECORD_GUI);
     furi_record_close(RECORD_INPUT_EVENTS);
+
+    // disable ADC handle
+    if(ctx->adc_handle) {
+        furi_hal_adc_release(ctx->adc_handle);
+    }
+
+    // de-initialize all GPIO pins
+    for(uint8_t pin = 0; pin < MP_FLIPPER_GPIO_PINS; pin++) {
+        mp_flipper_gpio_deinit_pin(pin);
+    }
+
+    free(ctx->gpio_pins_used);
 
     free(ctx);
 }

@@ -1,6 +1,9 @@
 #include <furi_hal.h>
 
 #include <mp_flipper_modflipperzero.h>
+#include <mp_flipper_runtime.h>
+
+#include "mp_flipper_context.h"
 
 static const GpioPin* decode_pin(uint8_t pin) {
     switch(pin) {
@@ -82,6 +85,10 @@ inline void mp_flipper_gpio_init_pin(
     uint8_t raw_mode,
     uint8_t raw_pull,
     uint8_t raw_speed) {
+    mp_flipper_context_t* ctx = mp_flipper_context;
+
+    furi_check(raw_pin < MP_FLIPPER_GPIO_PINS);
+
     const GpioPin* pin = decode_pin(raw_pin);
     const GpioMode mode = decode_mode(raw_mode);
     const GpioPull pull = decode_pull(raw_pull);
@@ -95,6 +102,30 @@ inline void mp_flipper_gpio_init_pin(
     } else {
         furi_hal_gpio_disable_int_callback(pin);
         furi_hal_gpio_remove_int_callback(pin);
+    }
+
+    if(raw_mode == MP_FLIPPER_GPIO_MODE_ANALOG && ctx->adc_handle == NULL) {
+        ctx->adc_handle = furi_hal_adc_acquire();
+
+        furi_hal_adc_configure(ctx->adc_handle);
+    }
+
+    ctx->gpio_pins_used[raw_pin] = true;
+}
+
+inline void mp_flipper_gpio_deinit_pin(uint8_t raw_pin) {
+    mp_flipper_context_t* ctx = mp_flipper_context;
+
+    furi_check(raw_pin < MP_FLIPPER_GPIO_PINS);
+
+    if(ctx->gpio_pins_used[raw_pin]) {
+        const GpioPin* pin = decode_pin(raw_pin);
+
+        furi_hal_gpio_disable_int_callback(pin);
+        furi_hal_gpio_remove_int_callback(pin);
+        furi_hal_gpio_init_simple(pin, GpioModeAnalog);
+
+        ctx->gpio_pins_used[raw_pin] = false;
     }
 }
 

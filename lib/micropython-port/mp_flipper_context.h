@@ -12,4 +12,6 @@ typedef struct {
     const char* dialog_message_button_left;
     const char* dialog_message_button_center;
     const char* dialog_message_button_right;
+    FuriHalAdcHandle* adc_handle;
+    bool* gpio_pins_used;
 } mp_flipper_context_t;
