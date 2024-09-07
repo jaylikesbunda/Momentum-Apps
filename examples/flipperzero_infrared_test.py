@@ -3,11 +3,12 @@ import time
 
 signal = f0.infrared_receive()
 
-value = '{value} #'.format(value=len(signal))
+durations = map(lambda v:str(v), signal)
+value = ','.join(durations)
 
 f0.canvas_clear()
 
-f0.canvas_set_text(64, 32, value)
+f0.canvas_set_text(10, 32, value)
 
 f0.canvas_update()
 
