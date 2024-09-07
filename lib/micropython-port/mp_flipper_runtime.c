@@ -86,10 +86,10 @@ void* mp_flipper_context_alloc() {
 
     ctx->adc_handle = NULL;
 
-    ctx->gpio_pins_used = malloc(MP_FLIPPER_GPIO_PINS * sizeof(bool));
+    ctx->gpio_pins = malloc(MP_FLIPPER_GPIO_PINS * sizeof(mp_flipper_gpio_pin_t));
 
     for(uint8_t pin = 0; pin < MP_FLIPPER_GPIO_PINS; pin++) {
-        ctx->gpio_pins_used[pin] = false;
+        ctx->gpio_pins[pin] = MP_FLIPPER_GPIO_PIN_OFF;
     }
 
     return ctx;
@@ -121,7 +121,11 @@ void mp_flipper_context_free(void* context) {
         mp_flipper_gpio_deinit_pin(pin);
     }
 
-    free(ctx->gpio_pins_used);
+    // stop running PWM output
+    mp_flipper_pwm_stop(MP_FLIPPER_GPIO_PIN_PA4);
+    mp_flipper_pwm_stop(MP_FLIPPER_GPIO_PIN_PA7);
+
+    free(ctx->gpio_pins);
 
     free(ctx);
 }

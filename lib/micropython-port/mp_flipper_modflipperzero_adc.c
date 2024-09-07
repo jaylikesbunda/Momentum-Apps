@@ -27,17 +27,21 @@ inline static FuriHalAdcChannel decode_pin_to_adc_channel(uint8_t pin) {
 inline uint16_t mp_flipper_adc_read_pin(uint8_t raw_pin) {
     mp_flipper_context_t* ctx = mp_flipper_context;
 
-    furi_check(ctx->adc_handle, "missing ADC handle");
-
     FuriHalAdcChannel channel = decode_pin_to_adc_channel(raw_pin);
 
-    return furi_hal_adc_read(ctx->adc_handle, channel);
+    if(channel == FuriHalAdcChannelNone) {
+        return 0;
+    }
+
+    if(ctx->gpio_pins[raw_pin] != MP_FLIPPER_GPIO_MODE_ANALOG) {
+        return 0;
+    }
+
+    return ctx->adc_handle ? furi_hal_adc_read(ctx->adc_handle, channel) : 0;
 }
 
 inline float mp_flipper_adc_convert_to_voltage(uint16_t value) {
     mp_flipper_context_t* ctx = mp_flipper_context;
 
-    furi_check(ctx->adc_handle, "missing ADC handle");
-
-    return furi_hal_adc_convert_to_voltage(ctx->adc_handle, value);
+    return ctx->adc_handle ? furi_hal_adc_convert_to_voltage(ctx->adc_handle, value) : 0.0f;
 }

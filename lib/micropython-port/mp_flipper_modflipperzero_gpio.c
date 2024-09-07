@@ -5,6 +5,8 @@
 
 #include "mp_flipper_context.h"
 
+#define NO_VALUE (-1)
+
 static const GpioPin* decode_pin(uint8_t pin) {
     switch(pin) {
     case MP_FLIPPER_GPIO_PIN_PC0:
@@ -24,7 +26,7 @@ static const GpioPin* decode_pin(uint8_t pin) {
     case MP_FLIPPER_GPIO_PIN_PA7:
         return &gpio_ext_pa7;
     default:
-        furi_crash("unknown GPIO pin");
+        return NULL;
     }
 }
 
@@ -49,7 +51,7 @@ static inline const GpioMode decode_mode(uint8_t mode) {
         return GpioModeInterruptRiseFall;
     }
 
-    furi_crash("unknown GPIO mode");
+    return NO_VALUE;
 }
 
 static inline const GpioPull decode_pull(uint8_t pull) {
@@ -61,7 +63,7 @@ static inline const GpioPull decode_pull(uint8_t pull) {
     case MP_FLIPPER_GPIO_PULL_DOWN:
         return GpioPullDown;
     default:
-        furi_crash("unknown GPIO pull");
+        return NO_VALUE;
     }
 }
 
@@ -76,23 +78,29 @@ static inline const GpioSpeed decode_speed(uint8_t speed) {
     case MP_FLIPPER_GPIO_SPEED_VERY_HIGH:
         return GpioSpeedVeryHigh;
     default:
-        furi_crash("unknown GPIO speed");
+        return NO_VALUE;
     }
 }
 
-inline void mp_flipper_gpio_init_pin(
+inline bool mp_flipper_gpio_init_pin(
     uint8_t raw_pin,
     uint8_t raw_mode,
     uint8_t raw_pull,
     uint8_t raw_speed) {
     mp_flipper_context_t* ctx = mp_flipper_context;
 
-    furi_check(raw_pin < MP_FLIPPER_GPIO_PINS);
-
     const GpioPin* pin = decode_pin(raw_pin);
     const GpioMode mode = decode_mode(raw_mode);
     const GpioPull pull = decode_pull(raw_pull);
     const GpioSpeed speed = decode_speed(raw_speed);
+
+    if(pin == NULL || mode == NO_VALUE || pull == NO_VALUE || speed == NO_VALUE) {
+        return false;
+    }
+
+    if(ctx->gpio_pins[raw_pin] & MP_FLIPPER_GPIO_PIN_BLOCKED) {
+        return false;
+    }
 
     furi_hal_gpio_init(pin, mode, pull, speed);
 
@@ -104,39 +112,64 @@ inline void mp_flipper_gpio_init_pin(
         furi_hal_gpio_remove_int_callback(pin);
     }
 
-    if(raw_mode == MP_FLIPPER_GPIO_MODE_ANALOG && ctx->adc_handle == NULL) {
+    if(raw_mode == MP_FLIPPER_GPIO_MODE_ANALOG) {
         ctx->adc_handle = furi_hal_adc_acquire();
 
         furi_hal_adc_configure(ctx->adc_handle);
     }
 
-    ctx->gpio_pins_used[raw_pin] = true;
+    ctx->gpio_pins[raw_pin] = raw_mode;
+
+    return true;
 }
 
 inline void mp_flipper_gpio_deinit_pin(uint8_t raw_pin) {
-    mp_flipper_context_t* ctx = mp_flipper_context;
+    const mp_flipper_context_t* ctx = mp_flipper_context;
 
-    furi_check(raw_pin < MP_FLIPPER_GPIO_PINS);
+    const GpioPin* pin = decode_pin(raw_pin);
 
-    if(ctx->gpio_pins_used[raw_pin]) {
-        const GpioPin* pin = decode_pin(raw_pin);
-
-        furi_hal_gpio_disable_int_callback(pin);
-        furi_hal_gpio_remove_int_callback(pin);
-        furi_hal_gpio_init_simple(pin, GpioModeAnalog);
-
-        ctx->gpio_pins_used[raw_pin] = false;
+    if(pin == NULL) {
+        return;
     }
+
+    if(ctx->gpio_pins[raw_pin] & (MP_FLIPPER_GPIO_PIN_BLOCKED | MP_FLIPPER_GPIO_PIN_OFF)) {
+        return;
+    }
+
+    furi_hal_gpio_disable_int_callback(pin);
+    furi_hal_gpio_remove_int_callback(pin);
+    furi_hal_gpio_init_simple(pin, GpioModeAnalog);
+
+    ctx->gpio_pins[raw_pin] = MP_FLIPPER_GPIO_PIN_OFF;
 }
 
 inline void mp_flipper_gpio_set_pin(uint8_t raw_pin, bool state) {
+    const mp_flipper_context_t* ctx = mp_flipper_context;
+
     const GpioPin* pin = decode_pin(raw_pin);
 
-    furi_hal_gpio_write(pin, state);
+    if(pin == NULL) {
+        return;
+    }
+
+    if(ctx->gpio_pins[raw_pin] == MP_FLIPPER_GPIO_MODE_OUTPUT_PUSH_PULL ||
+       ctx->gpio_pins[raw_pin] == MP_FLIPPER_GPIO_MODE_OUTPUT_OPEN_DRAIN) {
+        furi_hal_gpio_write(pin, state);
+    }
 }
 
 inline bool mp_flipper_gpio_get_pin(uint8_t raw_pin) {
+    const mp_flipper_context_t* ctx = mp_flipper_context;
+
     const GpioPin* pin = decode_pin(raw_pin);
 
-    return furi_hal_gpio_read(pin);
+    if(pin == NULL) {
+        return false;
+    }
+
+    if(ctx->gpio_pins[raw_pin] == MP_FLIPPER_GPIO_MODE_INPUT) {
+        return furi_hal_gpio_read(pin);
+    } else {
+        return false;
+    }
 }
