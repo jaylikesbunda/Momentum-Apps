@@ -490,7 +490,7 @@ static mp_obj_t flipperzero_gpio_deinit_pin(mp_obj_t pin_obj) {
 
     mp_flipper_gpio_deinit_pin(pin);
 
-    return mp_const_none_obj;
+    return mp_const_none;
 }
 static MP_DEFINE_CONST_FUN_OBJ_1(flipperzero_gpio_deinit_pin_obj, flipperzero_gpio_deinit_pin);
 
