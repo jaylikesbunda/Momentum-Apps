@@ -12,7 +12,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Simple ADC support for the `flipperzero` module:
   * Read raw value.
   * Read voltage.
+* Simple PWM support for the `flipperzero` module:
+  * Start a signal.
+  * Stop a signal.
+  * Check the status.
 * Reset used GPIO pins upon script termination.
+* Improved GPIO related functions to prevent user errors.
+
+### Changed
+
+* The GPIO init function `flipperzero.gpio_init_pin` returns a boolean value.
 
 ## [1.2.0] - 2024-09-05
 

@@ -11,6 +11,9 @@ Here you can see what to expect from future releases.
 ## Planned
 
 * Infrared
+* I2C
+* UART
+* USB HID
 * Subghz
 * Bluetooth
 * ...

@@ -336,6 +336,21 @@ Functions
 .. autofunction:: flipperzero.adc_read_pin_value
 .. autofunction:: flipperzero.adc_read_pin_voltage
 
+PWM
+---
+
+Output a PWM signal on selected GPIO pins:
+
+* :const:`flipperzero.GPIO_PIN_PA4`
+* :const:`flipperzero.GPIO_PIN_PA7`
+
+Functions
+~~~~~~~~~
+
+.. autofunction:: flipperzero.pwm_start
+.. autofunction:: flipperzero.pwm_stop
+.. autofunction:: flipperzero.pwm_is_running
+
 Built-In
 --------
 

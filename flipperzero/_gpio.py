@@ -42,6 +42,7 @@ GPIO_PIN_PA4: int
 '''
 Constant identifier for GPIO pin PA4.
 This pin can be used as ADC input.
+This pin can be used as PWM output.
     
 .. versionadded:: 1.2.0
 '''
@@ -58,6 +59,7 @@ GPIO_PIN_PA7: int
 '''
 Constant identifier for GPIO pin PA7.
 This pin can be used as ADC input.
+This pin can be used as PWM output.
     
 .. versionadded:: 1.2.0
 '''
@@ -153,7 +155,7 @@ Constant configuration value for the GPIO in very high speed.
 .. versionadded:: 1.2.0
 '''
 
-def gpio_init_pin(pin: int, mode: int, pull: int = None, speed: int = None) -> None:
+def gpio_init_pin(pin: int, mode: int, pull: int = None, speed: int = None) -> bool:
     '''
     Initialize a GPIO pin.
 
@@ -161,8 +163,11 @@ def gpio_init_pin(pin: int, mode: int, pull: int = None, speed: int = None) -> N
     :param mode: The mode to use (e.g. :const:`GPIO_MODE_INPUT`).
     :param pull: The pull resistor to use. Default is :const:`GPIO_PULL_NO`.
     :param speed: The speed to use. Default is :const:`GPIO_SPEED_LOW`.
+    :returns: :const:`True` on success, :const:`False` otherwise.
     
     .. versionadded:: 1.2.0
+    .. versionchanged:: 1.3.0
+       The return value changed from ``None`` to ``bool``.
 
     .. hint::
 
