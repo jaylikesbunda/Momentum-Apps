@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+* Simple ADC support for the `flipperzero` module:
+  * Read raw value.
+  * Read voltage.
+* Reset used GPIO pins upon script termination.
+
 ## [1.2.0] - 2024-09-05
 
 ### Added

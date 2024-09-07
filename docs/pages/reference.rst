@@ -297,9 +297,44 @@ Functions
 ~~~~~~~~~
 
 .. autofunction:: flipperzero.gpio_init_pin
+.. autofunction:: flipperzero.gpio_deinit_pin
 .. autofunction:: flipperzero.gpio_set_pin
 .. autofunction:: flipperzero.gpio_get_pin
 .. autodecorator:: flipperzero.on_gpio
+
+ADC
+---
+
+Read analog values from selected GPIO pins:
+
+* :const:`flipperzero.GPIO_PIN_PC0`
+* :const:`flipperzero.GPIO_PIN_PC1`
+* :const:`flipperzero.GPIO_PIN_PC3`
+* :const:`flipperzero.GPIO_PIN_PA4`
+* :const:`flipperzero.GPIO_PIN_PA6`
+* :const:`flipperzero.GPIO_PIN_PA7`
+
+The corresponding pin must be initialized in the analog mode:
+
+.. code-block::
+
+   import flipperzero as f0
+
+   f0.gpio_init_pin(f0.GPIO_PIN_PC0, f0.GPIO_MODE_ANALOG)
+
+This configures the pin as ADC input with the following settings:
+
+* Reference voltage is set to 2.048 V.
+* Clock speed is at 64 MHz in synchronous mode.
+* Oversample rate is set to 64.
+
+`This default configuration is best for relatively high impedance circuits with slowly or or not changing signals.`
+
+Functions
+~~~~~~~~~
+
+.. autofunction:: flipperzero.adc_read_pin_value
+.. autofunction:: flipperzero.adc_read_pin_voltage
 
 Built-In
 --------

@@ -1,3 +1,8 @@
+## 1.3
+
+* Added simple ADC support: read value and voltage.
+* Reset used GPIO pins upon script termination.
+
 ## 1.2
 
 * Added simple GPIO support: initialize, read, write, interrupts.

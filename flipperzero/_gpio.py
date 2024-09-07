@@ -3,6 +3,7 @@ from typing import Callable
 GPIO_PIN_PC0: int
 '''
 Constant identifier for GPIO pin PC0.
+This pin can be used as ADC input.
     
 .. versionadded:: 1.2.0
 '''
@@ -10,6 +11,7 @@ Constant identifier for GPIO pin PC0.
 GPIO_PIN_PC1: int
 '''
 Constant identifier for GPIO pin PC1.
+This pin can be used as ADC input.
     
 .. versionadded:: 1.2.0
 '''
@@ -17,6 +19,7 @@ Constant identifier for GPIO pin PC1.
 GPIO_PIN_PC3: int
 '''
 Constant identifier for GPIO pin PC3.
+This pin can be used as ADC input.
     
 .. versionadded:: 1.2.0
 '''
@@ -38,6 +41,7 @@ Constant identifier for GPIO pin PB3.
 GPIO_PIN_PA4: int
 '''
 Constant identifier for GPIO pin PA4.
+This pin can be used as ADC input.
     
 .. versionadded:: 1.2.0
 '''
@@ -45,6 +49,7 @@ Constant identifier for GPIO pin PA4.
 GPIO_PIN_PA6: int
 '''
 Constant identifier for GPIO pin PA6.
+This pin can be used as ADC input.
     
 .. versionadded:: 1.2.0
 '''
@@ -52,6 +57,7 @@ Constant identifier for GPIO pin PA6.
 GPIO_PIN_PA7: int
 '''
 Constant identifier for GPIO pin PA7.
+This pin can be used as ADC input.
     
 .. versionadded:: 1.2.0
 '''
@@ -162,6 +168,20 @@ def gpio_init_pin(pin: int, mode: int, pull: int = None, speed: int = None) -> N
 
         The interrupt modes :const:`GPIO_MODE_INTERRUPT_RISE` and :const:`GPIO_MODE_INTERRUPT_FALL` can be combined using bitwise OR.
         This allows you to handle rising `and` falling edges.
+    '''
+    pass
+
+def gpio_deinit_pin(pin: int) -> None:
+    '''
+    Deinitialize a GPIO pin.
+
+    :param pin: The pin to deinitialize (e.g. :const:`GPIO_PIN_PA4`).
+    
+    .. versionadded:: 1.3.0
+
+    .. note::
+
+        It's not strictly necessary to deinitialize your GPIO pins upon script termination, this is already covered by the interpreter.
     '''
     pass
 

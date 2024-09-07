@@ -34,3 +34,16 @@ The following schematic circuit diagram shows the hardware setup for this exampl
    :width: 90%
 
    Hardware setup for the GPIO interrupt example.
+
+ADC
+---
+
+.. literalinclude:: ../../examples/flipperzero_adc_test.py
+   :language: python
+
+This example uses a voltage divider with the 3.3 V source from pin 9. The switch ``S1`` changes the input voltage on ``C1`` between 0 and about 0.8 V.
+
+.. figure:: ./assets/adc_circuit.svg
+   :width: 90%
+
+   Hardware setup for the ADC example.
