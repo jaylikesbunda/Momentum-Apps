@@ -479,9 +479,9 @@ static mp_obj_t flipperzero_gpio_init_pin(size_t n_args, const mp_obj_t* args) {
     mp_int_t pull = n_args > 2 ? mp_obj_get_int(args[2]) : MP_FLIPPER_GPIO_PULL_NO;
     mp_int_t speed = n_args > 3 ? mp_obj_get_int(args[3]) : MP_FLIPPER_GPIO_SPEED_LOW;
 
-    mp_flipper_gpio_init_pin(pin, mode, pull, speed);
+    bool success = mp_flipper_gpio_init_pin(pin, mode, pull, speed);
 
-    return mp_const_true;
+    return success ? mp_const_true : mp_const_false;
 }
 static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(flipperzero_gpio_init_pin_obj, 2, 4, flipperzero_gpio_init_pin);
 
@@ -547,6 +547,33 @@ static mp_obj_t flipperzero_adc_read_pin_voltage(mp_obj_t pin_obj) {
     return mp_obj_new_float(voltage);
 }
 static MP_DEFINE_CONST_FUN_OBJ_1(flipperzero_adc_read_pin_voltage_obj, flipperzero_adc_read_pin_voltage);
+
+static mp_obj_t flipperzero_pwm_start(mp_obj_t pin_obj, mp_obj_t frequency_obj, mp_obj_t duty_obj) {
+    mp_int_t pin = mp_obj_get_int(pin_obj);
+    mp_int_t frequency = mp_obj_get_int(frequency_obj);
+    mp_int_t duty = mp_obj_get_int(duty_obj);
+
+    bool success = mp_flipper_pwm_start(pin, frequency, duty);
+
+    return success ? mp_const_true : mp_const_false;
+}
+static MP_DEFINE_CONST_FUN_OBJ_3(flipperzero_pwm_start_obj, flipperzero_pwm_start);
+
+static mp_obj_t flipperzero_pwm_stop(mp_obj_t pin_obj) {
+    mp_int_t pin = mp_obj_get_int(pin_obj);
+
+    mp_flipper_pwm_stop(pin);
+
+    return mp_const_none;
+}
+static MP_DEFINE_CONST_FUN_OBJ_1(flipperzero_pwm_stop_obj, flipperzero_pwm_stop);
+
+static mp_obj_t flipperzero_pwm_is_running(mp_obj_t pin_obj) {
+    mp_int_t pin = mp_obj_get_int(pin_obj);
+
+    return mp_flipper_pwm_is_running(pin) ? mp_const_true : mp_const_false;
+}
+static MP_DEFINE_CONST_FUN_OBJ_1(flipperzero_pwm_is_running_obj, flipperzero_pwm_is_running);
 
 static const mp_rom_map_elem_t flipperzero_module_globals_table[] = {
     // light
@@ -769,6 +796,10 @@ for octave in range(9):
     // adc - functions
     {MP_ROM_QSTR(MP_QSTR_adc_read_pin_value), MP_ROM_PTR(&flipperzero_adc_read_pin_value_obj)},
     {MP_ROM_QSTR(MP_QSTR_adc_read_pin_voltage), MP_ROM_PTR(&flipperzero_adc_read_pin_voltage_obj)},
+    // pwm - functions
+    {MP_ROM_QSTR(MP_QSTR_pwm_start), MP_ROM_PTR(&flipperzero_pwm_start_obj)},
+    {MP_ROM_QSTR(MP_QSTR_pwm_stop), MP_ROM_PTR(&flipperzero_pwm_stop_obj)},
+    {MP_ROM_QSTR(MP_QSTR_pwm_is_running), MP_ROM_PTR(&flipperzero_pwm_is_running_obj)},
 };
 static MP_DEFINE_CONST_DICT(flipperzero_module_globals, flipperzero_module_globals_table);
 
