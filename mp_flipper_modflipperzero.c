@@ -485,6 +485,15 @@ static mp_obj_t flipperzero_gpio_init_pin(size_t n_args, const mp_obj_t* args) {
 }
 static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(flipperzero_gpio_init_pin_obj, 2, 4, flipperzero_gpio_init_pin);
 
+static mp_obj_t flipperzero_gpio_deinit_pin(mp_obj_t pin_obj) {
+    mp_int_t pin = mp_obj_get_int(pin_obj);
+
+    mp_flipper_gpio_deinit_pin(pin);
+
+    return mp_const_none_obj;
+}
+static MP_DEFINE_CONST_FUN_OBJ_1(flipperzero_gpio_deinit_pin_obj, flipperzero_gpio_deinit_pin);
+
 static mp_obj_t flipperzero_gpio_set_pin(mp_obj_t pin_obj, mp_obj_t state_obj) {
     mp_int_t pin = mp_obj_get_int(pin_obj);
     bool state = mp_obj_is_true(state_obj);
@@ -741,7 +750,6 @@ for octave in range(9):
     {MP_ROM_QSTR(MP_QSTR_GPIO_MODE_ANALOG), MP_ROM_INT(MP_FLIPPER_GPIO_MODE_ANALOG)},
     {MP_ROM_QSTR(MP_QSTR_GPIO_MODE_INTERRUPT_RISE), MP_ROM_INT(MP_FLIPPER_GPIO_MODE_INTERRUPT_RISE)},
     {MP_ROM_QSTR(MP_QSTR_GPIO_MODE_INTERRUPT_FALL), MP_ROM_INT(MP_FLIPPER_GPIO_MODE_INTERRUPT_FALL)},
-    {MP_ROM_QSTR(MP_QSTR_GPIO_MODE_NONE), MP_ROM_INT(MP_FLIPPER_GPIO_MODE_NONE)},
     // gpio - pull
     {MP_ROM_QSTR(MP_QSTR_GPIO_PULL_NO), MP_ROM_INT(MP_FLIPPER_GPIO_PULL_NO)},
     {MP_ROM_QSTR(MP_QSTR_GPIO_PULL_UP), MP_ROM_INT(MP_FLIPPER_GPIO_PULL_UP)},
@@ -753,6 +761,7 @@ for octave in range(9):
     {MP_ROM_QSTR(MP_QSTR_GPIO_SPEED_VERY_HIGH), MP_ROM_INT(MP_FLIPPER_GPIO_SPEED_VERY_HIGH)},
     // gpio - functions
     {MP_ROM_QSTR(MP_QSTR_gpio_init_pin), MP_ROM_PTR(&flipperzero_gpio_init_pin_obj)},
+    {MP_ROM_QSTR(MP_QSTR_gpio_deinit_pin), MP_ROM_PTR(&flipperzero_gpio_deinit_pin_obj)},
     {MP_ROM_QSTR(MP_QSTR_gpio_set_pin), MP_ROM_PTR(&flipperzero_gpio_set_pin_obj)},
     {MP_ROM_QSTR(MP_QSTR_gpio_get_pin), MP_ROM_PTR(&flipperzero_gpio_get_pin_obj)},
     {MP_ROM_QSTR(MP_QSTR_on_gpio), MP_ROM_PTR(&flipperzero_on_gpio_obj)},
