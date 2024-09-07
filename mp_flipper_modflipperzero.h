@@ -209,6 +209,8 @@ void mp_flipper_dialog_message_clear();
 #define MP_FLIPPER_GPIO_PIN_PA6 (6)
 #define MP_FLIPPER_GPIO_PIN_PA7 (7)
 
+#define MP_FLIPPER_GPIO_PINS (8)
+
 #define MP_FLIPPER_GPIO_MODE_INPUT (1 << 0)
 #define MP_FLIPPER_GPIO_MODE_OUTPUT_PUSH_PULL (1 << 1)
 #define MP_FLIPPER_GPIO_MODE_OUTPUT_OPEN_DRAIN (1 << 2)
