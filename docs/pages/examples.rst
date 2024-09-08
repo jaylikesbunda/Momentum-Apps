@@ -54,6 +54,13 @@ PWM
 .. literalinclude:: ../../examples/flipperzero_pwm_test.py
    :language: python
 
+This example drives an LED connected to pin ``A7`` and ``GND`` using a PWM signal with two different frequency and duty cycle settings.
+
+.. figure:: ./assets/pwm_circuit.svg
+   :width: 90%
+
+   Hardware setup for the PWM example.
+
 Infrared
 --------
 
