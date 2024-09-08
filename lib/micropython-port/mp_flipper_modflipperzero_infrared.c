@@ -82,7 +82,7 @@ inline bool mp_flipper_infrared_transmit(
     uint32_t repeat,
     uint32_t frequency,
     float duty) {
-    if(furi_hal_infrared_is_busy()) {
+    if(furi_hal_infrared_is_busy() || length == 0) {
         return false;
     }
 
