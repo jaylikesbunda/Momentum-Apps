@@ -590,6 +590,25 @@ static mp_obj_t flipperzero_infrared_receive(size_t n_args, const mp_obj_t* args
 }
 static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(flipperzero_infrared_receive_obj, 0, 1, flipperzero_infrared_receive);
 
+inline static uint32_t flipperzero_infrared_tx_signal_provider(mp_obj_t* signal, const size_t index) {
+    return mp_obj_get_int(signal[index]);
+}
+
+static mp_obj_t flipperzero_infrared_transmit(size_t n_args, const mp_obj_t* args) {
+    size_t size = 0;
+    mp_obj_t* signal;
+    mp_obj_t size_obj = mp_obj_get_array(args[0], &size, &signal);
+
+    mp_int_t repeat = n_args > 1 ? mp_obj_get_int(args[1]) : 1;
+    mp_int_t frequency = n_args > 2 ? mp_obj_get_int(args[1]) : MP_FLIPPER_INFRARED_TX_DEFAULT_FREQUENCY;
+    mp_int_t duty_cycle = n_args > 3 ? mp_obj_get_float(args[1]) : MP_FLIPPER_INFRARED_TX_DEFAULT_DUTY_CYCLE;
+
+    return mp_flipper_infrared_transmit(signal, length, flipperzero_infrared_tx_signal_provider, repeat, frequency, duty_cycle) ?
+               mp_const_true :
+               mp_const_false;
+}
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(flipperzero_infrared_transmit_obj, 1, 4, flipperzero_infrared_transmit);
+
 static const mp_rom_map_elem_t flipperzero_module_globals_table[] = {
     // light
     {MP_OBJ_NEW_QSTR(MP_QSTR___name__), MP_OBJ_NEW_QSTR(MP_QSTR_flipperzero)},
@@ -817,6 +836,7 @@ for octave in range(9):
     {MP_ROM_QSTR(MP_QSTR_pwm_is_running), MP_ROM_PTR(&flipperzero_pwm_is_running_obj)},
     // infrared - functions
     {MP_ROM_QSTR(MP_QSTR_infrared_receive), MP_ROM_PTR(&flipperzero_infrared_receive_obj)},
+    {MP_ROM_QSTR(MP_QSTR_infrared_transmit), MP_ROM_PTR(&flipperzero_infrared_transmit_obj)},
 };
 static MP_DEFINE_CONST_DICT(flipperzero_module_globals, flipperzero_module_globals_table);
 
