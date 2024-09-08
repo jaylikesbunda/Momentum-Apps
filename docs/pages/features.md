@@ -21,6 +21,7 @@ The following features are enabled and supported by the interpreter:
 * The `reversed` function.
 * The `min` and `max` function.
 * Module-level `__init__` imports.
+* The `struct` module.
 
 ## Unsupported
 
@@ -61,7 +62,6 @@ The following features are disabled and _not_ supported by the interpreter:
 * The `micropython` module.
 * The `array` module.
 * The `collections` module.
-* The `struct` module.
 * The `gc` module.
 * The `sys` module.
 * The `select` module.

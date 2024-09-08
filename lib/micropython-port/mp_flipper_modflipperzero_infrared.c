@@ -83,7 +83,8 @@ inline bool mp_flipper_infrared_transmit(
     mp_flipper_infrared_signal_tx_provider callback,
     uint32_t repeat,
     uint32_t frequency,
-    float duty) {
+    float duty,
+    bool use_external_pin) {
     if(furi_hal_infrared_is_busy() || length == 0) {
         return false;
     }
@@ -99,7 +100,10 @@ inline bool mp_flipper_infrared_transmit(
     session->repeat = repeat;
     session->size = length;
 
-    furi_hal_infrared_set_tx_output(FuriHalInfraredTxPinInternal);
+    const FuriHalInfraredTxPin output = use_external_pin ? FuriHalInfraredTxPinExtPA7 :
+                                                           FuriHalInfraredTxPinInternal;
+
+    furi_hal_infrared_set_tx_output(output);
 
     furi_hal_infrared_async_tx_set_data_isr_callback(on_tx, session);
 
@@ -108,4 +112,8 @@ inline bool mp_flipper_infrared_transmit(
     furi_hal_infrared_async_tx_wait_termination();
 
     return true;
+}
+
+inline bool mp_flipper_infrared_is_busy() {
+    return furi_hal_infrared_is_busy();
 }
