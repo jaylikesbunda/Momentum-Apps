@@ -47,3 +47,15 @@ This example uses a voltage divider with the 3.3 V source from pin 9. The switch
    :width: 90%
 
    Hardware setup for the ADC example.
+
+PWM
+---
+
+.. literalinclude:: ../../examples/flipperzero_pwm_test.py
+   :language: python
+
+Infrared
+--------
+
+.. literalinclude:: ../../examples/flipperzero_infrared_test.py
+   :language: python
