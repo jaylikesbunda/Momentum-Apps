@@ -12,6 +12,15 @@
 
 typedef uint16_t mp_flipper_gpio_pin_t;
 
+#define MP_FLIPPER_INFRARED_RX_BUFFER_SIZE (1024)
+
+typedef struct {
+    uint16_t size;
+    uint32_t* buffer;
+    uint16_t pointer;
+    bool running;
+} mp_flipper_infrared_rx_t;
+
 typedef struct {
     Gui* gui;
     ViewPort* view_port;
@@ -24,4 +33,5 @@ typedef struct {
     const char* dialog_message_button_right;
     FuriHalAdcHandle* adc_handle;
     mp_flipper_gpio_pin_t* gpio_pins;
+    mp_flipper_infrared_rx_t* infrared_rx;
 } mp_flipper_context_t;

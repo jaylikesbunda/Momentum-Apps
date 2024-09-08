@@ -1,14 +1,41 @@
 import flipperzero as f0
 import time
 
-signal = f0.infrared_receive()
+raw_signal = f0.infrared_receive()
 
-durations = map(lambda v:str(v), signal)
-value = ','.join(durations)
+signal = map(lambda v: int(v / 100), raw_signal)
+
+level = False
+
+i = -1
+x = 0
+y_low = 32
+y_high = 40
+y_level = y_low
 
 f0.canvas_clear()
 
-f0.canvas_set_text(10, 32, value)
+for duration in signal:
+    i += 1
+
+    if i < 10:
+        continue
+
+    if level:
+        f0.canvas_draw_line(x, y_low, x, y_high)
+        y_level = y_high
+    else:
+        f0.canvas_draw_line(x, y_high, x, y_low)
+        y_level = y_low
+
+    f0.canvas_draw_line(x, y_level, x + duration, y_level)
+
+    x += duration
+
+    level = not level
+
+    if x > f0.canvas_width():
+        break
 
 f0.canvas_update()
 

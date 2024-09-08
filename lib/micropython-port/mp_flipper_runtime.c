@@ -86,11 +86,20 @@ void* mp_flipper_context_alloc() {
 
     ctx->adc_handle = NULL;
 
+    // GPIO
     ctx->gpio_pins = malloc(MP_FLIPPER_GPIO_PINS * sizeof(mp_flipper_gpio_pin_t));
 
     for(uint8_t pin = 0; pin < MP_FLIPPER_GPIO_PINS; pin++) {
         ctx->gpio_pins[pin] = MP_FLIPPER_GPIO_PIN_OFF;
     }
+
+    // infrared
+    ctx->infrared_rx = malloc(sizeof(mp_flipper_infrared_rx_t));
+
+    ctx->infrared_rx->size = MP_FLIPPER_INFRARED_RX_BUFFER_SIZE;
+    ctx->infrared_rx->buffer = calloc(ctx->infrared_rx->size, sizeof(uint16_t));
+    ctx->infrared_rx->pointer = 0;
+    ctx->infrared_rx->running = true;
 
     return ctx;
 }
@@ -126,6 +135,10 @@ void mp_flipper_context_free(void* context) {
     mp_flipper_pwm_stop(MP_FLIPPER_GPIO_PIN_PA7);
 
     free(ctx->gpio_pins);
+
+    // stop infrared
+    free(ctx->infrared_rx->buffer);
+    free(ctx->infrared_rx);
 
     free(ctx);
 }
