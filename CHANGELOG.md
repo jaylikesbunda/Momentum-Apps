@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Infrared support for the `flipperzero` module:
   * Receive a signal.
   * Transmit a signal.
+  * Check the status.
 * Reset used GPIO pins upon script termination.
 * Improved GPIO related functions to prevent user errors.
 
