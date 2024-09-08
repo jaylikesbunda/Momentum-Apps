@@ -22,6 +22,15 @@ typedef struct {
 } mp_flipper_infrared_rx_t;
 
 typedef struct {
+    size_t size;
+    void* signal;
+    size_t index;
+    uint32_t repeat;
+    bool level;
+    mp_flipper_infrared_signal_tx_provider provider;
+} mp_flipper_infrared_tx_t;
+
+typedef struct {
     Gui* gui;
     ViewPort* view_port;
     Canvas* canvas;
@@ -34,4 +43,5 @@ typedef struct {
     FuriHalAdcHandle* adc_handle;
     mp_flipper_gpio_pin_t* gpio_pins;
     mp_flipper_infrared_rx_t* infrared_rx;
+    mp_flipper_infrared_tx_t* infrared_tx;
 } mp_flipper_context_t;

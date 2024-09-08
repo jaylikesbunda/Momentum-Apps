@@ -40,3 +40,5 @@ for duration in signal:
 f0.canvas_update()
 
 time.sleep(5)
+
+f0.infrared_transmit(raw_signal)
