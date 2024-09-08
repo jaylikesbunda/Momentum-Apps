@@ -601,8 +601,8 @@ static mp_obj_t flipperzero_infrared_transmit(size_t n_args, const mp_obj_t* arg
     mp_obj_get_array(args[0], &length, &signal);
 
     mp_int_t repeat = n_args > 1 ? mp_obj_get_int(args[1]) : 1;
-    mp_int_t frequency = n_args > 2 ? mp_obj_get_int(args[1]) : MP_FLIPPER_INFRARED_TX_DEFAULT_FREQUENCY;
-    mp_int_t duty_cycle = n_args > 3 ? mp_obj_get_float(args[1]) : MP_FLIPPER_INFRARED_TX_DEFAULT_DUTY_CYCLE;
+    mp_int_t frequency = n_args > 2 ? mp_obj_get_int(args[2]) : MP_FLIPPER_INFRARED_TX_DEFAULT_FREQUENCY;
+    mp_int_t duty_cycle = n_args > 3 ? mp_obj_get_float(args[3]) : MP_FLIPPER_INFRARED_TX_DEFAULT_DUTY_CYCLE;
 
     return mp_flipper_infrared_transmit(signal, length, flipperzero_infrared_tx_signal_provider, repeat, frequency, duty_cycle) ?
                mp_const_true :
