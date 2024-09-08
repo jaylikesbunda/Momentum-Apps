@@ -3,7 +3,6 @@
 Adding Python support to the Flipper Zero platform was only possible by rigorously sorting unnecessary language features.
 So here is a detailed list of all supported and unsupported Python language features.
 
-
 ## Supported
 
 The following features are enabled and supported by the interpreter:

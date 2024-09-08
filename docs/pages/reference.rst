@@ -2,6 +2,8 @@ Reference
 =========
 
 This page contains the API documentation of the ``flipperzero`` module and some built-in functions.
+The module is also available as a Python package on `PyPI <https://pypi.org/project/flipperzero/>`_.
+Install it in your local development environment if you need code completion support inside your IDE.
 
 Vibration
 ---------
