@@ -2,6 +2,7 @@
 
 * Added simple ADC support: read value and voltage.
 * Added simple PWM support: start, stop, check status.
+* Added infrared support: receive and transmit a signal.
 * Added success indicator to GPIO init function.
 * Reset used GPIO pins upon script termination.
 * Improved GPIO related functions to prevent user errors.
