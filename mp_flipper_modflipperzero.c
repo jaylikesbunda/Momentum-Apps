@@ -586,8 +586,6 @@ static mp_obj_t flipperzero_infrared_receive(size_t n_args, const mp_obj_t* args
         signal[i] = mp_obj_new_int(buffer[i]);
     }
 
-    free(buffer);
-
     return mp_obj_new_list(length, signal);
 }
 static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(flipperzero_infrared_receive_obj, 0, 1, flipperzero_infrared_receive);
