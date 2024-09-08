@@ -172,7 +172,7 @@ typedef long mp_off_t;
 #define MICROPY_PY_ARRAY_SLICE_ASSIGN (0)
 #define MICROPY_PY_ATTRTUPLE (0)
 #define MICROPY_PY_COLLECTIONS (0)
-#define MICROPY_PY_STRUCT (1)
+#define MICROPY_PY_STRUCT (0)
 #define MICROPY_PY_GC (0)
 #define MICROPY_PY_SYS (0)
 #define MICROPY_PY_SYS_MODULES (0)
