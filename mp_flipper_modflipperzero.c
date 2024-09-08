@@ -601,14 +601,21 @@ static mp_obj_t flipperzero_infrared_transmit(size_t n_args, const mp_obj_t* arg
     mp_obj_get_array(args[0], &length, &signal);
 
     mp_int_t repeat = n_args > 1 ? mp_obj_get_int(args[1]) : 1;
-    mp_int_t frequency = n_args > 2 ? mp_obj_get_int(args[2]) : MP_FLIPPER_INFRARED_TX_DEFAULT_FREQUENCY;
-    mp_float_t duty_cycle = n_args > 3 ? mp_obj_get_float(args[3]) : MP_FLIPPER_INFRARED_TX_DEFAULT_DUTY_CYCLE;
+    bool use_external_pin = n_args > 2 ? mp_obj_is_true(args[2]) ? false;
+    mp_int_t frequency = n_args > 3 ? mp_obj_get_int(args[3]) : MP_FLIPPER_INFRARED_TX_DEFAULT_FREQUENCY;
+    mp_float_t duty_cycle = n_args > 4 ? mp_obj_get_float(args[4]) : MP_FLIPPER_INFRARED_TX_DEFAULT_DUTY_CYCLE;
 
-    return mp_flipper_infrared_transmit(signal, length, flipperzero_infrared_tx_signal_provider, repeat, frequency, duty_cycle) ?
+    return mp_flipper_infrared_transmit(
+               signal, length, flipperzero_infrared_tx_signal_provider, repeat, frequency, duty_cycle, use_external_pin) ?
                mp_const_true :
                mp_const_false;
 }
-static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(flipperzero_infrared_transmit_obj, 1, 4, flipperzero_infrared_transmit);
+static MP_DEFINE_CONST_FUN_OBJ_VAR_BETWEEN(flipperzero_infrared_transmit_obj, 1, 5, flipperzero_infrared_transmit);
+
+static mp_obj_t flipperzero_infrared_is_busy() {
+    return mp_flipper_infrared_is_busy() ? mp_const_true : mp_const_false;
+}
+static MP_DEFINE_CONST_FUN_OBJ_0(flipperzero_infrared_is_busy_obj, flipperzero_infrared_is_busy);
 
 static const mp_rom_map_elem_t flipperzero_module_globals_table[] = {
     // light
@@ -838,6 +845,7 @@ for octave in range(9):
     // infrared - functions
     {MP_ROM_QSTR(MP_QSTR_infrared_receive), MP_ROM_PTR(&flipperzero_infrared_receive_obj)},
     {MP_ROM_QSTR(MP_QSTR_infrared_transmit), MP_ROM_PTR(&flipperzero_infrared_transmit_obj)},
+    {MP_ROM_QSTR(MP_QSTR_infrared_is_busy), MP_ROM_PTR(&flipperzero_infrared_is_busy_obj)},
 };
 static MP_DEFINE_CONST_DICT(flipperzero_module_globals, flipperzero_module_globals_table);
 

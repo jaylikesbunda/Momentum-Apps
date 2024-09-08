@@ -255,4 +255,6 @@ bool mp_flipper_infrared_transmit(
     mp_flipper_infrared_signal_tx_provider callback,
     uint32_t repeat,
     uint32_t frequency,
-    float duty);
+    float duty,
+    bool use_external_pin);
+bool mp_flipper_infrared_is_busy();
