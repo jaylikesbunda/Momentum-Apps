@@ -3,7 +3,8 @@ from typing import Callable
 GPIO_PIN_PC0: int
 '''
 Constant identifier for GPIO pin PC0.
-This pin can be used as ADC input.
+
+* This pin can be used as ADC input.
     
 .. versionadded:: 1.2.0
 '''
@@ -11,7 +12,8 @@ This pin can be used as ADC input.
 GPIO_PIN_PC1: int
 '''
 Constant identifier for GPIO pin PC1.
-This pin can be used as ADC input.
+
+* This pin can be used as ADC input.
     
 .. versionadded:: 1.2.0
 '''
@@ -19,7 +21,8 @@ This pin can be used as ADC input.
 GPIO_PIN_PC3: int
 '''
 Constant identifier for GPIO pin PC3.
-This pin can be used as ADC input.
+
+* This pin can be used as ADC input.
     
 .. versionadded:: 1.2.0
 '''
@@ -41,8 +44,9 @@ Constant identifier for GPIO pin PB3.
 GPIO_PIN_PA4: int
 '''
 Constant identifier for GPIO pin PA4.
-This pin can be used as ADC input.
-This pin can be used as PWM output.
+
+* This pin can be used as ADC input.
+* This pin can be used as PWM output.
     
 .. versionadded:: 1.2.0
 '''
@@ -50,7 +54,8 @@ This pin can be used as PWM output.
 GPIO_PIN_PA6: int
 '''
 Constant identifier for GPIO pin PA6.
-This pin can be used as ADC input.
+
+* This pin can be used as ADC input.
     
 .. versionadded:: 1.2.0
 '''
@@ -58,8 +63,11 @@ This pin can be used as ADC input.
 GPIO_PIN_PA7: int
 '''
 Constant identifier for GPIO pin PA7.
-This pin can be used as ADC input.
-This pin can be used as PWM output.
+
+* This pin can be used as ADC input.
+* This pin can be used as PWM output.
+* This pin can be used to transmit an infrared signal with an IR LED.
+
     
 .. versionadded:: 1.2.0
 '''

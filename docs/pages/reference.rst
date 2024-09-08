@@ -351,6 +351,18 @@ Functions
 .. autofunction:: flipperzero.pwm_stop
 .. autofunction:: flipperzero.pwm_is_running
 
+Infrared
+--------
+
+Send and receive infrared signals.
+
+Functions
+~~~~~~~~~
+
+.. autofunction:: flipperzero.infrared_receive
+.. autofunction:: flipperzero.infrared_transmit
+.. autofunction:: flipperzero.infrared_is_busy
+
 Built-In
 --------
 
