@@ -583,7 +583,11 @@ static mp_obj_t flipperzero_infrared_receive(size_t n_args, const mp_obj_t* args
     mp_obj_t* signal = length > 0 ? malloc(length * sizeof(mp_obj_t)) : NULL;
 
     for(uint16_t i = 0; i < length; i++) {
-        signal[i] = mp_obj_new_int(buffer[i]);
+        if(buffer[i]) {
+            signal[i] = mp_obj_new_int(buffer[i]);
+        } else {
+            signal[i] = mp_obj_new_int(-1);
+        }
     }
 
     return mp_obj_new_list(length, signal);
