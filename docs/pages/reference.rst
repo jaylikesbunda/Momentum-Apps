@@ -10,6 +10,8 @@ Control the vibration motor of your Flipper.
 
 .. autofunction:: flipperzero.vibro_set
 
+.. _reference-light:
+
 Light
 -----
 
@@ -30,6 +32,8 @@ Functions
 .. autofunction:: flipperzero.light_blink_start
 .. autofunction:: flipperzero.light_blink_set_color
 .. autofunction:: flipperzero.light_blink_stop
+
+.. _reference-speaker:
 
 Speaker
 -------
@@ -166,6 +170,8 @@ Functions
 .. autofunction:: flipperzero.speaker_set_volume
 .. autofunction:: flipperzero.speaker_stop
 
+.. _reference-input:
+
 Input
 -----
 
@@ -194,6 +200,8 @@ Functions
 ~~~~~~~~~
 
 .. autodecorator:: flipperzero.on_input
+
+.. _reference-canvas:
 
 Canvas
 ------
@@ -251,6 +259,8 @@ Display message dialogs on the display for user infos and confirm actions.
 .. autofunction:: flipperzero.dialog_message_set_button
 .. autofunction:: flipperzero.dialog_message_show
 
+.. _reference-gpio:
+
 GPIO
 ----
 
@@ -302,6 +312,8 @@ Functions
 .. autofunction:: flipperzero.gpio_get_pin
 .. autodecorator:: flipperzero.on_gpio
 
+.. _reference-adc:
+
 ADC
 ---
 
@@ -336,6 +348,8 @@ Functions
 .. autofunction:: flipperzero.adc_read_pin_value
 .. autofunction:: flipperzero.adc_read_pin_voltage
 
+.. _reference-pwm:
+
 PWM
 ---
 
@@ -351,10 +365,27 @@ Functions
 .. autofunction:: flipperzero.pwm_stop
 .. autofunction:: flipperzero.pwm_is_running
 
+.. _reference-infrared:
+
 Infrared
 --------
 
 Send and receive infrared signals.
+
+Signal Format
+~~~~~~~~~~~~~
+
+The format to represent infrared signals uses a simple list of integers.
+Each value represents the duration between two signal edges in microseconds.
+Since this is a digital signal, there are only two levels: `high` and `low`.
+The timing list always starts with a `high` level.
+
+.. literalinclude:: ./assets/pwm_signal.txt
+   :language: text
+
+.. hint::
+
+   This is equal to the raw signal format of the `IR file <https://developer.flipper.net/flipperzero/doxygen/infrared_file_format.html>`_ specification.
 
 Functions
 ~~~~~~~~~
