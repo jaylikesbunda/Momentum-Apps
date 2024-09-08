@@ -595,9 +595,9 @@ inline static uint32_t flipperzero_infrared_tx_signal_provider(mp_obj_t* signal,
 }
 
 static mp_obj_t flipperzero_infrared_transmit(size_t n_args, const mp_obj_t* args) {
-    size_t size = 0;
+    size_t length = 0;
     mp_obj_t* signal;
-    mp_obj_t size_obj = mp_obj_get_array(args[0], &size, &signal);
+    mp_obj_t size_obj = mp_obj_get_array(args[0], &length, &signal);
 
     mp_int_t repeat = n_args > 1 ? mp_obj_get_int(args[1]) : 1;
     mp_int_t frequency = n_args > 2 ? mp_obj_get_int(args[1]) : MP_FLIPPER_INFRARED_TX_DEFAULT_FREQUENCY;
