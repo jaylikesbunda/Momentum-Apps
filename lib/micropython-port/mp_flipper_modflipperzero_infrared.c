@@ -52,10 +52,10 @@ inline uint32_t* mp_flipper_infrared_receive(uint32_t timeout, size_t* length) {
 
     mp_flipper_infrared_rx_t* session = ctx->infrared_rx;
 
-    session->pointer = 0;
-    session->running = true;
-
     if(!furi_hal_infrared_is_busy()) {
+        session->pointer = 0;
+        session->running = true;
+
         furi_hal_infrared_async_rx_set_capture_isr_callback(on_rx, session);
         furi_hal_infrared_async_rx_set_timeout_isr_callback(on_rx_timeout, session);
 
@@ -68,9 +68,11 @@ inline uint32_t* mp_flipper_infrared_receive(uint32_t timeout, size_t* length) {
         }
 
         furi_hal_infrared_async_rx_stop();
-    }
 
-    *length = session->pointer;
+        *length = session->pointer;
+    } else {
+        *length = 0;
+    }
 
     return session->buffer;
 }
