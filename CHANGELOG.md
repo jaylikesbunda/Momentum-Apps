@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * Check the status.
 * Reset used GPIO pins upon script termination.
 * Improved GPIO related functions to prevent user errors.
+* Published [Python package on PyPI](https://pypi.org/project/flipperzero/) for code completion support.
 
 ### Changed
 

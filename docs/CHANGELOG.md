@@ -6,6 +6,7 @@
 * Added success indicator to GPIO init function.
 * Reset used GPIO pins upon script termination.
 * Improved GPIO related functions to prevent user errors.
+* Published Python package on PyPI for code completion support.
 
 ## 1.2
 
