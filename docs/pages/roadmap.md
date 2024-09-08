@@ -5,12 +5,13 @@ Here you can see what to expect from future releases.
 
 ## Next Release
 
-* Extended GPIO (ADC, PWM)
-* Maybe infrared
+* Improved `print` function.
+* UART
+* I2C
+* Maybe USB HID
 
 ## Planned
 
-* Infrared
 * I2C
 * UART
 * USB HID
