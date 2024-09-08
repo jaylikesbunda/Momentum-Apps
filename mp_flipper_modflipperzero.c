@@ -579,7 +579,7 @@ static mp_obj_t flipperzero_infrared_receive(size_t n_args, const mp_obj_t* args
     mp_int_t timeout = n_args > 0 ? mp_obj_get_int(args[0]) : MP_FLIPPER_INFRARED_RX_DEFAULT_TIMEOUT;
 
     size_t length = 0;
-    uint32_t* buffer = mp_flipper_infrared_receive(timeout, &length);
+    uint16_t* buffer = mp_flipper_infrared_receive(timeout, &length);
     mp_obj_t* signal = length > 0 ? malloc(length * sizeof(mp_obj_t)) : NULL;
 
     for(uint16_t i = 0; i < length; i++) {
