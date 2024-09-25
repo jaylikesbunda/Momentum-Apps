@@ -40,7 +40,7 @@ How to Start
 1. Install the application from the `Flipper Lab <https://lab.flipper.net/apps/upython>`_ on your Flipper device.
 2. Write some Python code or use one of the provided `examples <https://github.com/ofabel/mp-flipper/tree/master/examples>`_.
 3. Use the `qFlipper <https://flipperzero.one/update>`_ application to upload the code to your Flipper's SD card.
-4. Use the **uPython** application on your Flipper to execute your Python script.
+4. Start the **uPython** application on your Flipper to execute your Python script.
 
 Checkout the :doc:`reference </reference>` section for an in-depth API documentation.
 
