@@ -146,23 +146,33 @@ static void show_splash_screen() {
     furi_record_close(RECORD_GUI);
 }
 
-int32_t upython(void* p) {
-    UNUSED(p);
-
+int32_t upython(void* args) {
     do {
-        show_splash_screen();
+        if(args == NULL) {
+            show_splash_screen();
+        }
 
         if(action == ActionExit) {
             break;
         }
 
-        FuriString* file_path = furi_string_alloc_set_str(APP_ASSETS_PATH("upython"));
+        FuriString* file_path = NULL;
 
-        if(select_python_file(file_path)) {
+        if(args != NULL) {
+            file_path = furi_string_alloc_set_str(args);
+        } else {
+            file_path = furi_string_alloc_set_str(APP_ASSETS_PATH("upython"));
+        }
+
+        if(args != NULL || select_python_file(file_path)) {
             execute_file(file_path);
         }
 
         furi_string_free(file_path);
+
+        if(args != NULL) {
+            break;
+        }
 
         action = ActionNone;
     } while(true);

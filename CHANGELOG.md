@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.3.0]
+### Added
+
+* Allow passing the path to the script to execute as a CLI argument.
+
+## [1.3.0] - 2024-09-08
 
 ### Added
 
