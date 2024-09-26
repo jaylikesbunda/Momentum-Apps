@@ -10,5 +10,3 @@
 bool mp_flipper_repl_continue_with_input(const char* input);
 
 size_t mp_flipper_repl_autocomplete(const char* str, size_t len, const mp_print_t* print, const char** compl_str);
-
-void mp_flipper_repl_execute(void* cli, void* args, void* ctx);
