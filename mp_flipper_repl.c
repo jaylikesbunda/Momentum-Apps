@@ -1,9 +1,7 @@
-#pragma once
-
-#include <stddef.h>
-
 #include "py/repl.h"
 #include "py/mpprint.h"
+
+#include "mp_flipper_repl.h"
 
 inline bool mp_flipper_repl_continue_with_input(const char* input) {
     return mp_repl_continue_with_input(input);
