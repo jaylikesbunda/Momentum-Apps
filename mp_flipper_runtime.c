@@ -29,38 +29,6 @@ void mp_flipper_init(void* heap, size_t heap_size, size_t stack_size, void* stac
     mp_init();
 }
 
-void mp_flipper_exec_mpy_file(const char* file_path) {
-#ifdef MP_FLIPPER_MPY_SUPPORT
-#if MP_FLIPPER_IS_RUNTIME
-    nlr_buf_t nlr;
-
-    if(nlr_push(&nlr) == 0) {
-        do {
-            // check if file exists
-            if(mp_flipper_import_stat(file_path) == MP_FLIPPER_IMPORT_STAT_NO_EXIST) {
-                mp_raise_OSError_with_filename(MP_ENOENT, file_path);
-
-                break;
-            }
-
-            // Execute the given .mpy file
-            mp_module_context_t* context = m_new_obj(mp_module_context_t);
-            context->module.globals = mp_globals_get();
-            mp_compiled_module_t compiled_module;
-            compiled_module.context = context;
-            mp_raw_code_load_file(qstr_from_str(file_path), &compiled_module);
-            mp_obj_t f = mp_make_function_from_proto_fun(compiled_module.rc, context, MP_OBJ_NULL);
-            mp_call_function_0(f);
-        } while(false);
-        nlr_pop();
-    } else {
-        // Uncaught exception: print it out.
-        mp_obj_print_exception(&mp_plat_print, (mp_obj_t)nlr.ret_val);
-    }
-#endif
-#endif
-}
-
 void mp_flipper_deinit() {
     mp_deinit();
 
