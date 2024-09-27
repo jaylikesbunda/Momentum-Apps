@@ -32,3 +32,7 @@ mp_import_stat_t mp_import_stat(const char* path) {
 
     return MP_IMPORT_STAT_NO_EXIST;
 }
+
+size_t gc_get_max_new_split(void) {
+    return mp_flipper_gc_get_max_new_split();
+}
