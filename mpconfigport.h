@@ -147,6 +147,7 @@ typedef long mp_off_t;
 #define MICROPY_PY_MATH (0)
 
 #define MICROPY_PY_IO (0)
+#define MICROPY_PY_IO_BYTESIO (0)
 
 #define MICROPY_PY_JSON (0)
 #define MICROPY_PY_JSON_SEPARATORS (0)
@@ -156,3 +157,5 @@ typedef long mp_off_t;
 #define MICROPY_COMP_CONST_LITERAL (0)
 #define MICROPY_COMP_CONST (0)
 #define MICROPY_COMP_DOUBLE_TUPLE_ASSIGN (0)
+
+#define MICROPY_USE_INTERNAL_PRINTF (0)
