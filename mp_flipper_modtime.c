@@ -9,6 +9,10 @@ mp_obj_t mp_time_time_get(void) {
     return mp_obj_new_int_from_uint(timestamp);
 }
 
+uint64_t mp_hal_time_ns(void) {
+    return mp_flipper_get_timestamp() * 1000;
+}
+
 mp_uint_t mp_hal_ticks_ms(void) {
     return mp_flipper_get_tick_frequency() / 1000;
 }
