@@ -10,7 +10,6 @@
 // Type definitions for the specific machine
 typedef int32_t mp_int_t; // must be pointer size
 typedef uint32_t mp_uint_t; // must be pointer size
-typedef long mp_off_t;
 
 #define MICROPY_GC_SPLIT_HEAP (0)
 #define MICROPY_GC_SPLIT_HEAP_AUTO (0)
