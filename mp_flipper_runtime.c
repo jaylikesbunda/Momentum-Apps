@@ -24,7 +24,9 @@ void mp_flipper_init(void* heap, size_t heap_size, size_t stack_size, void* stac
     mp_stack_set_top(stack_top);
     mp_stack_set_limit(stack_size);
 
+#if MICROPY_ENABLE_GC
     gc_init(heap, (uint8_t*)heap + heap_size);
+#endif
 
     mp_init();
 }

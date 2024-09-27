@@ -12,8 +12,8 @@ typedef int32_t mp_int_t; // must be pointer size
 typedef uint32_t mp_uint_t; // must be pointer size
 typedef long mp_off_t;
 
-#define MICROPY_GC_SPLIT_HEAP (1)
-#define MICROPY_GC_SPLIT_HEAP_AUTO (1)
+#define MICROPY_GC_SPLIT_HEAP (0)
+#define MICROPY_GC_SPLIT_HEAP_AUTO (0)
 
 #define MICROPY_MPHALPORT_H "mp_flipper_halport.h"
 
@@ -30,7 +30,7 @@ typedef long mp_off_t;
 #define MICROPY_PERSISTENT_CODE_SAVE_FILE (0)
 
 #define MICROPY_ENABLE_COMPILER (1)
-#define MICROPY_ENABLE_GC (1)
+#define MICROPY_ENABLE_GC (0)
 #define MICROPY_PY_GC_COLLECT_RETVAL (0)
 #define MICROPY_ENABLE_PYSTACK (0)
 #define MICROPY_STACK_CHECK (0)
