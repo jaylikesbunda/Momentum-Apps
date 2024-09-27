@@ -30,7 +30,7 @@ This FAP version requires about 80 kB from SRAM to start (needed for the Python 
 Due to memory fragmentation it's possible, that the application crashes when you start it.
 If this happens, just try again (the crash doesn't harm your device).
 
-Sadly, REPL support is only available in fhe [firmware fork](https://github.com/ofabel/flipperzero-firmware/tree/ofa/micropython) version.
+~~Sadly, REPL support is only available in fhe [firmware fork](https://github.com/ofabel/flipperzero-firmware/tree/ofa/micropython) version.~~
 
 ## Setup and Build
 
