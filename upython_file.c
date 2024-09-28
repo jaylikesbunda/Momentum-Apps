@@ -8,7 +8,7 @@
 
 #include "upython.h"
 
-void mp_flipper_file_execute(FuriString* file) {
+void upython_file_execute(FuriString* file) {
     size_t stack;
 
     const char* path = furi_string_get_cstr(file);

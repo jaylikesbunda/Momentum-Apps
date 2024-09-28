@@ -243,7 +243,7 @@ inline static bool continue_with_input(mp_flipper_repl_context_t* context) {
     return true;
 }
 
-void mp_flipper_repl_execute(Cli* cli) {
+void upython_repl_execute(Cli* cli) {
     size_t stack;
 
     const size_t heap_size = memmgr_get_free_heap() * 0.1;

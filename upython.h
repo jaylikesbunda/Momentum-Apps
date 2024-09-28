@@ -11,20 +11,24 @@ typedef enum {
     ActionOpen,
     ActionRepl,
     ActionExec,
-    ActionExit
+    ActionExit,
+    ActionTerm
 } Action;
 
 extern Action action;
 extern FuriString* file_path;
 
-Action mp_flipper_splash_screen();
-bool mp_flipper_select_python_file(FuriString* file_path);
+void upython_reset_file_path();
 
-void mp_flipper_cli_register(void* args);
-void mp_flipper_cli_unregister(void* args);
+Action upython_splash_screen();
+bool upython_confirm_exit_action();
+bool upython_select_python_file(FuriString* file_path);
 
-void mp_flipper_cli(Cli* cli, FuriString* args, void* ctx);
+void upython_cli_register(void* args);
+void upython_cli_unregister(void* args);
 
-void mp_flipper_repl_execute(Cli* cli);
+void upython_cli(Cli* cli, FuriString* args, void* ctx);
 
-void mp_flipper_file_execute(FuriString* file);
+void upython_repl_execute(Cli* cli);
+
+void upython_file_execute(FuriString* file);

@@ -13,23 +13,6 @@
 #include "upython.h"
 #include "upython_icons.h"
 
-bool mp_flipper_select_python_file(FuriString* file_path) {
-    DialogsApp* dialogs = furi_record_open(RECORD_DIALOGS);
-
-    DialogsFileBrowserOptions browser_options;
-
-    dialog_file_browser_set_basic_options(&browser_options, "py", NULL);
-
-    browser_options.hide_ext = false;
-    browser_options.base_path = STORAGE_APP_DATA_PATH_PREFIX;
-
-    bool result = dialog_file_browser_show(dialogs, file_path, file_path, &browser_options);
-
-    furi_record_close(RECORD_DIALOGS);
-
-    return result;
-}
-
 static void on_input(const void* event, void* ctx) {
     UNUSED(ctx);
 
@@ -53,7 +36,41 @@ static void on_input(const void* event, void* ctx) {
     }
 }
 
-Action mp_flipper_splash_screen() {
+bool upython_confirm_exit_action() {
+    DialogsApp* dialogs = furi_record_open(RECORD_DIALOGS);
+
+    DialogMessage* message = dialog_message_alloc();
+
+    dialog_message_set_text(message, "Close uPython?", 64, 32, AlignCenter, AlignCenter);
+    dialog_message_set_buttons(message, "Yes", NULL, "No");
+
+    DialogMessageButton button = dialog_message_show(dialogs, message);
+
+    dialog_message_free(message);
+
+    furi_record_close(RECORD_DIALOGS);
+
+    return button == DialogMessageButtonLeft;
+}
+
+bool upython_select_python_file(FuriString* file_path) {
+    DialogsApp* dialogs = furi_record_open(RECORD_DIALOGS);
+
+    DialogsFileBrowserOptions browser_options;
+
+    dialog_file_browser_set_basic_options(&browser_options, "py", NULL);
+
+    browser_options.hide_ext = false;
+    browser_options.base_path = STORAGE_APP_DATA_PATH_PREFIX;
+
+    bool result = dialog_file_browser_show(dialogs, file_path, file_path, &browser_options);
+
+    furi_record_close(RECORD_DIALOGS);
+
+    return result;
+}
+
+Action upython_splash_screen() {
     if(action != ActionNone) {
         return action;
     }

@@ -1,11 +1,5 @@
-#include <malloc.h>
-
 #include <furi.h>
-#include <gui/gui.h>
-#include <dialogs/dialogs.h>
 #include <storage/storage.h>
-#include <cli/cli.h>
-#include <cli/cli_vcp.h>
 
 #include <mp_flipper_runtime.h>
 #include <mp_flipper_compiler.h>
@@ -15,41 +9,50 @@
 Action action = ActionNone;
 FuriString* file_path = NULL;
 
+void upython_reset_file_path() {
+    furi_string_set(file_path, APP_ASSETS_PATH("upython"));
+}
+
 int32_t upython(void* args) {
-    mp_flipper_cli_register(args);
+    upython_cli_register(args);
 
     do {
         switch(action) {
         case ActionNone:
-            action = mp_flipper_splash_screen();
+            action = upython_splash_screen();
 
             break;
         case ActionOpen:
-            if(mp_flipper_select_python_file(file_path)) {
+            if(upython_select_python_file(file_path)) {
                 action = ActionExec;
             } else {
-                furi_string_set(file_path, APP_ASSETS_PATH("upython"));
+                upython_reset_file_path();
+
+                action = ActionNone;
             }
 
             break;
         case ActionRepl:
             break;
         case ActionExec:
-            mp_flipper_file_execute(file_path);
+            upython_file_execute(file_path);
 
-            furi_string_set(file_path, APP_ASSETS_PATH("upython"));
+            upython_reset_file_path();
 
             action = ActionNone;
 
             break;
         case ActionExit:
+            action = upython_confirm_exit_action() ? ActionTerm : ActionNone;
+            break;
+        case ActionTerm:
             break;
         }
 
         furi_delay_ms(1);
-    } while(action != ActionExit);
+    } while(action != ActionTerm);
 
-    mp_flipper_cli_unregister(args);
+    upython_cli_unregister(args);
 
     return 0;
 }
