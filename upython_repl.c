@@ -73,7 +73,9 @@ static void mp_flipper_repl_context_free(mp_flipper_repl_context_t* context) {
 static void print_full_psx(mp_flipper_repl_context_t* context) {
     const char* psx = context->is_ps2 ? "... " : ">>> ";
 
-    printf("\33[2K\r%s%s", psx, furi_string_get_cstr(context->line));
+    printf("\e[2K\r%s%s", psx, furi_string_get_cstr(context->line));
+
+    fflush(stdout);
 
     for(size_t i = context->cursor; i < furi_string_size(context->line); i++) {
         printf("\e[D");
@@ -345,7 +347,7 @@ void upython_repl_execute(Cli* cli) {
                 }
 
                 // handle backspace
-                if(character == CliSymbolAsciiBackspace) {
+                if(character == CliSymbolAsciiBackspace || character == CliSymbolAsciiDel) {
                     handle_backspace(context);
 
                     continue;
