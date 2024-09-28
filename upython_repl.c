@@ -252,6 +252,8 @@ void upython_repl_execute(Cli* cli) {
 
     printf("MicroPython (%s, %s) on Flipper Zero\r\n", MICROPY_GIT_TAG, MICROPY_BUILD_DATE);
     printf("Quit: Ctrl+D | Heap: %zu bytes | Stack: %zu bytes\r\n", heap_size, stack_size);
+    printf("      To do a reboot, press Left+Back for 5 seconds.\r\n");
+    printf("Docs: https://ofabel.github.io/mp-flipper\r\n");
 
     mp_flipper_repl_context_t* context = mp_flipper_repl_context_alloc();
 
