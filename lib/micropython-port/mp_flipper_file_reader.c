@@ -22,14 +22,12 @@ inline void* mp_flipper_file_reader_context_alloc(const char* filename) {
 
     do {
         if(mp_flipper_try_resolve_filesystem_path(path) == MP_FLIPPER_IMPORT_STAT_NO_EXIST) {
-            furi_string_free(path);
-
             mp_flipper_raise_os_error_with_filename(MP_ENOENT, filename);
+
+            break;
         }
 
         if(!storage_file_open(file, furi_string_get_cstr(path), FSAM_READ, FSOM_OPEN_EXISTING)) {
-            storage_file_free(file);
-
             mp_flipper_raise_os_error_with_filename(MP_ENOENT, filename);
 
             break;

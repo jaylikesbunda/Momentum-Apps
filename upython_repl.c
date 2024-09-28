@@ -243,19 +243,8 @@ inline static bool continue_with_input(mp_flipper_repl_context_t* context) {
     return true;
 }
 
-void mp_flipper_repl_execute(Cli* cli, FuriString* args, void* ctx) {
-    if(action == ActionNone) {
-        action = ActionRepl;
-    } else {
-        printf("%s is busy - cannot start REPL!\n", TAG);
-
-        return;
-    }
-
+void mp_flipper_repl_execute(Cli* cli) {
     size_t stack;
-
-    UNUSED(args);
-    UNUSED(ctx);
 
     const size_t heap_size = memmgr_get_free_heap() * 0.1;
     const size_t stack_size = 2 * 1024;
@@ -406,22 +395,4 @@ void mp_flipper_repl_execute(Cli* cli, FuriString* args, void* ctx) {
 
     free(heap);
     free(buffer);
-
-    action = ActionNone;
-}
-
-void mp_flipper_repl_register() {
-    Cli* cli = furi_record_open(RECORD_CLI);
-
-    cli_add_command(cli, "py", CliCommandFlagParallelSafe, mp_flipper_repl_execute, NULL);
-
-    furi_record_close(RECORD_CLI);
-}
-
-void mp_flipper_repl_unregister() {
-    Cli* cli = furi_record_open(RECORD_CLI);
-
-    cli_delete_command(cli, "py");
-
-    furi_record_close(RECORD_CLI);
 }

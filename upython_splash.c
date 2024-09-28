@@ -13,8 +13,6 @@
 #include "upython.h"
 #include "upython_icons.h"
 
-Action action = ActionNone;
-
 bool mp_flipper_select_python_file(FuriString* file_path) {
     DialogsApp* dialogs = furi_record_open(RECORD_DIALOGS);
 

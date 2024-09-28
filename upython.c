@@ -12,42 +12,44 @@
 
 #include "upython.h"
 
+Action action = ActionNone;
+FuriString* file_path = NULL;
+
 int32_t upython(void* args) {
-    if(args == NULL) {
-        mp_flipper_repl_register();
-    } else {
-        action = ActionOpen;
-    }
+    mp_flipper_cli_register(args);
 
     do {
-        if(args == NULL && mp_flipper_splash_screen() == ActionExit) {
+        switch(action) {
+        case ActionNone:
+            action = mp_flipper_splash_screen();
+
             break;
-        }
-
-        if(action == ActionOpen) {
-            FuriString* file_path = NULL;
-
-            if(args != NULL) {
-                file_path = furi_string_alloc_set_str(args);
+        case ActionOpen:
+            if(mp_flipper_select_python_file(file_path)) {
+                action = ActionExec;
             } else {
-                file_path = furi_string_alloc_set_str(APP_ASSETS_PATH("upython"));
+                furi_string_set(file_path, APP_ASSETS_PATH("upython"));
             }
 
-            if(args != NULL || mp_flipper_select_python_file(file_path)) {
-                mp_flipper_file_execute(file_path);
-            }
+            break;
+        case ActionRepl:
+            break;
+        case ActionExec:
+            mp_flipper_file_execute(file_path);
 
-            furi_string_free(file_path);
-        }
+            furi_string_set(file_path, APP_ASSETS_PATH("upython"));
 
-        if(args != NULL) {
+            action = ActionNone;
+
+            break;
+        case ActionExit:
             break;
         }
-    } while(true);
 
-    if(args == NULL) {
-        mp_flipper_repl_unregister();
-    }
+        furi_delay_ms(1);
+    } while(action != ActionExit);
+
+    mp_flipper_cli_unregister(args);
 
     return 0;
 }

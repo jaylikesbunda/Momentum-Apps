@@ -9,12 +9,6 @@
 #include "upython.h"
 
 void mp_flipper_file_execute(FuriString* file) {
-    if(action == ActionOpen) {
-        action = ActionExec;
-    } else {
-        return;
-    }
-
     size_t stack;
 
     const char* path = furi_string_get_cstr(file);
@@ -32,7 +26,11 @@ void mp_flipper_file_execute(FuriString* file) {
 
         size_t index = furi_string_search_rchar(file_path, '/');
 
-        furi_check(index != FURI_STRING_FAILURE);
+        if(index == FURI_STRING_FAILURE) {
+            FURI_LOG_E(TAG, "invalid file path");
+
+            break;
+        }
 
         bool is_py_file = furi_string_end_with_str(file_path, ".py");
 
@@ -52,6 +50,4 @@ void mp_flipper_file_execute(FuriString* file) {
     } while(false);
 
     furi_string_free(file_path);
-
-    action = ActionNone;
 }

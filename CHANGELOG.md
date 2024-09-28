@@ -10,9 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 * Allow passing the path to the script to execute as a CLI argument.
-* Open a REPL from the CLI interface by using the `py` command.
+* Open a REPL from the CLI interface by using the `py` command:
   * The `py` command is only available while the app is running.
   * You cannot run a Python script and use the REPL at the same time.
+  * You can also start a Python script with the `py` command while the app is idle.
+
+### Changed
+
+* MicroPython update to version 1.23.0.
 
 ## [1.3.0] - 2024-09-08
 
