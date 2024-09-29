@@ -25,12 +25,15 @@ MicroPython on Flipper Zero
 A `MicroPython <https://github.com/micropython/micropython>`_ port for the famous `Flipper Zero <https://flipperzero.one/>`_.
 No need to learn C: Use your favourite programming language to create apps, games and scripts.
 
+.. image:: ./assets/repl.gif
+   :align: center
+
 Features
 --------
 
 * Support for basic language constructs like functions, classes, loops, ...
 * Access the Flipper's hardware: buttons, speaker, LED, GPIO, ADC, PWM ...
-* No custom firmware required, so no risk to brick your Flipper.
+* No custom firmware is required, so no risk to brick your Flipper.
 
 A complete list can be found in the :doc:`features </features>` section.
 

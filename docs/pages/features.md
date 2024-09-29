@@ -20,6 +20,7 @@ The following features are enabled and supported by the interpreter:
 * The `reversed` function.
 * The `min` and `max` function.
 * Module-level `__init__` imports.
+* Support for a [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop).
 
 ## Unsupported
 
@@ -28,7 +29,6 @@ The following features are disabled and _not_ supported by the interpreter:
 * Finaliser calls in the garbage collector (e.g. `__del__`).
 * The `__doc__` constants.
 * Source code line numbers in exceptions.
-* Support for a [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop).
 * The `cmath` module.
 * The `complex` data type.
 * Support for multiple inheritance.

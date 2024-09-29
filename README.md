@@ -4,25 +4,11 @@
 
 # MicroPython Flipper Zero
 
-The application is now available on the official [Flipper Lab](https://lab.flipper.net/apps/upython).
-For more information on how to programm your Flipper with Python, check out the [documentation](https://ofabel.github.io/mp-flipper/) on GitHub pages.
+Allows you to use the power of Python natively on your Flipper Zero.
+The application is available on the official [Flipper Lab](https://lab.flipper.net/apps/upython).
+For details on how to programm your Flipper with Python, check out the [documentation](https://ofabel.github.io/mp-flipper/) on GitHub pages.
 
-This branch contains the [FAP](https://developer.flipper.net/flipperzero/doxygen/apps_on_sd_card.html) version of the [MicroPython](https://micropython.org/) support for the famous [Flipper Zero](https://flipperzero.one/) gadget.
-The results of the preceding research phase is still available in the [poc](https://github.com/ofabel/mp-flipper/tree/poc) branch.
-The [lib](https://github.com/ofabel/mp-flipper/tree/lib) branch of this repository contains just the MicroPython library.
-The progress of further research on what can be achieved when moving functionality to the firmware can be found in the [fork of the original firmware](https://github.com/ofabel/flipperzero-firmware/tree/ofa/micropython).
-
-## Usage
-
-Just place your Python files somewhere on the SD card (e.g. by using the [qFlipper](https://flipperzero.one/downloads) app).
-
-The application just starts with an open file browser:
-
-![](./assets/file-browser.png)
-
-Here you can select any Python file to compile and execute from the SD card:
-
-![](./assets/tic-tac-toe.png)
+![MicroPython REPL](./docs/pages/assets/repl.gif)
 
 ## Disclaimer
 
@@ -30,11 +16,16 @@ This FAP version requires about 80 kB from SRAM to start (needed for the Python 
 Due to memory fragmentation it's possible, that the application crashes when you start it.
 If this happens, just try again (the crash doesn't harm your device).
 
-~~Sadly, REPL support is only available in fhe [firmware fork](https://github.com/ofabel/flipperzero-firmware/tree/ofa/micropython) version.~~
-
-## Setup and Build
+## Development
 
 This section is only relevant, if you want to build the FAP on your own.
+
+### Branches
+
+This branch contains the [FAP](https://developer.flipper.net/flipperzero/doxygen/apps_on_sd_card.html) version.
+The results of the preceding research phase is still available in the [poc](https://github.com/ofabel/mp-flipper/tree/poc) branch.
+The [lib](https://github.com/ofabel/mp-flipper/tree/lib) branch of this repository contains just the [MicroPython](https://github.com/micropython/micropython) library.
+The progress of further research on what can be achieved when moving functionality to the firmware can be found in the [fork of the original firmware](https://github.com/ofabel/flipperzero-firmware/tree/ofa/micropython).
 
 ### Requirements
 

@@ -1,3 +1,9 @@
+## 1.4
+
+* Added interactive Python shell (aka REPL) as a CLI command.
+* Allow passing a path to a script to execute as a CLI argument.
+* Updated MicroPython to version 1.23.0.
+
 ## 1.3
 
 * Added simple ADC support: read value and voltage.
