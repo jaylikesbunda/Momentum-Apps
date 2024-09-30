@@ -10,7 +10,6 @@ extern const mp_obj_type_t mp_flipper_fileio_type;
 
 typedef struct _mp_flipper_fileio_file_descriptor_t {
     mp_obj_base_t base;
-    void* name;
     void* handle;
     size_t offset;
     mp_flipper_file_access_mode_t access_mode;
@@ -18,14 +17,12 @@ typedef struct _mp_flipper_fileio_file_descriptor_t {
 } mp_flipper_fileio_file_descriptor_t;
 
 void* mp_flipper_file_new_file_descriptor(
-    void* name,
     void* handle,
     size_t offset,
     mp_flipper_file_access_mode_t access_mode,
     mp_flipper_file_open_mode_t open_mode) {
     mp_flipper_fileio_file_descriptor_t* fd = mp_obj_malloc(mp_flipper_fileio_file_descriptor_t, &mp_flipper_fileio_type);
 
-    fd->name = name;
     fd->handle = handle;
     fd->offset = offset;
     fd->access_mode = access_mode;
@@ -49,7 +46,7 @@ static mp_uint_t mp_flipper_fileio_write(mp_obj_t self, const void* buf, mp_uint
 static mp_obj_t mp_flipper_fileio_close(mp_obj_t self) {
     mp_flipper_fileio_file_descriptor_t* fd = (mp_flipper_fileio_file_descriptor_t*)self;
 
-    int errorno = mp_flipper_file_close(fd->handle, fd->name);
+    int errorno = mp_flipper_file_close(fd->handle);
 
     if(errorno != 0) {
         mp_raise_OSError(errorno);
@@ -58,16 +55,6 @@ static mp_obj_t mp_flipper_fileio_close(mp_obj_t self) {
     return mp_const_none;
 }
 static MP_DEFINE_CONST_FUN_OBJ_1(mp_flipper_fileio_close_obj, mp_flipper_fileio_close);
-
-static mp_obj_t mp_flipper_fileio_name(mp_obj_t self) {
-    mp_flipper_fileio_file_descriptor_t* fd = (mp_flipper_fileio_file_descriptor_t*)self;
-    size_t size = 0;
-
-    char* name = mp_flipper_file_name(fd->name, &size);
-
-    return mp_obj_new_str(name, size);
-}
-static MP_DEFINE_CONST_FUN_OBJ_1(mp_flipper_fileio_name_obj, mp_flipper_fileio_name);
 
 static mp_obj_t mp_flipper_fileio___exit___(size_t n_args, const mp_obj_t* args) {
     return mp_flipper_fileio_close(args[0]);
@@ -81,7 +68,6 @@ static MP_DEFINE_CONST_FUN_OBJ_1(mp_flipper_fileio_writable_obj, mp_flipper_file
 
 static const mp_map_elem_t mp_flipper_file_locals_dict_table[] = {
     {MP_OBJ_NEW_QSTR(MP_QSTR_close), MP_ROM_PTR(&mp_flipper_fileio_close_obj)},
-    {MP_OBJ_NEW_QSTR(MP_QSTR_name), MP_ROM_PTR(&mp_flipper_fileio_name_obj)},
     {MP_ROM_QSTR(MP_QSTR___enter__), MP_ROM_PTR(&mp_identity_obj)},
     {MP_ROM_QSTR(MP_QSTR___exit__), MP_ROM_PTR(&mp_flipper_fileio___exit___obj)},
     {MP_OBJ_NEW_QSTR(MP_QSTR_writable), MP_ROM_PTR(&mp_flipper_fileio_writable_obj)},

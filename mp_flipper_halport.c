@@ -46,7 +46,7 @@ mp_obj_t mp_builtin_open(size_t n_args, const mp_obj_t* args, mp_map_t* kwargs) 
 
     void* handle = mp_flipper_file_open(file_name, access_mode, open_mode, &offset);
 
-    return (mp_obj_t)mp_flipper_file_new_file_descriptor(file_name, handle, offset, access_mode, open_mode);
+    return (mp_obj_t)mp_flipper_file_new_file_descriptor(handle, offset, access_mode, open_mode);
 }
 
 MP_DEFINE_CONST_FUN_OBJ_KW(mp_builtin_open_obj, 1, mp_builtin_open);
