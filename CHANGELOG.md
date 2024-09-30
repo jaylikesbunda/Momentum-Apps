@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+* Support for basic file system operations using the `io` module:
+  * Read a file.
+  * Write a file.
+  * Append to a file.
+
 ## [1.4.0] - 2024-09-29
 
 ### Added
