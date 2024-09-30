@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdio.h>
+#include <stdbool.h>
 
 typedef enum {
     MP_FLIPPER_FILE_ACCESS_MODE_READ = (1 << 0),
