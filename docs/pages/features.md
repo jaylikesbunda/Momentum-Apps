@@ -13,6 +13,7 @@ The following features are enabled and supported by the interpreter:
 * Read and write files from and to the SD card.
 * The `time` module.
 * The `random` module.
+* The `io` module.
 * The `float` data type.
 * Support for [decorator](https://docs.python.org/3/glossary.html#term-decorator) functions.
 * The `setattr` function.
@@ -46,9 +47,7 @@ The following features are disabled and _not_ supported by the interpreter:
 * The `slice` object.
 * The `frozenset` object.
 * The `property` decorator.
-* The `range` function with `start`, `stop` and `step` attributes.
 * The `next` function with a second argument.
-* The `round` function with integers.
 * All special methods for user classes (e.g. `__imul__`).
 * The `enumerate` function.
 * The `compile` function.
