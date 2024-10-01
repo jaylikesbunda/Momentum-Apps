@@ -149,8 +149,8 @@ typedef long mp_off_t;
 
 #define MICROPY_PY_MATH (0)
 
-#define MICROPY_PY_IO (1)
-#define MICROPY_PY_IO_BYTESIO (1)
+#define MICROPY_PY_IO (0)
+#define MICROPY_PY_IO_BYTESIO (0)
 
 #define MICROPY_PY_JSON (0)
 #define MICROPY_PY_JSON_SEPARATORS (0)
