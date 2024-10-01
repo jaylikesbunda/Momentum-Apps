@@ -1,4 +1,6 @@
+#include "py/mperrno.h"
 #include "py/obj.h"
+#include "py/runtime.h"
 #include <stdio.h>
 
 #include "py/mphal.h"
@@ -12,6 +14,7 @@ mp_obj_t mp_builtin_open(size_t n_args, const mp_obj_t* args, mp_map_t* kwargs) 
 
     uint8_t access_mode = MP_FLIPPER_FILE_ACCESS_MODE_READ;
     uint8_t open_mode = MP_FLIPPER_FILE_OPEN_MODE_OPEN_EXIST;
+    bool is_text = true;
 
     if(n_args > 1) {
         size_t len;
@@ -33,19 +36,27 @@ mp_obj_t mp_builtin_open(size_t n_args, const mp_obj_t* args, mp_map_t* kwargs) 
                 continue;
             }
 
-            if(i == 1 && mode[i] == '+') {
+            if(i == 1 && mode[i] == 'b') {
+                is_text = false;
+
+                continue;
+            }
+
+            if(i >= 1 && mode[i] == '+') {
                 access_mode = MP_FLIPPER_FILE_ACCESS_MODE_READ | MP_FLIPPER_FILE_ACCESS_MODE_WRITE;
                 open_mode = MP_FLIPPER_FILE_OPEN_MODE_OPEN_APPEND;
 
                 continue;
             }
+
+            mp_raise_OSError(MP_EINVAL);
         }
     }
 
     size_t offset;
 
     void* handle = mp_flipper_file_open(file_name, access_mode, open_mode, &offset);
-    void* fd = mp_flipper_file_new_file_descriptor(handle, offset, access_mode, open_mode);
+    void* fd = mp_flipper_file_new_file_descriptor(handle, offset, access_mode, open_mode, is_text);
 
     return MP_OBJ_FROM_PTR(fd);
 }
