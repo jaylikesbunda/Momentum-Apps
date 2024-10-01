@@ -10,8 +10,8 @@
 mp_obj_t mp_builtin_open(size_t n_args, const mp_obj_t* args, mp_map_t* kwargs) {
     const char* file_name = mp_obj_str_get_str(args[0]);
 
-    mp_flipper_file_access_mode_t access_mode = MP_FLIPPER_FILE_ACCESS_MODE_READ;
-    mp_flipper_file_open_mode_t open_mode = MP_FLIPPER_FILE_OPEN_MODE_OPEN_EXIST;
+    uint8_t access_mode = MP_FLIPPER_FILE_ACCESS_MODE_READ;
+    uint8_t open_mode = MP_FLIPPER_FILE_OPEN_MODE_OPEN_EXIST;
 
     if(n_args > 1) {
         size_t len;
@@ -45,8 +45,9 @@ mp_obj_t mp_builtin_open(size_t n_args, const mp_obj_t* args, mp_map_t* kwargs) 
     size_t offset;
 
     void* handle = mp_flipper_file_open(file_name, access_mode, open_mode, &offset);
+    void* fd = mp_flipper_file_new_file_descriptor(handle, offset, access_mode, open_mode);
 
-    return (mp_obj_t)mp_flipper_file_new_file_descriptor(handle, offset, access_mode, open_mode);
+    return MP_OBJ_FROM_PTR(fd);
 }
 
 MP_DEFINE_CONST_FUN_OBJ_KW(mp_builtin_open_obj, 1, mp_builtin_open);

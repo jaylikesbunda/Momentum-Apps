@@ -1,32 +1,25 @@
 #pragma once
 
 #include <stdio.h>
+#include <stdint.h>
 #include <stdbool.h>
 
-typedef enum {
-    MP_FLIPPER_FILE_ACCESS_MODE_READ = (1 << 0),
-    MP_FLIPPER_FILE_ACCESS_MODE_WRITE = (1 << 1),
-} mp_flipper_file_access_mode_t;
+extern uint8_t MP_FLIPPER_FILE_ACCESS_MODE_READ;
+extern uint8_t MP_FLIPPER_FILE_ACCESS_MODE_WRITE;
 
-typedef enum {
-    MP_FLIPPER_FILE_OPEN_MODE_OPEN_EXIST = (1 << 0),
-    MP_FLIPPER_FILE_OPEN_MODE_OPEN_ALWAYS = (1 << 1),
-    MP_FLIPPER_FILE_OPEN_MODE_OPEN_APPEND = (1 << 2),
-    MP_FLIPPER_FILE_OPEN_MODE_CREATE_NEW = (1 << 3),
-    MP_FLIPPER_FILE_OPEN_MODE_CREATE_ALWAYS = (1 << 4),
-} mp_flipper_file_open_mode_t;
+extern uint8_t MP_FLIPPER_FILE_OPEN_MODE_OPEN_EXIST;
+extern uint8_t MP_FLIPPER_FILE_OPEN_MODE_OPEN_ALWAYS;
+extern uint8_t MP_FLIPPER_FILE_OPEN_MODE_OPEN_APPEND;
+extern uint8_t MP_FLIPPER_FILE_OPEN_MODE_CREATE_NEW;
+extern uint8_t MP_FLIPPER_FILE_OPEN_MODE_CREATE_ALWAYS;
 
-void* mp_flipper_file_open(
-    const char* name,
-    mp_flipper_file_access_mode_t access_mode,
-    mp_flipper_file_open_mode_t open_mode,
-    size_t* offset);
-void* mp_flipper_file_new_file_descriptor(
-    void* handle,
-    size_t offset,
-    mp_flipper_file_access_mode_t access_mode,
-    mp_flipper_file_open_mode_t open_mode);
-int mp_flipper_file_close(void* handle);
-bool mp_flipper_file_writable(void* handle);
+void* mp_flipper_file_open(const char* name, uint8_t access_mode, uint8_t open_mode, size_t* offset);
+void* mp_flipper_file_new_file_descriptor(void* handle, size_t offset, uint8_t access_mode, uint8_t open_mode, bool is_text);
+uint8_t mp_flipper_file_close(void* handle);
+size_t mp_flipper_file_seek(void* handle, uint32_t offset);
+size_t mp_flipper_file_tell(void* handle);
+size_t mp_flipper_file_size(void* handle);
+bool mp_flipper_file_sync(void* handle);
+bool mp_flipper_file_eof(void* handle);
 size_t mp_flipper_file_read(void* handle, void* buffer, size_t size, int* errcode);
 size_t mp_flipper_file_write(void* handle, const void* buffer, size_t size, int* errcode);
