@@ -7,11 +7,16 @@
 #include "mp_flipper_context.h"
 #include "mp_flipper_file_helper.h"
 
-inline void* mp_flipper_file_open(
-    const char* name,
-    mp_flipper_file_access_mode_t access_mode,
-    mp_flipper_file_open_mode_t open_mode,
-    size_t* offset) {
+uint8_t MP_FLIPPER_FILE_ACCESS_MODE_READ = FSAM_READ;
+uint8_t MP_FLIPPER_FILE_ACCESS_MODE_WRITE = FSAM_WRITE;
+
+uint8_t MP_FLIPPER_FILE_OPEN_MODE_OPEN_EXIST = FSOM_OPEN_EXISTING;
+uint8_t MP_FLIPPER_FILE_OPEN_MODE_OPEN_ALWAYS = FSOM_OPEN_ALWAYS;
+uint8_t MP_FLIPPER_FILE_OPEN_MODE_OPEN_APPEND = FSOM_OPEN_APPEND;
+uint8_t MP_FLIPPER_FILE_OPEN_MODE_CREATE_NEW = FSOM_CREATE_NEW;
+uint8_t MP_FLIPPER_FILE_OPEN_MODE_CREATE_ALWAYS = FSOM_CREATE_ALWAYS;
+
+inline void* mp_flipper_file_open(const char* name, uint8_t access_mode, uint8_t open_mode) {
     mp_flipper_context_t* ctx = mp_flipper_context;
 
     File* file = storage_file_alloc(ctx->storage);
@@ -36,7 +41,7 @@ inline void* mp_flipper_file_open(
     return file;
 }
 
-inline int mp_flipper_file_close(void* handle) {
+inline bool mp_flipper_file_close(void* handle) {
     mp_flipper_context_t* ctx = mp_flipper_context;
 
     File* file = handle;
@@ -49,15 +54,27 @@ inline int mp_flipper_file_close(void* handle) {
 
     storage_file_free(file);
 
-    return 0;
+    return true;
 }
 
-inline bool mp_flipper_file_writable(void* handle) {
-    File* file = handle;
+inline size_t mp_flipper_file_seek(void* handle, uint32_t offset) {
+    return storage_file_seek(handle, offset, true);
+}
 
-    // TODO
+inline size_t mp_flipper_file_tell(void* handle) {
+    return storage_file_tell(handle);
+}
 
-    return true;
+inline size_t mp_flipper_file_size(void* handle) {
+    return storage_file_size(handle);
+}
+
+inline bool mp_flipper_file_sync(void* handle) {
+    return storage_file_sync(handle);
+}
+
+inline bool mp_flipper_file_eof(void* handle) {
+    return storage_file_eof(handle);
 }
 
 inline size_t mp_flipper_file_read(void* handle, void* buffer, size_t size, int* errcode) {
