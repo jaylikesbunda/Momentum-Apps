@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <string.h>
 
 #include "py/obj.h"
 #include "py/stream.h"
@@ -15,17 +16,17 @@ extern const mp_obj_type_t mp_flipper_textio_type;
 typedef struct _mp_flipper_fileio_file_descriptor_t {
     mp_obj_base_t base;
     void* handle;
-    size_t offset;
+    mp_obj_t name;
     uint8_t access_mode;
     uint8_t open_mode;
 } mp_flipper_fileio_file_descriptor_t;
 
-void* mp_flipper_file_new_file_descriptor(void* handle, size_t offset, uint8_t access_mode, uint8_t open_mode, bool is_text) {
+void* mp_flipper_file_new_file_descriptor(void* handle, const char* name, uint8_t access_mode, uint8_t open_mode, bool is_text) {
     mp_flipper_fileio_file_descriptor_t* fd = mp_obj_malloc_with_finaliser(
         mp_flipper_fileio_file_descriptor_t, is_text ? &mp_flipper_textio_type : &mp_flipper_fileio_type);
 
     fd->handle = handle;
-    fd->offset = offset;
+    fd->name = mp_obj_new_str(name, strlen(name));
     fd->access_mode = access_mode;
     fd->open_mode = open_mode;
 
@@ -105,6 +106,13 @@ static mp_uint_t mp_flipper_fileio_ioctl(mp_obj_t self, mp_uint_t request, uintp
     return MP_STREAM_ERROR;
 }
 
+static mp_obj_t mp_flipper_fileio_name(mp_obj_t self) {
+    mp_flipper_fileio_file_descriptor_t* fd = MP_OBJ_TO_PTR(self);
+
+    return fd->name;
+}
+static MP_DEFINE_CONST_FUN_OBJ_1(mp_flipper_fileio_name_obj, mp_flipper_fileio_name);
+
 static mp_obj_t mp_flipper_fileio_writable(mp_obj_t self) {
     mp_flipper_fileio_file_descriptor_t* fd = MP_OBJ_TO_PTR(self);
 
@@ -113,6 +121,7 @@ static mp_obj_t mp_flipper_fileio_writable(mp_obj_t self) {
 static MP_DEFINE_CONST_FUN_OBJ_1(mp_flipper_fileio_writable_obj, mp_flipper_fileio_writable);
 
 static const mp_map_elem_t mp_flipper_file_locals_dict_table[] = {
+    {MP_OBJ_NEW_QSTR(MP_QSTR_name), MP_ROM_PTR(&mp_flipper_fileio_name_obj)},
     {MP_ROM_QSTR(MP_QSTR_read), MP_ROM_PTR(&mp_stream_read_obj)},
     {MP_ROM_QSTR(MP_QSTR_readinto), MP_ROM_PTR(&mp_stream_readinto_obj)},
     {MP_ROM_QSTR(MP_QSTR_readline), MP_ROM_PTR(&mp_stream_unbuffered_readline_obj)},

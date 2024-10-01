@@ -13,9 +13,9 @@ extern uint8_t MP_FLIPPER_FILE_OPEN_MODE_OPEN_APPEND;
 extern uint8_t MP_FLIPPER_FILE_OPEN_MODE_CREATE_NEW;
 extern uint8_t MP_FLIPPER_FILE_OPEN_MODE_CREATE_ALWAYS;
 
-void* mp_flipper_file_open(const char* name, uint8_t access_mode, uint8_t open_mode, size_t* offset);
-void* mp_flipper_file_new_file_descriptor(void* handle, size_t offset, uint8_t access_mode, uint8_t open_mode, bool is_text);
-uint8_t mp_flipper_file_close(void* handle);
+void* mp_flipper_file_open(const char* name, uint8_t access_mode, uint8_t open_mode);
+void* mp_flipper_file_new_file_descriptor(void* handle, const char* name, uint8_t access_mode, uint8_t open_mode, bool is_text);
+bool mp_flipper_file_close(void* handle);
 size_t mp_flipper_file_seek(void* handle, uint32_t offset);
 size_t mp_flipper_file_tell(void* handle);
 size_t mp_flipper_file_size(void* handle);
