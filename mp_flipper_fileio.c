@@ -139,7 +139,7 @@ static const mp_stream_p_t mp_flipper_fileio_stream_p = {
 MP_DEFINE_CONST_OBJ_TYPE(
     mp_flipper_fileio_type,
     MP_QSTR_FileIO,
-    MP_TYPE_FLAG_ITER_IS_STREAM,
+    MP_TYPE_FLAG_NONE,
     protocol,
     &mp_flipper_fileio_stream_p,
     locals_dict,
@@ -155,7 +155,7 @@ static const mp_stream_p_t mp_flipper_textio_stream_p = {
 MP_DEFINE_CONST_OBJ_TYPE(
     mp_flipper_textio_type,
     MP_QSTR_TextIO,
-    MP_TYPE_FLAG_ITER_IS_STREAM,
+    MP_TYPE_FLAG_NONE,
     protocol,
     &mp_flipper_textio_stream_p,
     locals_dict,
