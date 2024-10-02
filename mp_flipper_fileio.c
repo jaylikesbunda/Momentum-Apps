@@ -36,17 +36,35 @@ void* mp_flipper_file_new_file_descriptor(void* handle, const char* name, uint8_
 static mp_uint_t mp_flipper_fileio_read(mp_obj_t self, void* buf, mp_uint_t size, int* errcode) {
     mp_flipper_fileio_file_descriptor_t* fd = MP_OBJ_TO_PTR(self);
 
+    if(fd->handle != NULL) {
+        *errcode = MP_EIO;
+
+        return MP_STREAM_ERROR;
+    }
+
     return mp_flipper_file_read(fd->handle, buf, size, errcode);
 }
 
 static mp_uint_t mp_flipper_fileio_write(mp_obj_t self, const void* buf, mp_uint_t size, int* errcode) {
     mp_flipper_fileio_file_descriptor_t* fd = MP_OBJ_TO_PTR(self);
 
+    if(fd->handle != NULL) {
+        *errcode = MP_EIO;
+
+        return MP_STREAM_ERROR;
+    }
+
     return mp_flipper_file_write(fd->handle, buf, size, errcode);
 }
 
 static mp_uint_t mp_flipper_fileio_ioctl(mp_obj_t self, mp_uint_t request, uintptr_t arg, int* errcode) {
     mp_flipper_fileio_file_descriptor_t* fd = MP_OBJ_TO_PTR(self);
+
+    if(fd->handle != NULL) {
+        *errcode = MP_EIO;
+
+        return MP_STREAM_ERROR;
+    }
 
     if(request == MP_STREAM_SEEK) {
         struct mp_stream_seek_t* seek = (struct mp_stream_seek_t*)(uintptr_t)arg;
@@ -90,13 +108,15 @@ static mp_uint_t mp_flipper_fileio_ioctl(mp_obj_t self, mp_uint_t request, uintp
     }
 
     if(request == MP_STREAM_CLOSE) {
-        if(fd->handle != NULL) {
-            if(!mp_flipper_file_close(fd->handle)) {
-                *errcode = MP_EIO;
+        if(!mp_flipper_file_close(fd->handle)) {
+            *errcode = MP_EIO;
 
-                return MP_STREAM_ERROR;
-            }
+            fd->handle = NULL;
+
+            return MP_STREAM_ERROR;
         }
+
+        fd->handle = NULL;
 
         return 0;
     }
@@ -229,6 +249,10 @@ mp_obj_t mp_flipper_builtin_open(size_t n_args, const mp_obj_t* args, mp_map_t* 
 
     void* handle = mp_flipper_file_open(file_name, access_mode, open_mode);
     void* fd = mp_flipper_file_new_file_descriptor(handle, file_name, access_mode, open_mode, is_text);
+
+    if(handle == NULL) {
+        mp_raise_OSError(MP_ENOENT);
+    }
 
     return MP_OBJ_FROM_PTR(fd);
 }
