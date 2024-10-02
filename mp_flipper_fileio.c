@@ -61,9 +61,7 @@ static mp_uint_t mp_flipper_fileio_ioctl(mp_obj_t self, mp_uint_t request, uintp
     mp_flipper_fileio_file_descriptor_t* fd = MP_OBJ_TO_PTR(self);
 
     if(fd->handle == NULL) {
-        *errcode = MP_EIO;
-
-        return MP_STREAM_ERROR;
+        return 0;
     }
 
     if(request == MP_STREAM_SEEK) {
