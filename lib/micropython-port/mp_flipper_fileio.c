@@ -24,37 +24,32 @@ inline void* mp_flipper_file_open(const char* name, uint8_t access_mode, uint8_t
 
     do {
         if(mp_flipper_try_resolve_filesystem_path(path) == MP_FLIPPER_IMPORT_STAT_NO_EXIST) {
-            mp_flipper_raise_os_error_with_filename(MP_ENOENT, name);
-
             break;
         }
 
         if(!storage_file_open(file, furi_string_get_cstr(path), access_mode, open_mode)) {
-            mp_flipper_raise_os_error_with_filename(MP_ENOENT, name);
-
             break;
         }
     } while(false);
 
-    // TODO close open files upon application exit
+    if(!storage_file_is_open(file)) {
+        storage_file_close(file);
+        storage_file_free(file);
+
+        return NULL;
+    }
 
     return file;
 }
 
 inline bool mp_flipper_file_close(void* handle) {
-    mp_flipper_context_t* ctx = mp_flipper_context;
-
     File* file = handle;
 
-    if(storage_file_is_open(file) && storage_file_close(file)) {
-        // NOP
-    } else {
-        // TODO handle error
-    }
+    bool success = storage_file_is_open(file) && storage_file_close(file);
 
     storage_file_free(file);
 
-    return true;
+    return success;
 }
 
 inline size_t mp_flipper_file_seek(void* handle, uint32_t offset) {
