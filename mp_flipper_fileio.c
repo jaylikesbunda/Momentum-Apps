@@ -10,8 +10,8 @@
 
 #include "mp_flipper_fileio.h"
 
-extern const mp_obj_type_t mp_flipper_fileio_type;
-extern const mp_obj_type_t mp_flipper_textio_type;
+extern const mp_obj_type_t mp_flipper_binary_fileio_type;
+extern const mp_obj_type_t mp_flipper_text_fileio_type;
 
 typedef struct _mp_flipper_fileio_file_descriptor_t {
     mp_obj_base_t base;
@@ -23,7 +23,7 @@ typedef struct _mp_flipper_fileio_file_descriptor_t {
 
 void* mp_flipper_file_new_file_descriptor(void* handle, const char* name, uint8_t access_mode, uint8_t open_mode, bool is_text) {
     mp_flipper_fileio_file_descriptor_t* fd = mp_obj_malloc_with_finaliser(
-        mp_flipper_fileio_file_descriptor_t, is_text ? &mp_flipper_textio_type : &mp_flipper_fileio_type);
+        mp_flipper_fileio_file_descriptor_t, is_text ? &mp_flipper_text_fileio_type : &mp_flipper_binary_fileio_type);
 
     fd->handle = handle;
     fd->name = mp_obj_new_str(name, strlen(name));
@@ -145,7 +145,7 @@ static const mp_map_elem_t mp_flipper_file_locals_dict_table[] = {
 };
 static MP_DEFINE_CONST_DICT(mp_flipper_file_locals_dict, mp_flipper_file_locals_dict_table);
 
-static const mp_stream_p_t mp_flipper_fileio_stream_p = {
+static const mp_stream_p_t mp_flipper_binary_fileio_stream_p = {
     .read = mp_flipper_fileio_read,
     .write = mp_flipper_fileio_write,
     .ioctl = mp_flipper_fileio_ioctl,
@@ -153,15 +153,15 @@ static const mp_stream_p_t mp_flipper_fileio_stream_p = {
 };
 
 MP_DEFINE_CONST_OBJ_TYPE(
-    mp_flipper_fileio_type,
-    MP_QSTR_FileIO,
-    MP_TYPE_FLAG_NONE,
+    mp_flipper_binary_fileio_type,
+    MP_QSTR_BinaryFileIO,
+    MP_TYPE_FLAG_ITER_IS_STREAM,
     protocol,
-    &mp_flipper_fileio_stream_p,
+    &mp_flipper_binary_fileio_stream_p,
     locals_dict,
     &mp_flipper_file_locals_dict);
 
-static const mp_stream_p_t mp_flipper_textio_stream_p = {
+static const mp_stream_p_t mp_flipper_text_fileio_stream_p = {
     .read = mp_flipper_fileio_read,
     .write = mp_flipper_fileio_write,
     .ioctl = mp_flipper_fileio_ioctl,
@@ -169,11 +169,11 @@ static const mp_stream_p_t mp_flipper_textio_stream_p = {
 };
 
 MP_DEFINE_CONST_OBJ_TYPE(
-    mp_flipper_textio_type,
-    MP_QSTR_TextIO,
-    MP_TYPE_FLAG_NONE,
+    mp_flipper_text_fileio_type,
+    MP_QSTR_TextFileIO,
+    MP_TYPE_FLAG_ITER_IS_STREAM,
     protocol,
-    &mp_flipper_textio_stream_p,
+    &mp_flipper_text_fileio_stream_p,
     locals_dict,
     &mp_flipper_file_locals_dict);
 
@@ -237,8 +237,8 @@ MP_DEFINE_CONST_FUN_OBJ_KW(mp_flipper_builtin_open_obj, 1, mp_flipper_builtin_op
 static const mp_rom_map_elem_t mp_module_io_globals_table[] = {
     {MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_io)},
     {MP_ROM_QSTR(MP_QSTR_open), MP_ROM_PTR(&mp_flipper_builtin_open_obj)},
-    {MP_ROM_QSTR(MP_QSTR_FileIO), MP_ROM_PTR(&mp_flipper_fileio_type)},
-    {MP_ROM_QSTR(MP_QSTR_TextIO), MP_ROM_PTR(&mp_flipper_textio_type)},
+    {MP_ROM_QSTR(MP_QSTR_BinaryFileIO), MP_ROM_PTR(&mp_flipper_binary_fileio_type)},
+    {MP_ROM_QSTR(MP_QSTR_TextFileIO), MP_ROM_PTR(&mp_flipper_text_fileio_type)},
 };
 
 static MP_DEFINE_CONST_DICT(mp_module_io_globals, mp_module_io_globals_table);
