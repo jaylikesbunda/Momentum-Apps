@@ -60,7 +60,7 @@ static mp_uint_t mp_flipper_fileio_write(mp_obj_t self, const void* buf, mp_uint
 static mp_uint_t mp_flipper_fileio_ioctl(mp_obj_t self, mp_uint_t request, uintptr_t arg, int* errcode) {
     mp_flipper_fileio_file_descriptor_t* fd = MP_OBJ_TO_PTR(self);
 
-    if(fd->handle != NULL) {
+    if(fd->handle == NULL) {
         *errcode = MP_EIO;
 
         return MP_STREAM_ERROR;
