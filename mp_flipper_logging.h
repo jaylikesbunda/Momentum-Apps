@@ -11,4 +11,4 @@
 
 uint8_t mp_flipper_log_get_level();
 void mp_flipper_log_set_level(uint8_t level);
-void mp_flipper_log(uint8_t level, const char* message);
+void mp_flipper_log(uint8_t raw_level, const char* message);
