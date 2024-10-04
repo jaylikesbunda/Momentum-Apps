@@ -3,6 +3,7 @@
 
 #include <mp_flipper_runtime.h>
 #include <mp_flipper_modflipperzero.h>
+#include <mp_flipper_logging.h>
 
 #include "mp_flipper_context.h"
 
@@ -111,6 +112,9 @@ void* mp_flipper_context_alloc() {
     ctx->infrared_tx->signal = NULL;
     ctx->infrared_tx->size = 0;
     ctx->infrared_tx->level = false;
+
+    // log level
+    ctx->log_level = MP_FLIPPER_LOG_LEVEL_INFO;
 
     return ctx;
 }

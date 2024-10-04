@@ -11,7 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Support for basic file system operations using the `io` module:
   * Read and write files.
-  * Open in text or binary mode. 
+  * Open in text or binary mode.
+* Simple `logging` module:
+  * Log levels according to the Flipper Zero API: trace, debug, info, warn, error.
+  * Only the root logger is supported, so no `getLogger` function.
+  * Logs directly to the log output, so no output in the REPL.
 
 ## [1.4.0] - 2024-09-29
 

@@ -8,13 +8,17 @@ So here is a detailed list of all supported and unsupported Python language feat
 The following features are enabled and supported by the interpreter:
 
 * Garbage collector is enabled.
+* Finaliser calls in the garbage collector (e.g. `__del__`).
 * The `__file__` constant.
 * Import of external files from the SD card.
 * Read and write files from and to the SD card.
 * The `time` module.
 * The `random` module.
+* The `logging` module.
 * The `io` module.
 * The `float` data type.
+* The `%` string formatting operator.
+* The `.format` string formatting function.
 * Support for [decorator](https://docs.python.org/3/glossary.html#term-decorator) functions.
 * The `setattr` function.
 * The `filter` function.
@@ -27,7 +31,6 @@ The following features are enabled and supported by the interpreter:
 
 The following features are disabled and _not_ supported by the interpreter:
 
-* Finaliser calls in the garbage collector (e.g. `__del__`).
 * The `__doc__` constants.
 * Source code line numbers in exceptions.
 * The `cmath` module.
@@ -41,7 +44,6 @@ The following features are disabled and _not_ supported by the interpreter:
 * Support for `bytes.hex` and `bytes.fromhex`.
 * Support for unicode characters.
 * The string functions `.center`, `.count`, `.partition`, `.rpartition` and `.splitlines`.
-* The `%` string formatting operator (use `.format` instead).
 * The `bytearray` data type.
 * The `memoryview` data type.
 * The `slice` object.
