@@ -4,6 +4,10 @@ extern const struct _mp_obj_module_t mp_module_io;
 #undef MODULE_DEF_IO
 #define MODULE_DEF_IO { MP_ROM_QSTR(MP_QSTR_io), MP_ROM_PTR(&mp_module_io) },
 
+extern const struct _mp_obj_module_t mp_module_logging;
+#undef MODULE_DEF_LOGGING
+#define MODULE_DEF_LOGGING { MP_ROM_QSTR(MP_QSTR_logging), MP_ROM_PTR(&mp_module_logging) },
+
 extern const struct _mp_obj_module_t mp_module_random;
 #undef MODULE_DEF_RANDOM
 #define MODULE_DEF_RANDOM { MP_ROM_QSTR(MP_QSTR_random), MP_ROM_PTR(&mp_module_random) },
@@ -33,6 +37,7 @@ extern const struct _mp_obj_module_t flipperzero_module;
 
 #define MICROPY_REGISTERED_EXTENSIBLE_MODULES \
     MODULE_DEF_IO \
+    MODULE_DEF_LOGGING \
     MODULE_DEF_RANDOM \
     MODULE_DEF_TIME \
 // MICROPY_REGISTERED_EXTENSIBLE_MODULES
