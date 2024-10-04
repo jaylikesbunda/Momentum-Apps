@@ -18,9 +18,10 @@ static mp_obj_t mp_flipper_logger_debug(size_t n_args, const mp_obj_t* args) {
 
     mp_flipper_logger_t* logger = MP_OBJ_TO_PTR(args[0]);
 
-    const char* message = mp_obj_str_get_str(args[1]);
+    mp_obj_t values = mp_obj_new_tuple(n_args - 2, &args[2]);
+    mp_obj_t message = mp_obj_str_binary_op(MP_BINARY_OP_MODULO, args[1], values);
 
-    mp_flipper_log_debug(logger->name, message, &args[2], n_args - 2);
+    mp_flipper_log_debug(logger->name, mp_obj_str_get_str(message));
 
     return mp_const_none;
 }
