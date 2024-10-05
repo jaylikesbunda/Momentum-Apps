@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * Log levels according to the Flipper Zero API: trace, debug, info, warn, error.
   * Only the root logger is supported, so no `getLogger` function.
   * Logs directly to the log output, so no output in the REPL.
+* UART support for the `flipperzero` module.
 
 ### Fixed
 

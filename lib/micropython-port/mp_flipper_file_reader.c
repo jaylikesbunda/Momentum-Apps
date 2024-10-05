@@ -3,6 +3,8 @@
 #include <furi.h>
 #include <storage/storage.h>
 
+#include <py/mperrno.h>
+
 #include <mp_flipper_runtime.h>
 #include <mp_flipper_file_reader.h>
 

@@ -4,6 +4,8 @@
 #include <furi.h>
 #include <storage/storage.h>
 
+#include <py/mperrno.h>
+
 #include "mp_flipper_context.h"
 
 mp_flipper_import_stat_t mp_flipper_try_resolve_filesystem_path(FuriString* path) {
