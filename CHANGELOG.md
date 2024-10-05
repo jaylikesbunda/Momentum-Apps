@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * Only the root logger is supported, so no `getLogger` function.
   * Logs directly to the log output, so no output in the REPL.
 
+### Fixed
+
+* [#3](https://github.com/ofabel/mp-flipper/issues/3): Proper `CR` and `LF` handling in the REPL:
+
 ## [1.4.0] - 2024-09-29
 
 ### Added
