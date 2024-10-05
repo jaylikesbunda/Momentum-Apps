@@ -7,7 +7,7 @@
 #include "mp_flipper_logging.h"
 
 static mp_obj_t mp_flipper_logging_log_internal(uint8_t level, size_t n_args, const mp_obj_t* args) {
-    if(n_args < 1 || level < mp_flipper_log_get_level()) {
+    if(n_args < 1 || level > mp_flipper_log_get_level()) {
         return mp_const_none;
     }
 
