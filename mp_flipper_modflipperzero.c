@@ -1,4 +1,3 @@
-#include "mp_flipper_runtime.h"
 #include "py/mperrno.h"
 #include <stdint.h>
 #include <stdio.h>
