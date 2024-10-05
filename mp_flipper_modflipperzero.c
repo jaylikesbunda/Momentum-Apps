@@ -975,6 +975,8 @@ for octave in range(9):
     {MP_ROM_QSTR(MP_QSTR_infrared_is_busy), MP_ROM_PTR(&flipperzero_infrared_is_busy_obj)},
     // UART
     {MP_ROM_QSTR(MP_QSTR_UART), MP_ROM_PTR(&flipperzero_uart_connection_type)},
+    {MP_ROM_QSTR(MP_QSTR_UART_MODE_LPUART), MP_ROM_INT(MP_FLIPPER_UART_MODE_LPUART)},
+    {MP_ROM_QSTR(MP_QSTR_UART_MODE_USART), MP_ROM_INT(MP_FLIPPER_UART_MODE_USART)},
     {MP_ROM_QSTR(MP_QSTR_uart_open), MP_ROM_PTR(&flipperzero_uart_open_obj)},
 };
 static MP_DEFINE_CONST_DICT(flipperzero_module_globals, flipperzero_module_globals_table);
