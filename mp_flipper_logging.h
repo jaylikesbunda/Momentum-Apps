@@ -2,12 +2,12 @@
 
 #include <stdint.h>
 
-#define MP_FLIPPER_LOG_LEVEL_TRACE (6)
-#define MP_FLIPPER_LOG_LEVEL_DEBUG (5)
-#define MP_FLIPPER_LOG_LEVEL_INFO (4)
-#define MP_FLIPPER_LOG_LEVEL_WARN (3)
-#define MP_FLIPPER_LOG_LEVEL_ERROR (2)
-#define MP_FLIPPER_LOG_LEVEL_NONE (1)
+extern uint8_t MP_FLIPPER_LOG_LEVEL_TRACE;
+extern uint8_t MP_FLIPPER_LOG_LEVEL_DEBUG;
+extern uint8_t MP_FLIPPER_LOG_LEVEL_INFO;
+extern uint8_t MP_FLIPPER_LOG_LEVEL_WARN;
+extern uint8_t MP_FLIPPER_LOG_LEVEL_ERROR;
+extern uint8_t MP_FLIPPER_LOG_LEVEL_NONE;
 
 uint8_t mp_flipper_log_get_level();
 void mp_flipper_log_set_level(uint8_t level);
