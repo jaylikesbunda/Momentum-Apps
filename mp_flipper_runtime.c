@@ -9,6 +9,7 @@
 
 #include "mp_flipper_runtime.h"
 #include "mp_flipper_halport.h"
+#include "mp_flipper_logging.h"
 
 const char* mp_flipper_root_module_path;
 
@@ -20,6 +21,8 @@ void mp_flipper_set_root_module_path(const char* path) {
 
 void mp_flipper_init(void* heap, size_t heap_size, size_t stack_size, void* stack_top) {
     mp_flipper_context = mp_flipper_context_alloc();
+
+    mp_flipper_log_level = MP_FLIPPER_LOG_LEVEL_INFO;
 
     mp_stack_set_top(stack_top);
     mp_stack_set_limit(stack_size);
@@ -33,7 +36,7 @@ void mp_flipper_init(void* heap, size_t heap_size, size_t stack_size, void* stac
 
 void mp_flipper_deinit() {
     gc_sweep_all();
-    
+
     mp_deinit();
 
     mp_flipper_context_free(mp_flipper_context);
