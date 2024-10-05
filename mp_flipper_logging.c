@@ -7,7 +7,7 @@
 
 #include "mp_flipper_logging.h"
 
-static const struct _mp_obj_int_t mp_flipper_log_level_obj = {&mp_type_int, MP_FLIPPER_LOG_LEVEL_INFO};
+static struct _mp_obj_int_t mp_flipper_log_level_obj = {&mp_type_int, MP_FLIPPER_LOG_LEVEL_INFO};
 
 static mp_obj_t mp_flipper_logging_log_internal(uint8_t level, size_t n_args, const mp_obj_t* args) {
     if(n_args < 1 || level > mp_flipper_log_get_effective_level()) {
