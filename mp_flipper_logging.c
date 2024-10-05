@@ -73,7 +73,7 @@ static MP_DEFINE_CONST_FUN_OBJ_VAR(mp_flipper_logging_error_obj, 1, mp_flipper_l
 
 static const mp_rom_map_elem_t mp_module_logging_globals_table[] = {
     {MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_logging)},
-    {MP_ROM_QSTR(MP_QSTR_level), MP_ROM_PTR(mp_flipper_log_level)},
+    {MP_ROM_QSTR(MP_QSTR_level), MP_ROM_INT(mp_flipper_log_level)},
     {MP_ROM_QSTR(MP_QSTR_setLevel), MP_ROM_PTR(&mp_flipper_logging_set_level_obj)},
     {MP_ROM_QSTR(MP_QSTR_getEffectiveLevel), MP_ROM_PTR(&mp_flipper_logging_get_effective_level_obj)},
     {MP_ROM_QSTR(MP_QSTR_trace), MP_ROM_PTR(&mp_flipper_logging_trace_obj)},
