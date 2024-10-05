@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdbool.h>
 
 extern uint8_t MP_FLIPPER_LOG_LEVEL_TRACE;
 extern uint8_t MP_FLIPPER_LOG_LEVEL_DEBUG;
