@@ -233,8 +233,8 @@ Alignment
 .. autodata:: flipperzero.ALIGN_CENTER
 .. autofunction:: flipperzero.canvas_set_text_align
 
-Texts
-~~~~~
+Text
+~~~~
 
 .. autodata:: flipperzero.FONT_PRIMARY
 .. autodata:: flipperzero.FONT_SECONDARY
@@ -395,6 +395,28 @@ Functions
 .. autofunction:: flipperzero.infrared_receive
 .. autofunction:: flipperzero.infrared_transmit
 .. autofunction:: flipperzero.infrared_is_busy
+
+UART
+----
+
+Connect to UART enabled devices.
+
+Modes
+~~~~~
+
+.. autodata:: flipperzero.UART_MODE_LPUART
+.. autodata:: flipperzero.UART_MODE_USART
+
+Functions
+~~~~~~~~~
+
+.. autofunction:: flipperzero.uart_open
+
+Classes
+~~~~~~~
+
+.. autoclass:: flipperzero.UART
+   :members: read, readline, readlines, write, flush
 
 Built-In
 --------

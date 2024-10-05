@@ -13,8 +13,8 @@ sys.path.append(flipperzero)
 project = 'uPython'
 copyright = str(now.year) + ', Oliver Fabel'
 author = 'Oliver Fabel'
-release = '1.4.0'
-version = '1.4'
+release = '1.5.0'
+version = '1.5'
 language = 'en'
 
 extensions = [
