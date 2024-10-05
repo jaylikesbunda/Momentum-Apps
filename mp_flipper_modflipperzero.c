@@ -1,3 +1,5 @@
+#include "mp_flipper_runtime.h"
+#include "py/mperrno.h"
 #include <stdint.h>
 #include <stdio.h>
 
@@ -631,10 +633,18 @@ static mp_obj_t flipperzero_uart_open(mp_obj_t raw_mode, mp_obj_t raw_baud_rate)
     uint8_t mode = mp_obj_get_int(raw_mode);
     uint32_t baud_rate = mp_obj_get_int(raw_baud_rate);
 
+    void* handle = mp_flipper_uart_open(mode, baud_rate);
+
+    if(handle == NULL) {
+        mp_flipper_raise_os_error(MP_EBUSY);
+
+        return mp_const_none;
+    }
+
     flipperzero_uart_connection_t* connection =
         mp_obj_malloc_with_finaliser(flipperzero_uart_connection_t, &flipperzero_uart_connection_type);
 
-    connection->handle = mp_flipper_uart_open(mode, baud_rate);
+    connection->handle = handle;
     connection->mode = raw_mode;
     connection->baud_rate = raw_baud_rate;
 
