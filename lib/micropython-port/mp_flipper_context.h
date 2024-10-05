@@ -46,5 +46,4 @@ typedef struct {
     mp_flipper_gpio_pin_t* gpio_pins;
     mp_flipper_infrared_rx_t* infrared_rx;
     mp_flipper_infrared_tx_t* infrared_tx;
-    uint8_t log_level;
 } mp_flipper_context_t;

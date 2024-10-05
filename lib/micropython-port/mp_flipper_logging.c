@@ -9,38 +9,41 @@ static inline FuriLogLevel decode_log_level(uint8_t level) {
     switch(level) {
     case MP_FLIPPER_LOG_LEVEL_TRACE:
         return FuriLogLevelTrace;
-        break;
     case MP_FLIPPER_LOG_LEVEL_DEBUG:
         return FuriLogLevelDebug;
-        break;
     case MP_FLIPPER_LOG_LEVEL_INFO:
         return FuriLogLevelInfo;
-        break;
     case MP_FLIPPER_LOG_LEVEL_WARN:
         return FuriLogLevelWarn;
-        break;
     case MP_FLIPPER_LOG_LEVEL_ERROR:
         return FuriLogLevelError;
-        break;
+    case MP_FLIPPER_LOG_LEVEL_NONE:
+        return FuriLogLevelNone;
     default:
-        return FuriLogLevelDefault;
-        break;
+        return FuriLogLevelNone;
     }
 }
 
-uint8_t mp_flipper_log_get_level() {
-    mp_flipper_context_t* ctx = mp_flipper_context;
-
-    return ctx->log_level;
+inline uint8_t mp_flipper_log_get_effective_level() {
+    switch(furi_log_get_level()) {
+    case FuriLogLevelTrace:
+        return MP_FLIPPER_LOG_LEVEL_TRACE;
+    case FuriLogLevelDebug:
+        return MP_FLIPPER_LOG_LEVEL_DEBUG;
+    case FuriLogLevelInfo:
+        return MP_FLIPPER_LOG_LEVEL_INFO;
+    case FuriLogLevelWarn:
+        return MP_FLIPPER_LOG_LEVEL_WARN;
+    case FuriLogLevelError:
+        return MP_FLIPPER_LOG_LEVEL_ERROR;
+    case FuriLogLevelNone:
+        return MP_FLIPPER_LOG_LEVEL_NONE;
+    default:
+        return MP_FLIPPER_LOG_LEVEL_NONE;
+    }
 }
 
-void mp_flipper_log_set_level(uint8_t level) {
-    mp_flipper_context_t* ctx = mp_flipper_context;
-
-    ctx->log_level = level;
-}
-
-void mp_flipper_log(uint8_t raw_level, const char* message) {
+inline void mp_flipper_log(uint8_t raw_level, const char* message) {
     FuriLogLevel level = decode_log_level(raw_level);
 
     furi_log_print_format(level, "uPython", message);
