@@ -7,7 +7,7 @@
 
 #include "mp_flipper_logging.h"
 
-static const struct _mp_obj_int_t mp_flipper_log_level_obj = {.base = {&mp_type_int}, .val = MP_FLIPPER_LOG_LEVEL_INFO};
+static const struct _mp_obj_int_t mp_flipper_log_level_obj = {&mp_type_int, MP_FLIPPER_LOG_LEVEL_INFO};
 
 static mp_obj_t mp_flipper_logging_log_internal(uint8_t level, size_t n_args, const mp_obj_t* args) {
     if(n_args < 1 || level > mp_flipper_log_get_effective_level()) {
@@ -76,12 +76,12 @@ static mp_obj_t mp_flipper_logging_error(size_t n_args, const mp_obj_t* args) {
 }
 static MP_DEFINE_CONST_FUN_OBJ_VAR(mp_flipper_logging_error_obj, 1, mp_flipper_logging_error);
 
-static const struct _mp_obj_int_t mp_flipper_log_level_trace_obj = {.base = {&mp_type_int}, .val = MP_FLIPPER_LOG_LEVEL_TRACE};
-static const struct _mp_obj_int_t mp_flipper_log_level_deubg_obj = {.base = {&mp_type_int}, .val = MP_FLIPPER_LOG_LEVEL_DEBUG};
-static const struct _mp_obj_int_t mp_flipper_log_level_info_obj = {.base = {&mp_type_int}, .val = MP_FLIPPER_LOG_LEVEL_INFO};
-static const struct _mp_obj_int_t mp_flipper_log_level_warn_obj = {.base = {&mp_type_int}, .val = MP_FLIPPER_LOG_LEVEL_WARN};
-static const struct _mp_obj_int_t mp_flipper_log_level_error_obj = {.base = {&mp_type_int}, .val = MP_FLIPPER_LOG_LEVEL_ERROR};
-static const struct _mp_obj_int_t mp_flipper_log_level_none_obj = {.base = {&mp_type_int}, .val = MP_FLIPPER_LOG_LEVEL_NONE};
+static const struct _mp_obj_int_t mp_flipper_log_level_trace_obj = {&mp_type_int, MP_FLIPPER_LOG_LEVEL_TRACE};
+static const struct _mp_obj_int_t mp_flipper_log_level_deubg_obj = {&mp_type_int, MP_FLIPPER_LOG_LEVEL_DEBUG};
+static const struct _mp_obj_int_t mp_flipper_log_level_info_obj = {&mp_type_int, MP_FLIPPER_LOG_LEVEL_INFO};
+static const struct _mp_obj_int_t mp_flipper_log_level_warn_obj = {&mp_type_int, MP_FLIPPER_LOG_LEVEL_WARN};
+static const struct _mp_obj_int_t mp_flipper_log_level_error_obj = {&mp_type_int, MP_FLIPPER_LOG_LEVEL_ERROR};
+static const struct _mp_obj_int_t mp_flipper_log_level_none_obj = {&mp_type_int, MP_FLIPPER_LOG_LEVEL_NONE};
 
 static const mp_rom_map_elem_t mp_module_logging_globals_table[] = {
     {MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_logging)},

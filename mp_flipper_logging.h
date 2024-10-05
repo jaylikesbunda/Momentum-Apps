@@ -3,12 +3,12 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-extern const uint8_t MP_FLIPPER_LOG_LEVEL_TRACE;
-extern const uint8_t MP_FLIPPER_LOG_LEVEL_DEBUG;
-extern const uint8_t MP_FLIPPER_LOG_LEVEL_INFO;
-extern const uint8_t MP_FLIPPER_LOG_LEVEL_WARN;
-extern const uint8_t MP_FLIPPER_LOG_LEVEL_ERROR;
-extern const uint8_t MP_FLIPPER_LOG_LEVEL_NONE;
+#define MP_FLIPPER_LOG_LEVEL_TRACE (6)
+#define MP_FLIPPER_LOG_LEVEL_DEBUG (5)
+#define MP_FLIPPER_LOG_LEVEL_INFO (4)
+#define MP_FLIPPER_LOG_LEVEL_WARN (3)
+#define MP_FLIPPER_LOG_LEVEL_ERROR (2)
+#define MP_FLIPPER_LOG_LEVEL_NONE (1)
 
 uint8_t mp_flipper_log_get_effective_level();
 bool mp_flipper_log_level_is_valid(uint8_t level);
