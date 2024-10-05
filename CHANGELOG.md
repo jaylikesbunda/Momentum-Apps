@@ -16,7 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * Log levels according to the Flipper Zero API: trace, debug, info, warn, error.
   * Only the root logger is supported, so no `getLogger` function.
   * Logs directly to the log output, so no output in the REPL.
+* Send output from `print` to `stdout` if script is started by `py` command from the CLI.
 * UART support for the `flipperzero` module.
+
+### Changed
+
+* The `py` command waits until the script terminates.
 
 ### Fixed
 
