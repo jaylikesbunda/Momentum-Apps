@@ -4,6 +4,7 @@
 #include "py/objint.h"
 #include "py/objfun.h"
 #include "py/obj.h"
+#include "py/stream.h"
 #include "py/runtime.h"
 
 #include "mp_flipper_modflipperzero.h"
