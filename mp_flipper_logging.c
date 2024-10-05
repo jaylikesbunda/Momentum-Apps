@@ -1,3 +1,4 @@
+#include "py/objint.h"
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -5,6 +6,8 @@
 #include "py/obj.h"
 
 #include "mp_flipper_logging.h"
+
+static const struct _mp_obj_int_t mp_flipper_log_level_obj = {{&mp_type_int}, MP_FLIPPER_LOG_LEVEL_INFO};
 
 static mp_obj_t mp_flipper_logging_log_internal(uint8_t level, size_t n_args, const mp_obj_t* args) {
     if(n_args < 1 || level > mp_flipper_log_get_effective_level()) {
@@ -22,7 +25,9 @@ static mp_obj_t mp_flipper_logging_log_internal(uint8_t level, size_t n_args, co
 static mp_obj_t mp_flipper_logging_set_level(mp_obj_t raw_level) {
     uint8_t level = mp_obj_get_int(raw_level);
 
-    mp_flipper_log_set_level(level);
+    if(mp_flipper_log_level_is_valid(level)) {
+        mp_flipper_log_level_obj.val = level;
+    }
 
     return mp_const_none;
 }
@@ -71,9 +76,16 @@ static mp_obj_t mp_flipper_logging_error(size_t n_args, const mp_obj_t* args) {
 }
 static MP_DEFINE_CONST_FUN_OBJ_VAR(mp_flipper_logging_error_obj, 1, mp_flipper_logging_error);
 
+static const struct _mp_obj_int_t mp_flipper_log_level_trace_obj = {{&mp_type_int}, MP_FLIPPER_LOG_LEVEL_TRACE};
+static const struct _mp_obj_int_t mp_flipper_log_level_deubg_obj = {{&mp_type_int}, MP_FLIPPER_LOG_LEVEL_DEBUG};
+static const struct _mp_obj_int_t mp_flipper_log_level_info_obj = {{&mp_type_int}, MP_FLIPPER_LOG_LEVEL_INFO};
+static const struct _mp_obj_int_t mp_flipper_log_level_warn_obj = {{&mp_type_int}, MP_FLIPPER_LOG_LEVEL_WARN};
+static const struct _mp_obj_int_t mp_flipper_log_level_error_obj = {{&mp_type_int}, MP_FLIPPER_LOG_LEVEL_ERROR};
+static const struct _mp_obj_int_t mp_flipper_log_level_none_obj = {{&mp_type_int}, MP_FLIPPER_LOG_LEVEL_NONE};
+
 static const mp_rom_map_elem_t mp_module_logging_globals_table[] = {
     {MP_ROM_QSTR(MP_QSTR___name__), MP_ROM_QSTR(MP_QSTR_logging)},
-    {MP_ROM_QSTR(MP_QSTR_level), MP_ROM_INT(mp_flipper_log_level)},
+    {MP_ROM_QSTR(MP_QSTR_level), MP_ROM_PTR(&mp_flipper_log_level_obj)},
     {MP_ROM_QSTR(MP_QSTR_setLevel), MP_ROM_PTR(&mp_flipper_logging_set_level_obj)},
     {MP_ROM_QSTR(MP_QSTR_getEffectiveLevel), MP_ROM_PTR(&mp_flipper_logging_get_effective_level_obj)},
     {MP_ROM_QSTR(MP_QSTR_trace), MP_ROM_PTR(&mp_flipper_logging_trace_obj)},
@@ -82,12 +94,12 @@ static const mp_rom_map_elem_t mp_module_logging_globals_table[] = {
     {MP_ROM_QSTR(MP_QSTR_warn), MP_ROM_PTR(&mp_flipper_logging_warn_obj)},
     {MP_ROM_QSTR(MP_QSTR_error), MP_ROM_PTR(&mp_flipper_logging_error_obj)},
     {MP_ROM_QSTR(MP_QSTR_log), MP_ROM_PTR(&mp_flipper_logging_log_obj)},
-    {MP_ROM_QSTR(MP_QSTR_TRACE), MP_ROM_INT(MP_FLIPPER_LOG_LEVEL_TRACE)},
-    {MP_ROM_QSTR(MP_QSTR_DEBUG), MP_ROM_INT(MP_FLIPPER_LOG_LEVEL_DEBUG)},
-    {MP_ROM_QSTR(MP_QSTR_INFO), MP_ROM_INT(MP_FLIPPER_LOG_LEVEL_INFO)},
-    {MP_ROM_QSTR(MP_QSTR_WARN), MP_ROM_INT(MP_FLIPPER_LOG_LEVEL_WARN)},
-    {MP_ROM_QSTR(MP_QSTR_ERROR), MP_ROM_INT(MP_FLIPPER_LOG_LEVEL_ERROR)},
-    {MP_ROM_QSTR(MP_QSTR_NONE), MP_ROM_INT(MP_FLIPPER_LOG_LEVEL_NONE)},
+    {MP_ROM_QSTR(MP_QSTR_TRACE), MP_ROM_PTR(&mp_flipper_log_level_trace_obj)},
+    {MP_ROM_QSTR(MP_QSTR_DEBUG), MP_ROM_PTR(&mp_flipper_log_level_deubg_obj)},
+    {MP_ROM_QSTR(MP_QSTR_INFO), MP_ROM_PTR(&mp_flipper_log_level_info_obj)},
+    {MP_ROM_QSTR(MP_QSTR_WARN), MP_ROM_PTR(&mp_flipper_log_level_warn_obj)},
+    {MP_ROM_QSTR(MP_QSTR_ERROR), MP_ROM_PTR(&mp_flipper_log_level_error_obj)},
+    {MP_ROM_QSTR(MP_QSTR_NONE), MP_ROM_PTR(&mp_flipper_log_level_none_obj)},
 };
 
 static MP_DEFINE_CONST_DICT(mp_module_logging_globals, mp_module_logging_globals_table);
