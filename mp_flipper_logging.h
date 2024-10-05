@@ -11,5 +11,4 @@
 #define MP_FLIPPER_LOG_LEVEL_NONE (1)
 
 uint8_t mp_flipper_log_get_effective_level();
-bool mp_flipper_log_level_is_valid(uint8_t level);
 void mp_flipper_log(uint8_t raw_level, const char* message);

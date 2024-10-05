@@ -25,7 +25,7 @@ static mp_obj_t mp_flipper_logging_log_internal(uint8_t level, size_t n_args, co
 static mp_obj_t mp_flipper_logging_set_level(mp_obj_t raw_level) {
     uint8_t level = mp_obj_get_int(raw_level);
 
-    if(mp_flipper_log_level_is_valid(level)) {
+    if(level >= MP_FLIPPER_LOG_LEVEL_NONE && level <= MP_FLIPPER_LOG_LEVEL_TRACE) {
         mp_flipper_log_level_obj.val = level;
     }
 
