@@ -452,6 +452,8 @@ Functions
 I/O
 ---
 
+Read and write files on the SD card.
+
 Constants
 ~~~~~~~~~
 
