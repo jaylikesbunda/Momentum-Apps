@@ -133,6 +133,8 @@ static void fileio_attr(mp_obj_t self_in, qstr attr, mp_obj_t* dest) {
             dest[0] = (fd->access_mode & MP_FLIPPER_FILE_ACCESS_MODE_READ) ? mp_const_true : mp_const_false;
         } else if(attr == MP_QSTR_writable) {
             dest[0] = (fd->access_mode & MP_FLIPPER_FILE_ACCESS_MODE_WRITE) ? mp_const_true : mp_const_false;
+        } else {
+            dest[1] = MP_OBJ_SENTINEL;
         }
     }
 }
