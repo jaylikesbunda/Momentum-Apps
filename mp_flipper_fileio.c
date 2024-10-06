@@ -126,16 +126,29 @@ static mp_uint_t mp_flipper_fileio_ioctl(mp_obj_t self, mp_uint_t request, uintp
 
 static void fileio_attr(mp_obj_t self_in, qstr attr, mp_obj_t* dest) {
     mp_flipper_fileio_file_descriptor_t* fd = MP_OBJ_TO_PTR(self_in);
+
     if(dest[0] == MP_OBJ_NULL) {
         if(attr == MP_QSTR_name) {
             dest[0] = fd->name;
-        } else if(attr == MP_QSTR_readable) {
-            dest[0] = (fd->access_mode & MP_FLIPPER_FILE_ACCESS_MODE_READ) ? mp_const_true : mp_const_false;
-        } else if(attr == MP_QSTR_writable) {
-            dest[0] = (fd->access_mode & MP_FLIPPER_FILE_ACCESS_MODE_WRITE) ? mp_const_true : mp_const_false;
-        } else {
-            dest[1] = MP_OBJ_SENTINEL;
+
+            return;
         }
+
+        if(attr == MP_QSTR_readable) {
+            dest[0] = (fd->access_mode & MP_FLIPPER_FILE_ACCESS_MODE_READ) ? mp_const_true : mp_const_false;
+
+            return;
+        }
+
+        if(attr == MP_QSTR_writable) {
+            dest[0] = (fd->access_mode & MP_FLIPPER_FILE_ACCESS_MODE_WRITE) ? mp_const_true : mp_const_false;
+
+            return;
+        }
+
+        dest[1] = MP_OBJ_SENTINEL;
+    } else {
+        return;
     }
 }
 
@@ -167,10 +180,10 @@ MP_DEFINE_CONST_OBJ_TYPE(
     MP_TYPE_FLAG_ITER_IS_STREAM,
     protocol,
     &mp_flipper_binary_fileio_stream_p,
-    locals_dict,
-    &mp_flipper_file_locals_dict,
     attr,
-    fileio_attr);
+    fileio_attr,
+    locals_dict,
+    &mp_flipper_file_locals_dict);
 
 static const mp_stream_p_t mp_flipper_text_fileio_stream_p = {
     .read = mp_flipper_fileio_read,
@@ -185,10 +198,10 @@ MP_DEFINE_CONST_OBJ_TYPE(
     MP_TYPE_FLAG_ITER_IS_STREAM,
     protocol,
     &mp_flipper_text_fileio_stream_p,
-    locals_dict,
-    &mp_flipper_file_locals_dict,
     attr,
-    fileio_attr);
+    fileio_attr,
+    locals_dict,
+    &mp_flipper_file_locals_dict);
 
 mp_obj_t mp_flipper_builtin_open(size_t n_args, const mp_obj_t* args, mp_map_t* kwargs) {
     const char* file_name = mp_obj_str_get_str(args[0]);
