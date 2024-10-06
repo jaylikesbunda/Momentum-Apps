@@ -124,34 +124,23 @@ static mp_uint_t mp_flipper_fileio_ioctl(mp_obj_t self, mp_uint_t request, uintp
     return MP_STREAM_ERROR;
 }
 
-static mp_obj_t mp_flipper_fileio_name(mp_obj_t self) {
-    mp_flipper_fileio_file_descriptor_t* fd = MP_OBJ_TO_PTR(self);
-
-    return fd->name;
+static void fileio_attr(mp_obj_t self_in, qstr attr, mp_obj_t* dest) {
+    mp_flipper_fileio_file_descriptor_t* fd = MP_OBJ_TO_PTR(self_in);
+    if(dest[0] == MP_OBJ_NULL) {
+        if(attr == MP_QSTR_name) {
+            dest[0] = fd->name;
+        } else if(attr == MP_QSTR_readable) {
+            dest[0] = (fd->access_mode & MP_FLIPPER_FILE_ACCESS_MODE_READ) ? mp_const_true : mp_const_false;
+        } else if(attr == MP_QSTR_writable) {
+            dest[0] = (fd->access_mode & MP_FLIPPER_FILE_ACCESS_MODE_WRITE) ? mp_const_true : mp_const_false;
+        }
+    }
 }
-static MP_DEFINE_CONST_FUN_OBJ_1(mp_flipper_fileio_name_obj, mp_flipper_fileio_name);
-
-static mp_obj_t mp_flipper_fileio_readable(mp_obj_t self) {
-    mp_flipper_fileio_file_descriptor_t* fd = MP_OBJ_TO_PTR(self);
-
-    return (fd->access_mode & MP_FLIPPER_FILE_ACCESS_MODE_READ) ? mp_const_true : mp_const_false;
-}
-static MP_DEFINE_CONST_FUN_OBJ_1(mp_flipper_fileio_readable_obj, mp_flipper_fileio_readable);
-
-static mp_obj_t mp_flipper_fileio_writable(mp_obj_t self) {
-    mp_flipper_fileio_file_descriptor_t* fd = MP_OBJ_TO_PTR(self);
-
-    return (fd->access_mode & MP_FLIPPER_FILE_ACCESS_MODE_WRITE) ? mp_const_true : mp_const_false;
-}
-static MP_DEFINE_CONST_FUN_OBJ_1(mp_flipper_fileio_writable_obj, mp_flipper_fileio_writable);
 
 static const mp_map_elem_t mp_flipper_file_locals_dict_table[] = {
-    {MP_OBJ_NEW_QSTR(MP_QSTR_name), MP_ROM_PTR(&mp_flipper_fileio_name_obj)},
     {MP_ROM_QSTR(MP_QSTR_read), MP_ROM_PTR(&mp_stream_read_obj)},
     {MP_ROM_QSTR(MP_QSTR_readline), MP_ROM_PTR(&mp_stream_unbuffered_readline_obj)},
     {MP_ROM_QSTR(MP_QSTR_readlines), MP_ROM_PTR(&mp_stream_unbuffered_readlines_obj)},
-    {MP_OBJ_NEW_QSTR(MP_QSTR_readable), MP_ROM_PTR(&mp_flipper_fileio_readable_obj)},
-    {MP_OBJ_NEW_QSTR(MP_QSTR_writable), MP_ROM_PTR(&mp_flipper_fileio_writable_obj)},
     {MP_ROM_QSTR(MP_QSTR_write), MP_ROM_PTR(&mp_stream_write_obj)},
     {MP_ROM_QSTR(MP_QSTR_flush), MP_ROM_PTR(&mp_stream_flush_obj)},
     {MP_ROM_QSTR(MP_QSTR_close), MP_ROM_PTR(&mp_stream_close_obj)},
@@ -176,6 +165,8 @@ MP_DEFINE_CONST_OBJ_TYPE(
     MP_TYPE_FLAG_ITER_IS_STREAM,
     protocol,
     &mp_flipper_binary_fileio_stream_p,
+    attr,
+    fileio_attr,
     locals_dict,
     &mp_flipper_file_locals_dict);
 
@@ -192,6 +183,8 @@ MP_DEFINE_CONST_OBJ_TYPE(
     MP_TYPE_FLAG_ITER_IS_STREAM,
     protocol,
     &mp_flipper_text_fileio_stream_p,
+    attr,
+    fileio_attr,
     locals_dict,
     &mp_flipper_file_locals_dict);
 
