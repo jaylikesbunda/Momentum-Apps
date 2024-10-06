@@ -165,10 +165,10 @@ MP_DEFINE_CONST_OBJ_TYPE(
     MP_TYPE_FLAG_ITER_IS_STREAM,
     protocol,
     &mp_flipper_binary_fileio_stream_p,
-    attr,
-    fileio_attr,
     locals_dict,
-    &mp_flipper_file_locals_dict);
+    &mp_flipper_file_locals_dict,
+    attr,
+    fileio_attr);
 
 static const mp_stream_p_t mp_flipper_text_fileio_stream_p = {
     .read = mp_flipper_fileio_read,
@@ -183,10 +183,10 @@ MP_DEFINE_CONST_OBJ_TYPE(
     MP_TYPE_FLAG_ITER_IS_STREAM,
     protocol,
     &mp_flipper_text_fileio_stream_p,
-    attr,
-    fileio_attr,
     locals_dict,
-    &mp_flipper_file_locals_dict);
+    &mp_flipper_file_locals_dict,
+    attr,
+    fileio_attr);
 
 mp_obj_t mp_flipper_builtin_open(size_t n_args, const mp_obj_t* args, mp_map_t* kwargs) {
     const char* file_name = mp_obj_str_get_str(args[0]);
