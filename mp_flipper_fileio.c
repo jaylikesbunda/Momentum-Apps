@@ -261,6 +261,9 @@ static const mp_rom_map_elem_t mp_module_io_globals_table[] = {
     {MP_ROM_QSTR(MP_QSTR_open), MP_ROM_PTR(&mp_flipper_builtin_open_obj)},
     {MP_ROM_QSTR(MP_QSTR_BinaryFileIO), MP_ROM_PTR(&mp_flipper_binary_fileio_type)},
     {MP_ROM_QSTR(MP_QSTR_TextFileIO), MP_ROM_PTR(&mp_flipper_text_fileio_type)},
+    {MP_ROM_QSTR(MP_QSTR_SEEK_SET), MP_ROM_INT(MP_SEEK_SET)},
+    {MP_ROM_QSTR(MP_QSTR_SEEK_CUR), MP_ROM_INT(MP_SEEK_CUR)},
+    {MP_ROM_QSTR(MP_QSTR_SEEK_END), MP_ROM_INT(MP_SEEK_END)},
 };
 
 static MP_DEFINE_CONST_DICT(mp_module_io_globals, mp_module_io_globals_table);
