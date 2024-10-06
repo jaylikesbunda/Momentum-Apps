@@ -14,8 +14,13 @@ static mp_obj_t mp_flipper_logging_log_internal(uint8_t level, size_t n_args, co
         return mp_const_none;
     }
 
-    mp_obj_t values = n_args > 1 ? mp_obj_new_tuple(n_args - 1, &args[1]) : mp_const_empty_tuple;
-    mp_obj_t message = mp_obj_str_binary_op(MP_BINARY_OP_MODULO, args[0], values);
+    mp_obj_t message = args[0];
+
+    if(n_args > 1) {
+        mp_obj_t values = mp_obj_new_tuple(n_args - 1, &args[1]);
+
+        message = mp_obj_str_binary_op(MP_BINARY_OP_MODULO, args[0], values);
+    }
 
     mp_flipper_log(level, mp_obj_str_get_str(message));
 
