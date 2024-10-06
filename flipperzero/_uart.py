@@ -29,6 +29,15 @@ class UART:
 
         with f0.open(f0.UART_MODE_USART, 115200) as uart:
             lines = [line for line in uart]
+    
+    An :class:`UART` instance can be used with a `context manager <https://docs.python.org/3/reference/datamodel.html#with-statement-context-managers>`_:
+
+    .. code-block::
+
+        import flipperzero as f0
+
+        with f0.open(f0.UART_MODE_USART, 115200) as uart:
+            ...
 
     .. hint::
 
@@ -94,6 +103,44 @@ class UART:
         '''
         Flush the transmission buffer to the underlying UART connection.
         This method blocks until all data is sent.
+
+        .. versionadded:: 1.5.0
+        '''
+        pass
+
+    def close(self) -> None:
+        '''
+        Close the UART connection.
+
+        .. versionadded:: 1.5.0
+        '''
+        pass
+
+    def __enter__(self) -> 'UART':
+        '''
+        This method is invoked, when the instance enters a runtime context.
+
+        :returns: The :class:`UART` connection.
+
+        .. versionadded:: 1.5.0
+        '''
+        pass
+
+    def __exit__(self, *args, **kwargs) -> None:
+        '''
+        This method is invoked, when the instance leavs a runtime context.
+        This basically calls :meth:`close` on the instance.
+
+        .. versionadded:: 1.5.0
+        '''
+        pass
+
+    def __del__(self) -> None:
+        '''
+        This method is invoked, when the garbage collector removes the object.
+        This basically calls :meth:`close` on the instance.
+
+        .. versionadded:: 1.5.0
         '''
         pass
 
