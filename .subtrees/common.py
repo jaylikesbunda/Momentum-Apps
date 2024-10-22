@@ -135,7 +135,11 @@ def subdir_split_helper(path, repo, branch, subdir, action, cached=None):
     if "fatal: " in result:
         ok = False
     git("checkout", prevbranch)
-    if ok:
+    if not ok:
+        print(f"Something went wrong with {path}/.gitsubtree, check above")
+        send_alert("Subtree merge failed", "Something went wrong, check logs")
+        sys.exit(1)
+    else:
         prevhead = git("rev-parse", "HEAD", pipe=True)
         result, status = git(
             "subtree",
