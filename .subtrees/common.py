@@ -131,7 +131,7 @@ def subdir_split_helper(path, repo, branch, subdir, action, cached=None):
     if "is not an ancestor of commit" in result:
         print("Resetting split branch...")
         git("branch", "-D", split)
-        git("subtree", "split", "-P", subdir, "-b", split)
+        result, status = git("subtree", "split", "-P", subdir, "-b", split, tee=True)
     if "fatal: " in result:
         ok = False
     git("checkout", prevbranch)
