@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cli/cli.h>
-#include <cli/cli_ansi.h>
 #include "../types/plugin_state.h"
 
 #ifdef __cplusplus
