@@ -203,14 +203,13 @@ static bool check_collision(
     const PILAR* pilar,
     CharacterDimensions dims,
     int gap_height) {
-
     // Different collision margins for each character type
     int margin_x, margin_y;
     if(game_state->selected_bird == BirdTypeYapper) {
-        margin_x = 1;  // Very small horizontal margin for precise side collisions
-        margin_y = 2;  // Slightly larger vertical margin for playability
+        margin_x = 1; // Very small horizontal margin for precise side collisions
+        margin_y = 2; // Slightly larger vertical margin for playability
     } else {
-        margin_x = 2;  // Original bird margins
+        margin_x = 2; // Original bird margins
         margin_y = 2;
     }
 
@@ -221,9 +220,8 @@ static bool check_collision(
     int char_bottom = game_state->bird.point.y + dims.width - margin_y;
 
     // First check horizontal overlap (more precise now)
-    bool horizontally_aligned = 
-        (char_right >= pilar->point.x) &&
-        (char_left <= pilar->point.x + FLAPPY_GAB_WIDTH);
+    bool horizontally_aligned = (char_right >= pilar->point.x) &&
+                                (char_left <= pilar->point.x + FLAPPY_GAB_WIDTH);
 
     if(!horizontally_aligned) return false;
 
