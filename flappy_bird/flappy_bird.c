@@ -250,36 +250,51 @@ static void flappy_game_tick(GameState* const game_state) {
         int gap_height = get_gap_height(game_state->selected_bird);
         CharacterDimensions dims = character_dimensions[game_state->selected_bird];
 
+        // Check ceiling and floor collisions FIRST
+        if(game_state->bird.point.y <= 0) {
+            game_state->state = GameStateGameOver;
+            game_state->collision_frame = 4;
+            if(game_state->points > game_state->high_score) {
+                game_state->high_score = game_state->points;
+                flappy_game_save_score(game_state->high_score);
+            }
+            return; // Exit early on collision
+        }
+
+        if(game_state->bird.point.y > FLIPPER_LCD_HEIGHT - dims.width) {
+            game_state->state = GameStateGameOver;
+            game_state->collision_frame = 4;
+            if(game_state->points > game_state->high_score) {
+                game_state->high_score = game_state->points;
+                flappy_game_save_score(game_state->high_score);
+            }
+            return; // Exit early on collision
+        }
+
         // Checking the location of the last respawned pilar
         PILAR* pilar = &game_state->pilars[game_state->pilars_count % FLAPPY_PILAR_MAX];
         if(pilar->point.x == (FLIPPER_LCD_WIDTH - FLAPPY_PILAR_DIST))
             flappy_game_random_pilar(game_state);
 
+        // Process pilars
         for(int i = 0; i < FLAPPY_PILAR_MAX; i++) {
             PILAR* pilar = &game_state->pilars[i];
-            if(pilar != NULL && pilar->visible && game_state->state == GameStateLife) {
+            if(pilar != NULL && pilar->visible) {
                 pilar->point.x--;
+
+                // Check for point scoring
                 if(game_state->bird.point.x >= pilar->point.x + FLAPPY_GAB_WIDTH &&
                    pilar->passed == false) {
                     pilar->passed = true;
                     game_state->points++;
                 }
-                if(pilar->point.x < -FLAPPY_GAB_WIDTH) pilar->visible = 0;
 
-                // Updated bounds checking
-                if(game_state->bird.point.y <= 0) {
-                    game_state->bird.point.y = 0;
-                    game_state->bird.gravity = 0;
+                // Remove pilars that are off screen
+                if(pilar->point.x < -FLAPPY_GAB_WIDTH) {
+                    pilar->visible = 0;
                 }
 
-                if(game_state->bird.point.y > FLIPPER_LCD_HEIGHT - dims.width) {
-                    game_state->bird.point.y = FLIPPER_LCD_HEIGHT - dims.width;
-                    game_state->state = GameStateGameOver;
-                    game_state->collision_frame = 4;
-                    break;
-                }
-
-                // Check for collision using new collision detection function
+                // Check for collision with pipes
                 if(check_collision(game_state, pilar, dims, gap_height)) {
                     game_state->state = GameStateGameOver;
                     game_state->collision_frame = 4;
@@ -287,7 +302,7 @@ static void flappy_game_tick(GameState* const game_state) {
                         game_state->high_score = game_state->points;
                         flappy_game_save_score(game_state->high_score);
                     }
-                    break;
+                    return; // Exit early on collision
                 }
             }
         }
