@@ -203,38 +203,37 @@ static bool check_collision(
     const PILAR* pilar,
     CharacterDimensions dims,
     int gap_height) {
-    // Create a slightly smaller hitbox for better gameplay feel
-    int collision_margin = 2;
-    int effective_width = dims.width - collision_margin;
-    int effective_height = dims.height - collision_margin;
 
-    // For Yapper, adjust the hitbox to be more forgiving
+    // Different collision margins for each character type
+    int margin_x, margin_y;
     if(game_state->selected_bird == BirdTypeYapper) {
-        collision_margin = 4; // More forgiving collision for Yapper
-        effective_width = dims.width - collision_margin;
-        effective_height = dims.height - collision_margin;
+        margin_x = 1;  // Very small horizontal margin for precise side collisions
+        margin_y = 2;  // Slightly larger vertical margin for playability
+    } else {
+        margin_x = 2;  // Original bird margins
+        margin_y = 2;
     }
 
-    // Check horizontal collision
-    bool horizontally_aligned = (game_state->bird.point.x + effective_height >= pilar->point.x) &&
-                                (game_state->bird.point.x <= pilar->point.x + FLAPPY_GAB_WIDTH);
+    // Calculate hitbox coordinates with minimal margin adjustment
+    int char_left = game_state->bird.point.x + margin_x;
+    int char_right = game_state->bird.point.x + dims.height - margin_x;
+    int char_top = game_state->bird.point.y + margin_y;
+    int char_bottom = game_state->bird.point.y + dims.width - margin_y;
+
+    // First check horizontal overlap (more precise now)
+    bool horizontally_aligned = 
+        (char_right >= pilar->point.x) &&
+        (char_left <= pilar->point.x + FLAPPY_GAB_WIDTH);
 
     if(!horizontally_aligned) return false;
 
-    // Check vertical collision - upper pipe
-    if(game_state->bird.point.y < pilar->height + collision_margin / 2) {
-        return true;
-    }
+    // Then check vertical collisions
+    bool collides_with_top_pipe = char_top <= pilar->height;
+    bool collides_with_bottom_pipe = char_bottom >= (pilar->height + gap_height);
 
-    // Check vertical collision - lower pipe
-    if(game_state->bird.point.y + effective_width - collision_margin / 2 >=
-       pilar->height + gap_height) {
-        return true;
-    }
-
-    return false;
+    // Return true if we collide with either pipe
+    return collides_with_top_pipe || collides_with_bottom_pipe;
 }
-
 static void flappy_game_tick(GameState* const game_state) {
     if(game_state->collision_frame > 0) {
         game_state->collision_frame--;
