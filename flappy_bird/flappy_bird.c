@@ -353,8 +353,7 @@ static void flappy_game_render_callback(Canvas* const canvas, void* ctx) {
             if(game_state->selected_bird == BirdTypeYapper) {
                 canvas_draw_str_aligned(canvas, 64, 20, AlignCenter, AlignBottom, "Yappy Bird");
             } else if(game_state->selected_bird == BirdTypeGhostESP) {
-                canvas_draw_str_aligned(
-                    canvas, 64, 20, AlignCenter, AlignBottom, "Flappy Ghost");
+                canvas_draw_str_aligned(canvas, 64, 20, AlignCenter, AlignBottom, "Flappy Ghost");
             } else {
                 canvas_draw_str_aligned(canvas, 64, 20, AlignCenter, AlignBottom, "Flappy Bird");
             }
