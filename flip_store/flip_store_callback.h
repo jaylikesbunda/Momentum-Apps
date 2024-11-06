@@ -6,6 +6,7 @@
 #include <ctype.h>
 #include <stdbool.h>
 #include <flip_store_apps.h>
+#include "flip_store_icons.h"
 
 // Callback for drawing the main screen
 static void flip_store_view_draw_callback_main(Canvas* canvas, void* model) {
