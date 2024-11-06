@@ -40,7 +40,7 @@ App(
                 "-fsingle-precision-constant",
                 "-fno-math-errno",
             ],
-            cincludes=["."]
+            cincludes=["."],
         ),
         Lib(
             name="micropython-port",
@@ -57,7 +57,7 @@ App(
                 "-fsingle-precision-constant",
                 "-fno-math-errno",
             ],
-            cincludes=["."]
+            cincludes=["."],
         ),
-    ]
+    ],
 )
