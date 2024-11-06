@@ -41,19 +41,19 @@ static void flip_wifi_app_free(FlipWiFiApp* app) {
     // Free Text Input(s)
     if(app->uart_text_input_password_scan) {
         view_dispatcher_remove_view(app->view_dispatcher, FlipWiFiViewTextInputScan);
-        uart_text_input_free(app->uart_text_input_password_scan);
+        text_input_free(app->uart_text_input_password_scan);
     }
     if(app->uart_text_input_password_saved) {
         view_dispatcher_remove_view(app->view_dispatcher, FlipWiFiViewTextInputSaved);
-        uart_text_input_free(app->uart_text_input_password_saved);
+        text_input_free(app->uart_text_input_password_saved);
     }
     if(app->uart_text_input_add_ssid) {
         view_dispatcher_remove_view(app->view_dispatcher, FlipWiFiViewTextInputSavedAddSSID);
-        uart_text_input_free(app->uart_text_input_add_ssid);
+        text_input_free(app->uart_text_input_add_ssid);
     }
     if(app->uart_text_input_add_password) {
         view_dispatcher_remove_view(app->view_dispatcher, FlipWiFiViewTextInputSavedAddPassword);
-        uart_text_input_free(app->uart_text_input_add_password);
+        text_input_free(app->uart_text_input_add_password);
     }
 
     // free playlist

@@ -62,9 +62,9 @@ typedef struct {
     VariableItemList* variable_item_list_wifi; // The variable item list (WiFi settings)
     VariableItem* variable_item_ssid; // The variable item (SSID)
     VariableItem* variable_item_password; // The variable item (password)
-    UART_TextInput* uart_text_input_ssid; // The text input for the SSID
-    UART_TextInput* uart_text_input_password; // The text input for the password
-    UART_TextInput* uart_text_input_dictionary; // The text input for the dictionary
+    TextInput* uart_text_input_ssid; // The text input for the SSID
+    TextInput* uart_text_input_password; // The text input for the password
+    TextInput* uart_text_input_dictionary; // The text input for the dictionary
     //
     Widget* widget_random_fact; // The text box that displays the random fact
     Widget* widget_dictionary; // The text box that displays the dictionary

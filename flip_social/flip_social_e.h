@@ -172,33 +172,31 @@ typedef struct {
     VariableItemList* variable_item_list_logged_in_settings; // The settings menu
     VariableItemList* variable_item_list_logged_in_settings_wifi; // The wifi settings menu
 
-    UART_TextInput*
+    TextInput*
         text_input_logged_out_wifi_settings_ssid; // Text input for ssid input on wifi settings screen
-    UART_TextInput*
+    TextInput*
         text_input_logged_out_wifi_settings_password; // Text input for password input on wifi settings screen
-    UART_TextInput*
-        text_input_logged_out_login_username; // Text input for username input on login screen
-    UART_TextInput*
-        text_input_logged_out_login_password; // Text input for password input on login screen
-    UART_TextInput*
+    TextInput* text_input_logged_out_login_username; // Text input for username input on login screen
+    TextInput* text_input_logged_out_login_password; // Text input for password input on login screen
+    TextInput*
         text_input_logged_out_register_username; // Text input for username input on register screen
-    UART_TextInput*
+    TextInput*
         text_input_logged_out_register_password; // Text input for password input on register screen
-    UART_TextInput*
+    TextInput*
         text_input_logged_out_register_password_2; // Text input for password 2 input on register screen
     //
-    UART_TextInput*
+    TextInput*
         text_input_logged_in_change_password; // Text input for password input on change password screen
-    UART_TextInput*
+    TextInput*
         text_input_logged_in_compose_pre_save_input; // Text input for pre save input on compose screen
-    UART_TextInput*
+    TextInput*
         text_input_logged_in_wifi_settings_ssid; // Text input for ssid input on wifi settings screen
-    UART_TextInput*
+    TextInput*
         text_input_logged_in_wifi_settings_password; // Text input for password input on wifi settings screen
     //
-    UART_TextInput*
+    TextInput*
         text_input_logged_in_messages_new_message; // Text input for new message input on messages screen
-    UART_TextInput* text_input_logged_in_messages_new_message_user_choices; //
+    TextInput* text_input_logged_in_messages_new_message_user_choices; //
 
     VariableItem*
         variable_item_logged_out_wifi_settings_ssid; // Reference to the ssid configuration item

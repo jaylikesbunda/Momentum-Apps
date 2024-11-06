@@ -1,6 +1,5 @@
 #ifndef FLIP_STORE_E_H
 #define FLIP_STORE_E_H
-#include <uart_text_input.h>
 #include <flipper_http.h>
 #include <easy_flipper.h>
 #include <furi.h>
@@ -107,8 +106,8 @@ typedef struct {
     VariableItemList* variable_item_list; // The variable item list (settngs)
     VariableItem* variable_item_ssid; // The variable item
     VariableItem* variable_item_pass; // The variable item
-    UART_TextInput* uart_text_input_ssid; // The text input
-    UART_TextInput* uart_text_input_pass; // The text input
+    TextInput* uart_text_input_ssid; // The text input
+    TextInput* uart_text_input_pass; // The text input
 
     char* uart_text_input_buffer_ssid; // Buffer for the text input
     char* uart_text_input_temp_buffer_ssid; // Temporary buffer for the text input

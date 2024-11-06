@@ -87,11 +87,11 @@ static void flip_store_app_free(FlipStoreApp* app) {
     // Free Text Input(s)
     if(app->uart_text_input_ssid) {
         view_dispatcher_remove_view(app->view_dispatcher, FlipStoreViewTextInputSSID);
-        uart_text_input_free(app->uart_text_input_ssid);
+        text_input_free(app->uart_text_input_ssid);
     }
     if(app->uart_text_input_pass) {
         view_dispatcher_remove_view(app->view_dispatcher, FlipStoreViewTextInputPass);
-        uart_text_input_free(app->uart_text_input_pass);
+        text_input_free(app->uart_text_input_pass);
     }
 
     // Free popup

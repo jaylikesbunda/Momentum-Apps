@@ -57,11 +57,11 @@ typedef struct {
     Widget* widget_info; // The widget
     VariableItemList* variable_item_list_wifi; // The variable item list (settngs)
     VariableItem* variable_item_ssid; // The variable item
-    UART_TextInput* uart_text_input_password_scan; // The text input for the wifi scan screen
-    UART_TextInput* uart_text_input_password_saved; // The text input for the wifi saved screen
+    TextInput* uart_text_input_password_scan; // The text input for the wifi scan screen
+    TextInput* uart_text_input_password_saved; // The text input for the wifi saved screen
     //
-    UART_TextInput* uart_text_input_add_ssid; // The text input for the wifi saved screen
-    UART_TextInput* uart_text_input_add_password; // The text input for the wifi saved screen
+    TextInput* uart_text_input_add_ssid; // The text input for the wifi saved screen
+    TextInput* uart_text_input_add_password; // The text input for the wifi saved screen
 
     char* uart_text_input_buffer_password_scan; // Buffer for the text input
     char* uart_text_input_temp_buffer_password_scan; // Temporary buffer for the text input

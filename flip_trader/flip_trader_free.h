@@ -43,11 +43,11 @@ static void flip_trader_app_free(FlipTraderApp* app) {
     // Free Text Input(s)
     if(app->uart_text_input_ssid) {
         view_dispatcher_remove_view(app->view_dispatcher, FlipTraderViewTextInputSSID);
-        uart_text_input_free(app->uart_text_input_ssid);
+        text_input_free(app->uart_text_input_ssid);
     }
     if(app->uart_text_input_password) {
         view_dispatcher_remove_view(app->view_dispatcher, FlipTraderViewTextInputPassword);
-        uart_text_input_free(app->uart_text_input_password);
+        text_input_free(app->uart_text_input_password);
     }
 
     // deinitalize flipper http

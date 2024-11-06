@@ -79,67 +79,67 @@ static void flip_social_app_free(FlipSocialApp* app) {
     if(app->text_input_logged_out_wifi_settings_ssid) {
         view_dispatcher_remove_view(
             app->view_dispatcher, FlipSocialViewLoggedOutWifiSettingsSSIDInput);
-        uart_text_input_free(app->text_input_logged_out_wifi_settings_ssid);
+        text_input_free(app->text_input_logged_out_wifi_settings_ssid);
     }
     if(app->text_input_logged_out_wifi_settings_password) {
         view_dispatcher_remove_view(
             app->view_dispatcher, FlipSocialViewLoggedOutWifiSettingsPasswordInput);
-        uart_text_input_free(app->text_input_logged_out_wifi_settings_password);
+        text_input_free(app->text_input_logged_out_wifi_settings_password);
     }
     if(app->text_input_logged_out_login_username) {
         view_dispatcher_remove_view(
             app->view_dispatcher, FlipSocialViewLoggedOutLoginUsernameInput);
-        uart_text_input_free(app->text_input_logged_out_login_username);
+        text_input_free(app->text_input_logged_out_login_username);
     }
     if(app->text_input_logged_out_login_password) {
         view_dispatcher_remove_view(
             app->view_dispatcher, FlipSocialViewLoggedOutLoginPasswordInput);
-        uart_text_input_free(app->text_input_logged_out_login_password);
+        text_input_free(app->text_input_logged_out_login_password);
     }
     if(app->text_input_logged_out_register_username) {
         view_dispatcher_remove_view(
             app->view_dispatcher, FlipSocialViewLoggedOutRegisterUsernameInput);
-        uart_text_input_free(app->text_input_logged_out_register_username);
+        text_input_free(app->text_input_logged_out_register_username);
     }
     if(app->text_input_logged_out_register_password) {
         view_dispatcher_remove_view(
             app->view_dispatcher, FlipSocialViewLoggedOutRegisterPasswordInput);
-        uart_text_input_free(app->text_input_logged_out_register_password);
+        text_input_free(app->text_input_logged_out_register_password);
     }
     if(app->text_input_logged_out_register_password_2) {
         view_dispatcher_remove_view(
             app->view_dispatcher, FlipSocialViewLoggedOutRegisterPassword2Input);
-        uart_text_input_free(app->text_input_logged_out_register_password_2);
+        text_input_free(app->text_input_logged_out_register_password_2);
     }
     if(app->text_input_logged_in_change_password) {
         view_dispatcher_remove_view(
             app->view_dispatcher, FlipSocialViewLoggedInChangePasswordInput);
-        uart_text_input_free(app->text_input_logged_in_change_password);
+        text_input_free(app->text_input_logged_in_change_password);
     }
     if(app->text_input_logged_in_compose_pre_save_input) {
         view_dispatcher_remove_view(
             app->view_dispatcher, FlipSocialViewLoggedInComposeAddPreSaveInput);
-        uart_text_input_free(app->text_input_logged_in_compose_pre_save_input);
+        text_input_free(app->text_input_logged_in_compose_pre_save_input);
     }
     if(app->text_input_logged_in_wifi_settings_ssid) {
         view_dispatcher_remove_view(
             app->view_dispatcher, FlipSocialViewLoggedInWifiSettingsSSIDInput);
-        uart_text_input_free(app->text_input_logged_in_wifi_settings_ssid);
+        text_input_free(app->text_input_logged_in_wifi_settings_ssid);
     }
     if(app->text_input_logged_in_wifi_settings_password) {
         view_dispatcher_remove_view(
             app->view_dispatcher, FlipSocialViewLoggedInWifiSettingsPasswordInput);
-        uart_text_input_free(app->text_input_logged_in_wifi_settings_password);
+        text_input_free(app->text_input_logged_in_wifi_settings_password);
     }
     if(app->text_input_logged_in_messages_new_message) {
         view_dispatcher_remove_view(
             app->view_dispatcher, FlipSocialViewLoggedInMessagesNewMessageInput);
-        uart_text_input_free(app->text_input_logged_in_messages_new_message);
+        text_input_free(app->text_input_logged_in_messages_new_message);
     }
     if(app->text_input_logged_in_messages_new_message_user_choices) {
         view_dispatcher_remove_view(
             app->view_dispatcher, FlipSocialViewLoggedInMessagesNewMessageUserChoicesInput);
-        uart_text_input_free(app->text_input_logged_in_messages_new_message_user_choices);
+        text_input_free(app->text_input_logged_in_messages_new_message_user_choices);
     }
 
     // Free Widget(s)

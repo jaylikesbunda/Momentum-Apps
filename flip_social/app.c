@@ -1,6 +1,5 @@
 // app.c
 #include <jsmn.h> // Include cJSON
-#include <uart_text_input.h> // Include the text input widget
 #include <flip_social_e.h> // Include the FlipSocialApp structure
 #include <flip_social_storage.h> // Include the storage functions
 #include "flip_social_draw.h"

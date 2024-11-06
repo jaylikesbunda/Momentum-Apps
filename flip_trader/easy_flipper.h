@@ -17,7 +17,6 @@
 #include <gui/modules/dialog_ex.h>
 #include <gui/modules/popup.h>
 #include <gui/modules/loading.h>
-#include <uart_text_input.h>
 
 #define EASY_TAG "EasyFlipper"
 
@@ -308,15 +307,15 @@ bool easy_flipper_set_text_input(
 }
 
 /**
- * @brief Initialize a UART_TextInput object
- * @param uart_text_input The UART_TextInput object to initialize
+ * @brief Initialize a TextInput object with extra symbols
+ * @param uart_text_input The TextInput object to initialize
  * @param view_id The ID/Index of the view
  * @param previous_callback The previous callback function (can be set to NULL)
  * @param view_dispatcher The ViewDispatcher object
  * @return true if successful, false otherwise
  */
 bool easy_flipper_set_uart_text_input(
-    UART_TextInput** uart_text_input,
+    TextInput** uart_text_input,
     int32_t view_id,
     char* header_text,
     char* uart_text_input_temp_buffer,
@@ -329,19 +328,19 @@ bool easy_flipper_set_uart_text_input(
         FURI_LOG_E(EASY_TAG, "Invalid arguments provided to set_uart_text_input");
         return false;
     }
-    *uart_text_input = uart_text_input_alloc();
+    *uart_text_input = text_input_alloc();
     if(!*uart_text_input) {
         FURI_LOG_E(EASY_TAG, "Failed to allocate UART_TextInput");
         return false;
     }
     if(previous_callback) {
-        view_set_previous_callback(uart_text_input_get_view(*uart_text_input), previous_callback);
+        view_set_previous_callback(text_input_get_view(*uart_text_input), previous_callback);
     }
     if(header_text) {
-        uart_text_input_set_header_text(*uart_text_input, header_text);
+        text_input_set_header_text(*uart_text_input, header_text);
     }
     if(uart_text_input_temp_buffer && uart_text_input_buffer_size && result_callback) {
-        uart_text_input_set_result_callback(
+        text_input_set_result_callback(
             *uart_text_input,
             result_callback,
             context,
@@ -349,8 +348,8 @@ bool easy_flipper_set_uart_text_input(
             uart_text_input_buffer_size,
             false);
     }
-    view_dispatcher_add_view(
-        *view_dispatcher, view_id, uart_text_input_get_view(*uart_text_input));
+    text_input_show_illegal_symbols(*uart_text_input, true);
+    view_dispatcher_add_view(*view_dispatcher, view_id, text_input_get_view(*uart_text_input));
     return true;
 }
 
