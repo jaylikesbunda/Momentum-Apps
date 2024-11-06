@@ -5,21 +5,18 @@
 #include <flip_wifi_free.h>
 
 // Entry point for the FlipWiFi application
-int32_t flip_wifi_main(void *p)
-{
+int32_t flip_wifi_main(void* p) {
     // Suppress unused parameter warning
     UNUSED(p);
 
     // Initialize the FlipWiFi application
-    FlipWiFiApp *app = flip_wifi_app_alloc();
-    if (!app)
-    {
+    FlipWiFiApp* app = flip_wifi_app_alloc();
+    if(!app) {
         FURI_LOG_E(TAG, "Failed to allocate FlipWiFiApp");
         return -1;
     }
 
-    if (!flipper_http_ping())
-    {
+    if(!flipper_http_ping()) {
         FURI_LOG_E(TAG, "Failed to ping the device");
         return -1;
     }

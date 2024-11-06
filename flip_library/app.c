@@ -5,21 +5,18 @@
 #include <flip_library_free.h>
 
 // Entry point for the FlipLibrary application
-int32_t flip_library_app(void *p)
-{
+int32_t flip_library_app(void* p) {
     // Suppress unused parameter warning
     UNUSED(p);
 
     // Initialize the FlipLibrary application
-    FlipLibraryApp *app = flip_library_app_alloc();
-    if (!app)
-    {
+    FlipLibraryApp* app = flip_library_app_alloc();
+    if(!app) {
         FURI_LOG_E(TAG, "Failed to allocate FlipLibraryApp");
         return -1;
     }
 
-    if (!flipper_http_ping())
-    {
+    if(!flipper_http_ping()) {
         FURI_LOG_E(TAG, "Failed to ping the device");
         return -1;
     }
