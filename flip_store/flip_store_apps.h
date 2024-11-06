@@ -278,16 +278,21 @@ static bool flip_store_process_app_list(const char* file_path) {
     return true;
 }
 
-static bool flip_store_get_fap_file(char* build_id, char* target, char* api) {
+static bool flip_store_get_fap_file(
+    char* build_id,
+    uint8_t target,
+    uint16_t api_major,
+    uint16_t api_minor) {
     is_compile_app_request = true;
     char url[164];
     snprintf(
         url,
         sizeof(url),
-        "https://catalog.flipperzero.one/api/v0/application/version/%s/build/compatible?target=%s&api=%s",
+        "https://catalog.flipperzero.one/api/v0/application/version/%s/build/compatible?target=f%d&api=%d.%d",
         build_id,
         target,
-        api);
+        api_major,
+        api_minor);
     return flipper_http_get_request_bytes(url, jsmn("Content-Type", "application/octet-stream"));
 }
 
@@ -347,8 +352,12 @@ static bool flip_store_install_app(Canvas* canvas, char* category) {
     strncpy(fhttp.file_path, bin_path, sizeof(fhttp.file_path) - 1);
     canvas_draw_str(canvas, 0, 10, installing_text);
     canvas_draw_str(canvas, 0, 20, "Sending request..");
+    uint8_t target = furi_hal_version_get_hw_target();
+    uint16_t api_major, api_minor;
+    furi_hal_info_get_api_version(&api_major, &api_minor);
     if(fhttp.state != INACTIVE &&
-       flip_store_get_fap_file(flip_catalog[app_selected_index].app_build_id, "f7", "73.0")) {
+       flip_store_get_fap_file(
+           flip_catalog[app_selected_index].app_build_id, target, api_major, api_minor)) {
         canvas_draw_str(canvas, 0, 30, "Request sent.");
         fhttp.state = RECEIVING;
         // furi_timer_start(fhttp.get_timeout_timer, TIMEOUT_DURATION_TICKS);
