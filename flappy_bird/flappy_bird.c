@@ -18,7 +18,8 @@
 
 #define FLAPPY_GAB_HEIGHT   24
 #define YAPPER_GAB_HEIGHT   32
-#define GHOSTESP_GAB_HEIGHT 28
+#define YAPPYGHOST_GAB_HEIGHT 29
+
 #define FLAPPY_GAB_WIDTH    10
 
 #define YAPPER_HEIGHT 22
@@ -42,7 +43,7 @@ typedef enum {
 typedef enum {
     BirdTypeDefault = 0,
     BirdTypeYapper,
-    BirdTypeGhostESP,
+    BirdTypeYappyGhost,
     BirdTypeMAX
 } BirdType;
 
@@ -68,18 +69,18 @@ static const CharacterDimensions character_dimensions[] = {
      4,
      YAPPER_WIDTH - 8,
      YAPPER_HEIGHT - 8}, // Yapper with larger offset
-    {YAPPER_WIDTH,
-     YAPPER_HEIGHT,
-     5,
-     5,
-     YAPPER_WIDTH - 10,
-     YAPPER_HEIGHT - 10} // GhostESP with smaller hitbox
+    {18,
+     19,
+     4,
+     4,
+     10,
+     11} // YappyGhost with custom hitbox
 };
 
 const Icon* bird_sets[BirdTypeMAX][BirdStateMAX] = {
     {&I_bird_01, &I_bird_02, &I_bird_03},
     {&I_yapper_01, &I_yapper_02, &I_yapper_03},
-    {&I_ghostesp_01, &I_ghostesp_02, &I_ghostesp_03}};
+    {&I_yappyghost_01, &I_yappyghost_02, &I_yappyghost_03}};
 
 typedef enum {
     EventTypeTick,
@@ -165,13 +166,12 @@ static inline int get_gap_height(BirdType bird_type) {
     switch(bird_type) {
     case BirdTypeYapper:
         return YAPPER_GAB_HEIGHT;
-    case BirdTypeGhostESP:
-        return GHOSTESP_GAB_HEIGHT;
+    case BirdTypeYappyGhost:
+        return YAPPYGHOST_GAB_HEIGHT;  // Now uses its own gap height
     default:
         return FLAPPY_GAB_HEIGHT;
     }
 }
-
 static void flappy_game_random_pilar(GameState* const game_state) {
     PILAR pilar;
     int gap_height = get_gap_height(game_state->selected_bird);
@@ -238,9 +238,9 @@ static bool check_collision(
         return false;
     }
 
-    // Extra forgiving collision for Yapper/GhostESP
+    // Extra forgiving collision for Yapper/YappyGhost
     if(game_state->selected_bird == BirdTypeYapper ||
-       game_state->selected_bird == BirdTypeGhostESP) {
+       game_state->selected_bird == BirdTypeYappyGhost) {
         // Add small grace area for top and bottom pipes
         top_pipe_bottom += 2;
         bottom_pipe_top -= 2;
@@ -258,6 +258,7 @@ static bool check_collision(
 
     return false;
 }
+
 
 static void flappy_game_tick(GameState* const game_state) {
     if(game_state->collision_frame > 0) {
@@ -352,8 +353,8 @@ static void flappy_game_render_callback(Canvas* const canvas, void* ctx) {
             // Change title based on selected character
             if(game_state->selected_bird == BirdTypeYapper) {
                 canvas_draw_str_aligned(canvas, 64, 20, AlignCenter, AlignBottom, "Yappy Bird");
-            } else if(game_state->selected_bird == BirdTypeGhostESP) {
-                canvas_draw_str_aligned(canvas, 64, 20, AlignCenter, AlignBottom, "Flappy Ghost");
+            } else if(game_state->selected_bird == BirdTypeYappyGhost) {
+                canvas_draw_str_aligned(canvas, 64, 20, AlignCenter, AlignBottom, "Yappy Ghost");
             } else {
                 canvas_draw_str_aligned(canvas, 64, 20, AlignCenter, AlignBottom, "Flappy Bird");
             }
@@ -457,8 +458,8 @@ static void flappy_game_render_callback(Canvas* const canvas, void* ctx) {
         // Adjust Y position to keep character in bounds
         int adjusted_y = game_state->bird.point.y;
         if(adjusted_y < 0) adjusted_y = 0;
-        if(adjusted_y > FLIPPER_LCD_HEIGHT - dims.width) {
-            adjusted_y = FLIPPER_LCD_HEIGHT - dims.width;
+        if(adjusted_y > FLIPPER_LCD_HEIGHT - dims.height) {
+            adjusted_y = FLIPPER_LCD_HEIGHT - dims.height;
         }
 
         // Draw the character with adjusted position
