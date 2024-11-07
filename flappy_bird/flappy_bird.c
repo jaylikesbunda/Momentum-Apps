@@ -16,11 +16,11 @@
 #define FLAPPY_PILAR_MAX  6
 #define FLAPPY_PILAR_DIST 35
 
-#define FLAPPY_GAB_HEIGHT   24
-#define YAPPER_GAB_HEIGHT   32
+#define FLAPPY_GAB_HEIGHT     24
+#define YAPPER_GAB_HEIGHT     32
 #define YAPPYGHOST_GAB_HEIGHT 29
 
-#define FLAPPY_GAB_WIDTH    10
+#define FLAPPY_GAB_WIDTH 10
 
 #define YAPPER_HEIGHT 22
 #define YAPPER_WIDTH  16
@@ -69,12 +69,7 @@ static const CharacterDimensions character_dimensions[] = {
      4,
      YAPPER_WIDTH - 8,
      YAPPER_HEIGHT - 8}, // Yapper with larger offset
-    {18,
-     19,
-     4,
-     4,
-     10,
-     11} // YappyGhost with custom hitbox
+    {18, 19, 4, 4, 10, 11} // YappyGhost with custom hitbox
 };
 
 const Icon* bird_sets[BirdTypeMAX][BirdStateMAX] = {
@@ -167,7 +162,7 @@ static inline int get_gap_height(BirdType bird_type) {
     case BirdTypeYapper:
         return YAPPER_GAB_HEIGHT;
     case BirdTypeYappyGhost:
-        return YAPPYGHOST_GAB_HEIGHT;  // Now uses its own gap height
+        return YAPPYGHOST_GAB_HEIGHT; // Now uses its own gap height
     default:
         return FLAPPY_GAB_HEIGHT;
     }
@@ -258,7 +253,6 @@ static bool check_collision(
 
     return false;
 }
-
 
 static void flappy_game_tick(GameState* const game_state) {
     if(game_state->collision_frame > 0) {
