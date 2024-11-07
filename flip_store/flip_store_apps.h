@@ -293,7 +293,10 @@ static bool flip_store_get_fap_file(
         target,
         api_major,
         api_minor);
-    return flipper_http_get_request_bytes(url, jsmn("Content-Type", "application/octet-stream"));
+    char* headers = jsmn("Content-Type", "application/octet-stream");
+    bool sent_request = flipper_http_get_request_bytes(url, headers);
+    free(headers);
+    return sent_request;
 }
 
 static void flip_store_request_error(Canvas* canvas) {
