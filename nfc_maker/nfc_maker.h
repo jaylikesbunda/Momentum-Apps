@@ -6,7 +6,12 @@
 #include <gui/modules/validators.h>
 #include <gui/view_dispatcher.h>
 #include <gui/scene_manager.h>
+#if __has_include(<assets_icons.h>)
 #include <assets_icons.h>
+#else
+extern const Icon I_DolphinDone_80x58;
+extern const Icon I_WarningDolphinFlip_45x42;
+#endif
 #include <gui/modules/submenu.h>
 #include <gui/modules/text_input.h>
 #include <gui/modules/byte_input.h>
@@ -14,7 +19,14 @@
 #include "scenes/nfc_maker_scene.h"
 #include <lib/flipper_format/flipper_format.h>
 #include <toolbox/name_generator.h>
+#if __has_include(<applications/main/nfc/nfc_app_i.h>)
 #include <applications/main/nfc/nfc_app_i.h>
+#else
+#define NFC_APP_FOLDER    EXT_PATH("nfc")
+#define NFC_APP_EXTENSION ".nfc"
+#endif
+#include <lib/nfc/protocols/mf_ultralight/mf_ultralight.h>
+#include <lib/nfc/helpers/nfc_data_generator.h>
 #include <furi_hal_bt.h>
 
 #define MAC_INPUT_LEN   GAP_MAC_ADDR_SIZE
@@ -83,3 +95,13 @@ typedef enum {
     NfcMakerViewByteInput,
     NfcMakerViewPopup,
 } NfcMakerView;
+
+#ifndef FW_ORIGIN_Momentum
+#define text_input_show_illegal_symbols(text_input, show)
+#endif
+
+#ifdef FW_ORIGIN_Official
+#define submenu_add_lockable_item(                                             \
+    submenu, label, index, callback, callback_context, locked, locked_message) \
+    if(!(locked)) submenu_add_item(submenu, label, index, callback, callback_context)
+#endif
