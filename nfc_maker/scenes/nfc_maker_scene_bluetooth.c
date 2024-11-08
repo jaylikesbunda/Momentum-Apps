@@ -26,7 +26,7 @@ void nfc_maker_scene_bluetooth_on_enter(void* context) {
     byte_input_set_header_text(byte_input, "Enter Bluetooth MAC:");
 
     for(size_t i = 0; i < sizeof(app->mac_buf); i++) {
-        app->mac_buf[i] = 0x69;
+        app->mac_buf[i] = 0x42;
     }
 
     byte_input_set_result_callback(

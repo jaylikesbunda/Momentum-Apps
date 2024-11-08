@@ -16,7 +16,14 @@ void nfc_maker_scene_contact_url_on_enter(void* context) {
 
     text_input_set_header_text(text_input, "Enter URL Link:");
 
-    strlcpy(app->big_buf, "momentum-fw.dev", sizeof(app->big_buf));
+    strlcpy(
+        app->big_buf,
+#ifdef FW_ORIGIN_Momentum
+        "momentum-fw.dev",
+#else
+        "flipperzero.one",
+#endif
+        sizeof(app->big_buf));
 
     text_input_set_result_callback(
         text_input,
