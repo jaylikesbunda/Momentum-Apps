@@ -13,7 +13,11 @@ extern const Icon I_DolphinDone_80x58;
 extern const Icon I_WarningDolphinFlip_45x42;
 #endif
 #include <gui/modules/submenu.h>
+#ifdef FW_ORIGIN_Momentum
 #include <gui/modules/text_input.h>
+#else
+#include "dropin/text_input.h"
+#endif
 #include <gui/modules/byte_input.h>
 #include <gui/modules/popup.h>
 #include "scenes/nfc_maker_scene.h"
@@ -95,10 +99,6 @@ typedef enum {
     NfcMakerViewByteInput,
     NfcMakerViewPopup,
 } NfcMakerView;
-
-#ifndef FW_ORIGIN_Momentum
-#define text_input_show_illegal_symbols(text_input, show)
-#endif
 
 #ifdef FW_ORIGIN_Official
 #define submenu_add_lockable_item(                                             \
