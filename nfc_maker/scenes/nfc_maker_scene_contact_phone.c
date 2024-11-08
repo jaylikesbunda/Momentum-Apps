@@ -16,14 +16,14 @@ void nfc_maker_scene_contact_phone_on_enter(void* context) {
 
     text_input_set_header_text(text_input, "Enter Phone Number:");
 
-    strlcpy(app->phone_buf, "+", PHONE_INPUT_LEN);
+    strlcpy(app->phone_buf, "+", sizeof(app->phone_buf));
 
     text_input_set_result_callback(
         text_input,
         nfc_maker_scene_contact_phone_text_input_callback,
         app,
         app->phone_buf,
-        PHONE_INPUT_LEN,
+        sizeof(app->phone_buf),
         false);
 
     text_input_set_minimum_length(text_input, 0);

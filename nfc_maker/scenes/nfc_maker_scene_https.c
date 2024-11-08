@@ -16,14 +16,14 @@ void nfc_maker_scene_https_on_enter(void* context) {
 
     text_input_set_header_text(text_input, "Enter Https Link:");
 
-    strlcpy(app->big_buf, "momentum-fw.dev", BIG_INPUT_LEN);
+    strlcpy(app->big_buf, "momentum-fw.dev", sizeof(app->big_buf));
 
     text_input_set_result_callback(
         text_input,
         nfc_maker_scene_https_text_input_callback,
         app,
         app->big_buf,
-        BIG_INPUT_LEN,
+        sizeof(app->big_buf),
         true);
 
     text_input_show_illegal_symbols(text_input, true);
