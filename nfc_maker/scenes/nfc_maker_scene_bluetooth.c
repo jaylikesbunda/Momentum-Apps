@@ -10,6 +10,15 @@ static void nfc_maker_scene_bluetooth_byte_input_callback(void* context) {
     view_dispatcher_send_custom_event(app->view_dispatcher, ByteInputResultOk);
 }
 
+static void reverse_mac_addr(uint8_t mac_addr[GAP_MAC_ADDR_SIZE]) {
+    uint8_t tmp;
+    for(size_t i = 0; i < GAP_MAC_ADDR_SIZE / 2; i++) {
+        tmp = mac_addr[i];
+        mac_addr[i] = mac_addr[GAP_MAC_ADDR_SIZE - 1 - i];
+        mac_addr[GAP_MAC_ADDR_SIZE - 1 - i] = tmp;
+    }
+}
+
 void nfc_maker_scene_bluetooth_on_enter(void* context) {
     NfcMaker* app = context;
     ByteInput* byte_input = app->byte_input;
@@ -39,7 +48,7 @@ bool nfc_maker_scene_bluetooth_on_event(void* context, SceneManagerEvent event) 
         consumed = true;
         switch(event.event) {
         case ByteInputResultOk:
-            furi_hal_bt_reverse_mac_addr(app->mac_buf);
+            reverse_mac_addr(app->mac_buf);
             scene_manager_next_scene(app->scene_manager, NfcMakerSceneSaveGenerate);
             break;
         default:
