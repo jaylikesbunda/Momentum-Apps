@@ -1,8 +1,6 @@
-#ifndef FLIP_STORE_I_H
-#define FLIP_STORE_I_H
-
+#include <alloc/flip_store_alloc.h>
 // Function to allocate resources for the FlipStoreApp
-static FlipStoreApp* flip_store_app_alloc() {
+FlipStoreApp* flip_store_app_alloc() {
     FlipStoreApp* app = (FlipStoreApp*)malloc(sizeof(FlipStoreApp));
 
     Gui* gui = furi_record_open(RECORD_GUI);
@@ -151,7 +149,7 @@ static FlipStoreApp* flip_store_app_alloc() {
     if(!easy_flipper_set_submenu(
            &app->submenu,
            FlipStoreViewSubmenu,
-           "FlipStore",
+           "FlipStore v0.3",
            callback_exit_app,
            &app->view_dispatcher)) {
         return NULL;
@@ -364,5 +362,3 @@ static FlipStoreApp* flip_store_app_alloc() {
 
     return app;
 }
-
-#endif // FLIP_STORE_I_H
