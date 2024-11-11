@@ -1,8 +1,7 @@
-#ifndef FLIP_WIFI_I_H
-#define FLIP_WIFI_I_H
+#include <alloc/flip_wifi_alloc.h>
 
 // Function to allocate resources for the FlipWiFiApp
-static FlipWiFiApp* flip_wifi_app_alloc() {
+FlipWiFiApp* flip_wifi_app_alloc() {
     FlipWiFiApp* app = (FlipWiFiApp*)malloc(sizeof(FlipWiFiApp));
 
     Gui* gui = furi_record_open(RECORD_GUI);
@@ -89,7 +88,7 @@ static FlipWiFiApp* flip_wifi_app_alloc() {
     if(!easy_flipper_set_widget(
            &app->widget_info,
            FlipWiFiViewAbout,
-           "FlipWiFi v1.0\n-----\nFlipperHTTP companion app.\nScan and save WiFi networks.\n-----\nwww.github.com/jblanked",
+           "FlipWiFi v1.1\n-----\nFlipperHTTP companion app.\nScan and save WiFi networks.\n-----\nwww.github.com/jblanked",
            callback_to_submenu_main,
            &app->view_dispatcher)) {
         return NULL;
@@ -149,7 +148,7 @@ static FlipWiFiApp* flip_wifi_app_alloc() {
     if(!easy_flipper_set_submenu(
            &app->submenu_main,
            FlipWiFiViewSubmenuMain,
-           "FlipWiFi v1.0",
+           "FlipWiFi v1.1",
            easy_flipper_callback_exit_app,
            &app->view_dispatcher)) {
         return NULL;
@@ -201,6 +200,16 @@ static FlipWiFiApp* flip_wifi_app_alloc() {
     // Load the playlist from storage
     if(!load_playlist(&app->wifi_playlist)) {
         FURI_LOG_E(TAG, "Failed to load playlist");
+
+        // playlist is empty?
+        submenu_reset(app->submenu_wifi_saved);
+        submenu_set_header(app->submenu_wifi_saved, "Saved APs");
+        submenu_add_item(
+            app->submenu_wifi_saved,
+            "[Add Network]",
+            FlipWiFiSubmenuIndexWiFiSavedAddSSID,
+            callback_submenu_choices,
+            app);
     } else {
         // Update the submenu
         flip_wifi_redraw_submenu_saved(app);
@@ -209,9 +218,5 @@ static FlipWiFiApp* flip_wifi_app_alloc() {
     // Switch to the main view
     view_dispatcher_switch_to_view(app->view_dispatcher, FlipWiFiViewSubmenuMain);
 
-    app_instance = app;
-
     return app;
 }
-
-#endif // FLIP_WIFI_I_H
