@@ -1,44 +1,53 @@
-#ifndef FLIP_WEATHER_CALLBACK_H
-#define FLIP_WEATHER_CALLBACK_H
+#include "callback/flip_weather_callback.h"
 
-static bool weather_request_success = false;
-static bool sent_weather_request = false;
-static bool got_weather_data = false;
+bool weather_request_success = false;
+bool sent_weather_request = false;
+bool got_weather_data = false;
+
+void flip_weather_popup_callback(void* context) {
+    FlipWeatherApp* app = (FlipWeatherApp*)context;
+    if(!app) {
+        FURI_LOG_E(TAG, "FlipWeatherApp is NULL");
+        return;
+    }
+    view_dispatcher_switch_to_view(app->view_dispatcher, FlipWeatherViewSubmenu);
+}
 
 void flip_weather_request_error(Canvas* canvas) {
-    if(fhttp.last_response == NULL) {
-        if(fhttp.last_response != NULL) {
-            if(strstr(fhttp.last_response, "[ERROR] Not connected to Wifi. Failed to reconnect.") !=
-               NULL) {
-                canvas_clear(canvas);
-                canvas_draw_str(canvas, 0, 10, "[ERROR] Not connected to Wifi.");
-                canvas_draw_str(canvas, 0, 50, "Update your WiFi settings.");
-                canvas_draw_str(canvas, 0, 60, "Press BACK to return.");
-            } else if(strstr(fhttp.last_response, "[ERROR] Failed to connect to Wifi.") != NULL) {
-                canvas_clear(canvas);
-                canvas_draw_str(canvas, 0, 10, "[ERROR] Not connected to Wifi.");
-                canvas_draw_str(canvas, 0, 50, "Update your WiFi settings.");
-                canvas_draw_str(canvas, 0, 60, "Press BACK to return.");
-            } else {
-                canvas_clear(canvas);
-                FURI_LOG_E(TAG, "Received an error: %s", fhttp.last_response);
-                canvas_draw_str(canvas, 0, 10, "[ERROR] Unusual error...");
-                canvas_draw_str(canvas, 0, 60, "Press BACK and retry.");
-            }
-        } else {
+    if(fhttp.last_response != NULL) {
+        if(strstr(fhttp.last_response, "[ERROR] Not connected to Wifi. Failed to reconnect.") !=
+           NULL) {
             canvas_clear(canvas);
-            canvas_draw_str(canvas, 0, 10, "[ERROR] Unknown error.");
+            canvas_draw_str(canvas, 0, 10, "[ERROR] Not connected to Wifi.");
             canvas_draw_str(canvas, 0, 50, "Update your WiFi settings.");
             canvas_draw_str(canvas, 0, 60, "Press BACK to return.");
+        } else if(strstr(fhttp.last_response, "[ERROR] Failed to connect to Wifi.") != NULL) {
+            canvas_clear(canvas);
+            canvas_draw_str(canvas, 0, 10, "[ERROR] Not connected to Wifi.");
+            canvas_draw_str(canvas, 0, 50, "Update your WiFi settings.");
+            canvas_draw_str(canvas, 0, 60, "Press BACK to return.");
+        } else if(
+            strstr(fhttp.last_response, "[ERROR] GET request failed or returned empty data.") !=
+            NULL) {
+            canvas_clear(canvas);
+            canvas_draw_str(canvas, 0, 10, "[ERROR] WiFi error.");
+            canvas_draw_str(canvas, 0, 50, "Update your WiFi settings.");
+            canvas_draw_str(canvas, 0, 60, "Press BACK to return.");
+        } else {
+            canvas_clear(canvas);
+            FURI_LOG_E(TAG, "Received an error: %s", fhttp.last_response);
+            canvas_draw_str(canvas, 0, 10, "[ERROR] Unusual error...");
+            canvas_draw_str(canvas, 0, 60, "Press BACK and retry.");
         }
     } else {
         canvas_clear(canvas);
-        canvas_draw_str(canvas, 0, 10, "Failed to receive data.");
+        canvas_draw_str(canvas, 0, 10, "[ERROR] Unknown error.");
+        canvas_draw_str(canvas, 0, 50, "Update your WiFi settings.");
         canvas_draw_str(canvas, 0, 60, "Press BACK to return.");
     }
 }
 
-static void flip_weather_handle_gps_draw(Canvas* canvas, bool show_gps_data) {
+void flip_weather_handle_gps_draw(Canvas* canvas, bool show_gps_data) {
     if(sent_get_request) {
         if(fhttp.state == RECEIVING) {
             if(show_gps_data) {
@@ -68,7 +77,7 @@ static void flip_weather_handle_gps_draw(Canvas* canvas, bool show_gps_data) {
 }
 
 // Callback for drawing the weather screen
-static void flip_weather_view_draw_callback_weather(Canvas* canvas, void* model) {
+void flip_weather_view_draw_callback_weather(Canvas* canvas, void* model) {
     if(!canvas) {
         return;
     }
@@ -90,7 +99,7 @@ static void flip_weather_view_draw_callback_weather(Canvas* canvas, void* model)
     // handle geo location until it's processed and then handle weather
 
     // start the process
-    if(!send_geo_location_request()) {
+    if(!send_geo_location_request() || fhttp.state == ISSUE) {
         flip_weather_request_error(canvas);
     }
     // wait until geo location is processed
@@ -107,16 +116,18 @@ static void flip_weather_view_draw_callback_weather(Canvas* canvas, void* model)
         char url[512];
         char* lattitude = lat_data + 10;
         char* longitude = lon_data + 11;
+        char* headers = jsmn("Content-Type", "application/json");
         snprintf(
             url,
             512,
             "https://api.open-meteo.com/v1/forecast?latitude=%s&longitude=%s&current=temperature_2m,precipitation,rain,showers,snowfall&temperature_unit=celsius&wind_speed_unit=mph&precipitation_unit=inch&forecast_days=1",
             lattitude,
             longitude);
-        weather_request_success =
-            flipper_http_get_request_with_headers(url, "{\"Content-Type\": \"application/json\"}");
+        weather_request_success = flipper_http_get_request_with_headers(url, headers);
+        free(headers);
         if(!weather_request_success) {
             FURI_LOG_E(TAG, "Failed to send GET request");
+            fhttp.state = ISSUE;
             flip_weather_request_error(canvas);
         }
         fhttp.state = RECEIVING;
@@ -126,8 +137,9 @@ static void flip_weather_view_draw_callback_weather(Canvas* canvas, void* model)
             canvas_draw_str(canvas, 0, 22, "Receiving...");
             return;
         }
+
         // check status
-        else if(fhttp.state == ISSUE || !weather_request_success || fhttp.last_response == NULL) {
+        if(fhttp.state == ISSUE || !weather_request_success || fhttp.last_response == NULL) {
             flip_weather_request_error(canvas);
         } else {
             // success, draw weather
@@ -144,7 +156,7 @@ static void flip_weather_view_draw_callback_weather(Canvas* canvas, void* model)
 }
 
 // Callback for drawing the GPS screen
-static void flip_weather_view_draw_callback_gps(Canvas* canvas, void* model) {
+void flip_weather_view_draw_callback_gps(Canvas* canvas, void* model) {
     if(!canvas) {
         return;
     }
@@ -161,14 +173,14 @@ static void flip_weather_view_draw_callback_gps(Canvas* canvas, void* model) {
         return;
     }
 
-    if(!send_geo_location_request()) {
+    if(!send_geo_location_request() || fhttp.state == ISSUE) {
         flip_weather_request_error(canvas);
     }
 
     flip_weather_handle_gps_draw(canvas, true);
 }
 
-static void callback_submenu_choices(void* context, uint32_t index) {
+void callback_submenu_choices(void* context, uint32_t index) {
     FlipWeatherApp* app = (FlipWeatherApp*)context;
     if(!app) {
         FURI_LOG_E(TAG, "FlipWeatherApp is NULL");
@@ -177,13 +189,13 @@ static void callback_submenu_choices(void* context, uint32_t index) {
     switch(index) {
     case FlipWeatherSubmenuIndexWeather:
         if(!flip_weather_handle_ip_address()) {
-            return;
+            view_dispatcher_switch_to_view(app->view_dispatcher, FlipWeatherViewPopupError);
         }
         view_dispatcher_switch_to_view(app->view_dispatcher, FlipWeatherViewWeather);
         break;
     case FlipWeatherSubmenuIndexGPS:
         if(!flip_weather_handle_ip_address()) {
-            return;
+            view_dispatcher_switch_to_view(app->view_dispatcher, FlipWeatherViewPopupError);
         }
         view_dispatcher_switch_to_view(app->view_dispatcher, FlipWeatherViewGPS);
         break;
@@ -198,7 +210,7 @@ static void callback_submenu_choices(void* context, uint32_t index) {
     }
 }
 
-static void text_updated_ssid(void* context) {
+void text_updated_ssid(void* context) {
     FlipWeatherApp* app = (FlipWeatherApp*)context;
     if(!app) {
         FURI_LOG_E(TAG, "FlipWeatherApp is NULL");
@@ -236,7 +248,7 @@ static void text_updated_ssid(void* context) {
     view_dispatcher_switch_to_view(app->view_dispatcher, FlipWeatherViewSettings);
 }
 
-static void text_updated_password(void* context) {
+void text_updated_password(void* context) {
     FlipWeatherApp* app = (FlipWeatherApp*)context;
     if(!app) {
         FURI_LOG_E(TAG, "FlipWeatherApp is NULL");
@@ -274,7 +286,7 @@ static void text_updated_password(void* context) {
     view_dispatcher_switch_to_view(app->view_dispatcher, FlipWeatherViewSettings);
 }
 
-static uint32_t callback_to_submenu(void* context) {
+uint32_t callback_to_submenu(void* context) {
     if(!context) {
         FURI_LOG_E(TAG, "Context is NULL");
         return VIEW_NONE;
@@ -291,7 +303,7 @@ static uint32_t callback_to_submenu(void* context) {
     return FlipWeatherViewSubmenu;
 }
 
-static void settings_item_selected(void* context, uint32_t index) {
+void settings_item_selected(void* context, uint32_t index) {
     FlipWeatherApp* app = (FlipWeatherApp*)context;
     if(!app) {
         FURI_LOG_E(TAG, "FlipWeatherApp is NULL");
@@ -315,7 +327,7 @@ static void settings_item_selected(void* context, uint32_t index) {
  * @param context The context - unused
  * @return next view id (VIEW_NONE to exit the app)
  */
-static uint32_t callback_exit_app(void* context) {
+uint32_t callback_exit_app(void* context) {
     // Exit the application
     if(!context) {
         FURI_LOG_E(TAG, "Context is NULL");
@@ -325,7 +337,7 @@ static uint32_t callback_exit_app(void* context) {
     return VIEW_NONE; // Return VIEW_NONE to exit the app
 }
 
-static uint32_t callback_to_wifi_settings(void* context) {
+uint32_t callback_to_wifi_settings(void* context) {
     if(!context) {
         FURI_LOG_E(TAG, "Context is NULL");
         return VIEW_NONE;
@@ -333,5 +345,3 @@ static uint32_t callback_to_wifi_settings(void* context) {
     UNUSED(context);
     return FlipWeatherViewSettings;
 }
-
-#endif

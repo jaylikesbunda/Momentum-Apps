@@ -1,8 +1,21 @@
-#ifndef FLIP_WEATHER_FREE_H
-#define FLIP_WEATHER_FREE_H
+#include "flip_weather.h"
+
+char city_data[48];
+char region_data[48];
+char country_data[48];
+char lat_data[32];
+char lon_data[32];
+char ip_data[32];
+char temperature_data[32];
+char precipitation_data[32];
+char rain_data[32];
+char showers_data[32];
+char snowfall_data[32];
+char time_data[32];
+char ip_address[16];
 
 // Function to free the resources used by FlipWeatherApp
-static void flip_weather_app_free(FlipWeatherApp* app) {
+void flip_weather_app_free(FlipWeatherApp* app) {
     if(!app) {
         FURI_LOG_E(TAG, "FlipWeatherApp is NULL");
         return;
@@ -46,6 +59,12 @@ static void flip_weather_app_free(FlipWeatherApp* app) {
         text_input_free(app->uart_text_input_password);
     }
 
+    // Free Popup(s)
+    if(app->popup_error) {
+        view_dispatcher_remove_view(app->view_dispatcher, FlipWeatherViewPopupError);
+        popup_free(app->popup_error);
+    }
+
     // Free the text input buffer
     if(app->uart_text_input_buffer_ssid) free(app->uart_text_input_buffer_ssid);
     if(app->uart_text_input_temp_buffer_ssid) free(app->uart_text_input_temp_buffer_ssid);
@@ -64,5 +83,3 @@ static void flip_weather_app_free(FlipWeatherApp* app) {
     // free the app
     if(app) free(app);
 }
-
-#endif // FLIP_WEATHER_FREE_H
