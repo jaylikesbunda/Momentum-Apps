@@ -1,21 +1,62 @@
-// web_crawler_callback.h
-static bool sent_http_request = false;
-static bool get_success = false;
-static bool already_success = false;
-static WebCrawlerApp* app_instance = NULL;
+#include <callback/web_crawler_callback.h>
+bool sent_http_request = false;
+bool get_success = false;
+bool already_success = false;
 
-// Forward declaration of callback functions
-static void web_crawler_setting_item_path_clicked(void* context, uint32_t index);
-static void web_crawler_setting_item_headers_clicked(void* context, uint32_t index);
-static void web_crawler_setting_item_payload_clicked(void* context, uint32_t index);
-static void web_crawler_setting_item_ssid_clicked(void* context, uint32_t index);
-static void web_crawler_setting_item_password_clicked(void* context, uint32_t index);
-static void web_crawler_setting_item_file_type_clicked(void* context, uint32_t index);
-static void web_crawler_setting_item_file_rename_clicked(void* context, uint32_t index);
-static void web_crawler_setting_item_file_delete_clicked(void* context, uint32_t index);
-static void web_crawler_setting_item_file_read_clicked(void* context, uint32_t index);
+void web_crawler_draw_error(Canvas* canvas) {
+    if(!canvas) {
+        FURI_LOG_E(TAG, "Canvas is NULL");
+        return;
+    }
+    canvas_clear(canvas);
+    canvas_set_font(canvas, FontSecondary);
 
-static void web_crawler_http_method_change(VariableItem* item) {
+    if(fhttp.state == INACTIVE) {
+        canvas_draw_str(canvas, 0, 7, "Wifi Dev Board disconnected.");
+        canvas_draw_str(canvas, 0, 17, "Please connect to the board.");
+        canvas_draw_str(canvas, 0, 32, "If your board is connected,");
+        canvas_draw_str(canvas, 0, 42, "make sure you have flashed");
+        canvas_draw_str(canvas, 0, 52, "your WiFi Devboard with the");
+        canvas_draw_str(canvas, 0, 62, "latest FlipperHTTP flash.");
+        return;
+    }
+
+    if(fhttp.last_response) {
+        if(strstr(fhttp.last_response, "[ERROR] Not connected to Wifi. Failed to reconnect.") !=
+           NULL) {
+            canvas_draw_str(canvas, 0, 10, "[ERROR] Not connected to Wifi.");
+            canvas_draw_str(canvas, 0, 50, "Update your WiFi settings.");
+            canvas_draw_str(canvas, 0, 60, "Press BACK to return.");
+            return;
+        }
+        if(strstr(fhttp.last_response, "[ERROR] Failed to connect to Wifi.") != NULL) {
+            canvas_draw_str(canvas, 0, 10, "[ERROR] Not connected to Wifi.");
+            canvas_draw_str(canvas, 0, 50, "Update your WiFi settings.");
+            canvas_draw_str(canvas, 0, 60, "Press BACK to return.");
+            return;
+        }
+        if(strstr(
+               fhttp.last_response, "[ERROR] GET request failed with error: connection refused") !=
+           NULL) {
+            canvas_draw_str(canvas, 0, 10, "[ERROR] Connection refused.");
+            canvas_draw_str(canvas, 0, 50, "Choose another URL.");
+            canvas_draw_str(canvas, 0, 60, "Press BACK to return.");
+            return;
+        }
+
+        canvas_draw_str(canvas, 0, 10, "[ERROR] Failed to sync data.");
+        canvas_draw_str(canvas, 0, 30, "If this is your third attempt,");
+        canvas_draw_str(canvas, 0, 40, "it's likely your URL is not");
+        canvas_draw_str(canvas, 0, 50, "compabilbe or correct.");
+        canvas_draw_str(canvas, 0, 60, "Press BACK to return.");
+        return;
+    }
+
+    canvas_draw_str(canvas, 0, 10, "HTTP request failed.");
+    canvas_draw_str(canvas, 0, 20, "Press BACK to return.");
+}
+
+void web_crawler_http_method_change(VariableItem* item) {
     uint8_t index = variable_item_get_current_value_index(item);
     variable_item_set_current_value_text(item, http_method_names[index]);
 
@@ -39,7 +80,7 @@ static void web_crawler_http_method_change(VariableItem* item) {
     }
 }
 
-static void web_crawler_view_draw_callback(Canvas* canvas, void* context) {
+void web_crawler_view_draw_callback(Canvas* canvas, void* context) {
     UNUSED(context);
     if(!app_instance) {
         FURI_LOG_E(TAG, "WebCrawlerApp is NULL");
@@ -53,28 +94,31 @@ static void web_crawler_view_draw_callback(Canvas* canvas, void* context) {
     canvas_clear(canvas);
     canvas_set_font(canvas, FontSecondary);
 
-    if(fhttp.state == INACTIVE) {
-        canvas_draw_str(canvas, 0, 7, "Wifi Dev Board disconnected.");
-        canvas_draw_str(canvas, 0, 17, "Please connect to the board.");
-        canvas_draw_str(canvas, 0, 32, "If your board is connected,");
-        canvas_draw_str(canvas, 0, 42, "make sure you have flashed");
-        canvas_draw_str(canvas, 0, 52, "your WiFi Devboard with the");
-        canvas_draw_str(canvas, 0, 62, "latest FlipperHTTP flash.");
+    if(fhttp.state == INACTIVE || fhttp.state == ISSUE) {
+        web_crawler_draw_error(canvas);
         return;
     }
 
     if(app_instance->path) {
         if(!sent_http_request) {
-            snprintf(
-                fhttp.file_path,
-                sizeof(fhttp.file_path),
-                STORAGE_EXT_PATH_PREFIX "/apps_data/web_crawler/received_data.txt");
-
-            fhttp.save_received_data = true;
+            if(app_instance->file_type && app_instance->file_rename) {
+                snprintf(
+                    fhttp.file_path,
+                    sizeof(fhttp.file_path),
+                    STORAGE_EXT_PATH_PREFIX "/apps_data/web_crawler/%s%s",
+                    app_instance->file_rename,
+                    app_instance->file_type);
+            } else {
+                snprintf(
+                    fhttp.file_path,
+                    sizeof(fhttp.file_path),
+                    STORAGE_EXT_PATH_PREFIX "/apps_data/web_crawler/received_data.txt");
+            }
 
             if(strstr(app_instance->http_method, "GET") != NULL) {
                 canvas_draw_str(canvas, 0, 10, "Sending GET request...");
 
+                fhttp.save_received_data = true;
                 fhttp.is_bytes_request = false;
 
                 // Perform GET request and handle the response
@@ -88,6 +132,7 @@ static void web_crawler_view_draw_callback(Canvas* canvas, void* context) {
             } else if(strstr(app_instance->http_method, "POST") != NULL) {
                 canvas_draw_str(canvas, 0, 10, "Sending POST request...");
 
+                fhttp.save_received_data = true;
                 fhttp.is_bytes_request = false;
 
                 // Perform POST request and handle the response
@@ -96,6 +141,7 @@ static void web_crawler_view_draw_callback(Canvas* canvas, void* context) {
             } else if(strstr(app_instance->http_method, "PUT") != NULL) {
                 canvas_draw_str(canvas, 0, 10, "Sending PUT request...");
 
+                fhttp.save_received_data = true;
                 fhttp.is_bytes_request = false;
 
                 // Perform PUT request and handle the response
@@ -104,6 +150,7 @@ static void web_crawler_view_draw_callback(Canvas* canvas, void* context) {
             } else if(strstr(app_instance->http_method, "DELETE") != NULL) {
                 canvas_draw_str(canvas, 0, 10, "Sending DELETE request...");
 
+                fhttp.save_received_data = true;
                 fhttp.is_bytes_request = false;
 
                 // Perform DELETE request and handle the response
@@ -113,6 +160,7 @@ static void web_crawler_view_draw_callback(Canvas* canvas, void* context) {
                 // download file
                 canvas_draw_str(canvas, 0, 10, "Downloading file...");
 
+                fhttp.save_received_data = false;
                 fhttp.is_bytes_request = true;
 
                 // Perform GET request and handle the response
@@ -124,10 +172,10 @@ static void web_crawler_view_draw_callback(Canvas* canvas, void* context) {
 
             if(get_success) {
                 canvas_draw_str(canvas, 0, 30, "Receiving data...");
-                // Set the state to RECEIVING to ensure we continue to see the receiving message
                 fhttp.state = RECEIVING;
             } else {
                 canvas_draw_str(canvas, 0, 30, "Failed.");
+                fhttp.state = ISSUE;
             }
 
             sent_http_request = true;
@@ -139,37 +187,7 @@ static void web_crawler_view_draw_callback(Canvas* canvas, void* context) {
                 canvas_draw_str(canvas, 0, 10, "Data saved to file.");
                 canvas_draw_str(canvas, 0, 20, "Press BACK to return.");
             } else {
-                if(fhttp.state == ISSUE) {
-                    if(strstr(
-                           fhttp.last_response,
-                           "[ERROR] Not connected to Wifi. Failed to reconnect.") != NULL) {
-                        canvas_draw_str(canvas, 0, 10, "[ERROR] Not connected to Wifi.");
-                        canvas_draw_str(canvas, 0, 50, "Update your WiFi settings.");
-                        canvas_draw_str(canvas, 0, 60, "Press BACK to return.");
-                    } else if(
-                        strstr(fhttp.last_response, "[ERROR] Failed to connect to Wifi.") !=
-                        NULL) {
-                        canvas_draw_str(canvas, 0, 10, "[ERROR] Not connected to Wifi.");
-                        canvas_draw_str(canvas, 0, 50, "Update your WiFi settings.");
-                        canvas_draw_str(canvas, 0, 60, "Press BACK to return.");
-                    } else if(
-                        strstr(
-                            fhttp.last_response,
-                            "[ERROR] GET request failed with error: connection refused") != NULL) {
-                        canvas_draw_str(canvas, 0, 10, "[ERROR] Connection refused.");
-                        canvas_draw_str(canvas, 0, 50, "Choose another URL.");
-                        canvas_draw_str(canvas, 0, 60, "Press BACK to return.");
-                    } else {
-                        canvas_draw_str(canvas, 0, 10, "[ERROR] Failed to sync data.");
-                        canvas_draw_str(canvas, 0, 30, "If this is your third attempt,");
-                        canvas_draw_str(canvas, 0, 40, "it's likely your URL is not");
-                        canvas_draw_str(canvas, 0, 50, "compabilbe or correct.");
-                        canvas_draw_str(canvas, 0, 60, "Press BACK to return.");
-                    }
-                } else {
-                    canvas_draw_str(canvas, 0, 10, "HTTP request failed.");
-                    canvas_draw_str(canvas, 0, 20, "Press BACK to return.");
-                }
+                web_crawler_draw_error(canvas);
                 get_success = false;
             }
         }
@@ -183,7 +201,7 @@ static void web_crawler_view_draw_callback(Canvas* canvas, void* context) {
  * @param      context   The context - WebCrawlerApp object.
  * @return     WebCrawlerViewSubmenu
  */
-static uint32_t web_crawler_back_to_configure_callback(void* context) {
+uint32_t web_crawler_back_to_configure_callback(void* context) {
     UNUSED(context);
     // free file read widget if it exists
     if(app_instance->widget_file_read) {
@@ -197,7 +215,7 @@ static uint32_t web_crawler_back_to_configure_callback(void* context) {
  * @param      context   The context - WebCrawlerApp object.
  * @return     WebCrawlerViewSubmenu
  */
-static uint32_t web_crawler_back_to_main_callback(void* context) {
+uint32_t web_crawler_back_to_main_callback(void* context) {
     UNUSED(context);
     // reset GET request flags
     sent_http_request = false;
@@ -210,17 +228,17 @@ static uint32_t web_crawler_back_to_main_callback(void* context) {
     return WebCrawlerViewSubmenuMain; // Return to the main submenu
 }
 
-static uint32_t web_crawler_back_to_file_callback(void* context) {
+uint32_t web_crawler_back_to_file_callback(void* context) {
     UNUSED(context);
     return WebCrawlerViewVariableItemListFile; // Return to the file submenu
 }
 
-static uint32_t web_crawler_back_to_wifi_callback(void* context) {
+uint32_t web_crawler_back_to_wifi_callback(void* context) {
     UNUSED(context);
     return WebCrawlerViewVariableItemListWifi; // Return to the wifi submenu
 }
 
-static uint32_t web_crawler_back_to_request_callback(void* context) {
+uint32_t web_crawler_back_to_request_callback(void* context) {
     UNUSED(context);
     return WebCrawlerViewVariableItemListRequest; // Return to the request submenu
 }
@@ -230,7 +248,7 @@ static uint32_t web_crawler_back_to_request_callback(void* context) {
  * @param      context   The context - unused
  * @return     VIEW_NONE to exit the app
  */
-static uint32_t web_crawler_exit_app_callback(void* context) {
+uint32_t web_crawler_exit_app_callback(void* context) {
     UNUSED(context);
     return VIEW_NONE;
 }
@@ -240,7 +258,7 @@ static uint32_t web_crawler_exit_app_callback(void* context) {
  * @param      context   The context - WebCrawlerApp object.
  * @param      index     The WebCrawlerSubmenuIndex item that was clicked.
  */
-static void web_crawler_submenu_callback(void* context, uint32_t index) {
+void web_crawler_submenu_callback(void* context, uint32_t index) {
     WebCrawlerApp* app = (WebCrawlerApp*)context;
 
     if(app->view_dispatcher) {
@@ -279,7 +297,7 @@ static void web_crawler_submenu_callback(void* context, uint32_t index) {
  * @param      context   The context - WebCrawlerApp object.
  * @param      index     The index of the item that was clicked.
  */
-static void web_crawler_wifi_enter_callback(void* context, uint32_t index) {
+void web_crawler_wifi_enter_callback(void* context, uint32_t index) {
     switch(index) {
     case 0: // SSID
         web_crawler_setting_item_ssid_clicked(context, index);
@@ -298,7 +316,7 @@ static void web_crawler_wifi_enter_callback(void* context, uint32_t index) {
  * @param      context   The context - WebCrawlerApp object.
  * @param      index     The index of the item that was clicked.
  */
-static void web_crawler_file_enter_callback(void* context, uint32_t index) {
+void web_crawler_file_enter_callback(void* context, uint32_t index) {
     switch(index) {
     case 0: // File Read
         web_crawler_setting_item_file_read_clicked(context, index);
@@ -323,7 +341,7 @@ static void web_crawler_file_enter_callback(void* context, uint32_t index) {
  * @param      context   The context - WebCrawlerApp object.
  * @param      index     The index of the item that was clicked.
  */
-static void web_crawler_request_enter_callback(void* context, uint32_t index) {
+void web_crawler_request_enter_callback(void* context, uint32_t index) {
     switch(index) {
     case 0: // URL
         web_crawler_setting_item_path_clicked(context, index);
@@ -349,7 +367,7 @@ static void web_crawler_request_enter_callback(void* context, uint32_t index) {
  * @brief      Callback for when the user finishes entering the URL.
  * @param      context   The context - WebCrawlerApp object.
  */
-static void web_crawler_set_path_updated(void* context) {
+void web_crawler_set_path_updated(void* context) {
     WebCrawlerApp* app = (WebCrawlerApp*)context;
     if(!app) {
         FURI_LOG_E(TAG, "WebCrawlerApp is NULL");
@@ -385,7 +403,7 @@ static void web_crawler_set_path_updated(void* context) {
  * @brief      Callback for when the user finishes entering the headers
  * @param      context   The context - WebCrawlerApp object.
  */
-static void web_crawler_set_headers_updated(void* context) {
+void web_crawler_set_headers_updated(void* context) {
     WebCrawlerApp* app = (WebCrawlerApp*)context;
     if(!app) {
         FURI_LOG_E(TAG, "WebCrawlerApp is NULL");
@@ -421,7 +439,7 @@ static void web_crawler_set_headers_updated(void* context) {
  * @brief      Callback for when the user finishes entering the payload.
  * @param      context   The context - WebCrawlerApp object.
  */
-static void web_crawler_set_payload_updated(void* context) {
+void web_crawler_set_payload_updated(void* context) {
     WebCrawlerApp* app = (WebCrawlerApp*)context;
     if(!app) {
         FURI_LOG_E(TAG, "WebCrawlerApp is NULL");
@@ -457,7 +475,7 @@ static void web_crawler_set_payload_updated(void* context) {
  * @brief      Callback for when the user finishes entering the SSID.
  * @param      context   The context - WebCrawlerApp object.
  */
-static void web_crawler_set_ssid_updated(void* context) {
+void web_crawler_set_ssid_updated(void* context) {
     WebCrawlerApp* app = (WebCrawlerApp*)context;
     if(!app) {
         FURI_LOG_E(TAG, "WebCrawlerApp is NULL");
@@ -499,7 +517,7 @@ static void web_crawler_set_ssid_updated(void* context) {
  * @brief      Callback for when the user finishes entering the Password.
  * @param      context   The context - WebCrawlerApp object.
  */
-static void web_crawler_set_password_update(void* context) {
+void web_crawler_set_password_update(void* context) {
     WebCrawlerApp* app = (WebCrawlerApp*)context;
     if(!app) {
         FURI_LOG_E(TAG, "WebCrawlerApp is NULL");
@@ -542,7 +560,7 @@ static void web_crawler_set_password_update(void* context) {
  * @brief      Callback for when the user finishes entering the File Type.
  * @param      context   The context - WebCrawlerApp object.
  */
-static void web_crawler_set_file_type_update(void* context) {
+void web_crawler_set_file_type_update(void* context) {
     WebCrawlerApp* app = (WebCrawlerApp*)context;
     if(!app) {
         FURI_LOG_E(TAG, "WebCrawlerApp is NULL");
@@ -600,7 +618,7 @@ static void web_crawler_set_file_type_update(void* context) {
  * @brief      Callback for when the user finishes entering the File Rename.
  * @param      context   The context - WebCrawlerApp object.
  */
-static void web_crawler_set_file_rename_update(void* context) {
+void web_crawler_set_file_rename_update(void* context) {
     WebCrawlerApp* app = (WebCrawlerApp*)context;
     if(!app) {
         FURI_LOG_E(TAG, "WebCrawlerApp is NULL");
@@ -663,7 +681,7 @@ static void web_crawler_set_file_rename_update(void* context) {
  * @param      context  The context - WebCrawlerApp object.
  * @param      index    The index of the item that was clicked.
  */
-static void web_crawler_setting_item_path_clicked(void* context, uint32_t index) {
+void web_crawler_setting_item_path_clicked(void* context, uint32_t index) {
     WebCrawlerApp* app = (WebCrawlerApp*)context;
     if(!app) {
         FURI_LOG_E(TAG, "WebCrawlerApp is NULL");
@@ -708,7 +726,7 @@ static void web_crawler_setting_item_path_clicked(void* context, uint32_t index)
  * @param      context  The context - WebCrawlerApp object.
  * @param      index    The index of the item that was clicked.
  */
-static void web_crawler_setting_item_headers_clicked(void* context, uint32_t index) {
+void web_crawler_setting_item_headers_clicked(void* context, uint32_t index) {
     WebCrawlerApp* app = (WebCrawlerApp*)context;
     if(!app) {
         FURI_LOG_E(TAG, "WebCrawlerApp is NULL");
@@ -763,7 +781,7 @@ static void web_crawler_setting_item_headers_clicked(void* context, uint32_t ind
  * @param      context  The context - WebCrawlerApp object.
  * @param      index    The index of the item that was clicked.
  */
-static void web_crawler_setting_item_payload_clicked(void* context, uint32_t index) {
+void web_crawler_setting_item_payload_clicked(void* context, uint32_t index) {
     WebCrawlerApp* app = (WebCrawlerApp*)context;
     if(!app) {
         FURI_LOG_E(TAG, "WebCrawlerApp is NULL");
@@ -808,7 +826,7 @@ static void web_crawler_setting_item_payload_clicked(void* context, uint32_t ind
  * @param      context  The context - WebCrawlerApp object.
  * @param      index    The index of the item that was clicked.
  */
-static void web_crawler_setting_item_ssid_clicked(void* context, uint32_t index) {
+void web_crawler_setting_item_ssid_clicked(void* context, uint32_t index) {
     WebCrawlerApp* app = (WebCrawlerApp*)context;
     if(!app) {
         FURI_LOG_E(TAG, "WebCrawlerApp is NULL");
@@ -852,7 +870,7 @@ static void web_crawler_setting_item_ssid_clicked(void* context, uint32_t index)
  * @param      context  The context - WebCrawlerApp object.
  * @param      index    The index of the item that was clicked.
  */
-static void web_crawler_setting_item_password_clicked(void* context, uint32_t index) {
+void web_crawler_setting_item_password_clicked(void* context, uint32_t index) {
     WebCrawlerApp* app = (WebCrawlerApp*)context;
     if(!app) {
         FURI_LOG_E(TAG, "WebCrawlerApp is NULL");
@@ -891,7 +909,7 @@ static void web_crawler_setting_item_password_clicked(void* context, uint32_t in
  * @param      context  The context - WebCrawlerApp object.
  * @param      index    The index of the item that was clicked.
  */
-static void web_crawler_setting_item_file_type_clicked(void* context, uint32_t index) {
+void web_crawler_setting_item_file_type_clicked(void* context, uint32_t index) {
     WebCrawlerApp* app = (WebCrawlerApp*)context;
     if(!app) {
         FURI_LOG_E(TAG, "WebCrawlerApp is NULL");
@@ -935,7 +953,7 @@ static void web_crawler_setting_item_file_type_clicked(void* context, uint32_t i
  * @param      context  The context - WebCrawlerApp object.
  * @param      index    The index of the item that was clicked.
  */
-static void web_crawler_setting_item_file_rename_clicked(void* context, uint32_t index) {
+void web_crawler_setting_item_file_rename_clicked(void* context, uint32_t index) {
     WebCrawlerApp* app = (WebCrawlerApp*)context;
     if(!app) {
         FURI_LOG_E(TAG, "WebCrawlerApp is NULL");
@@ -981,7 +999,7 @@ static void web_crawler_setting_item_file_rename_clicked(void* context, uint32_t
  * @param      context  The context - WebCrawlerApp object.
  * @param      index    The index of the item that was clicked.
  */
-static void web_crawler_setting_item_file_delete_clicked(void* context, uint32_t index) {
+void web_crawler_setting_item_file_delete_clicked(void* context, uint32_t index) {
     WebCrawlerApp* app = (WebCrawlerApp*)context;
     if(!app) {
         FURI_LOG_E(TAG, "WebCrawlerApp is NULL");
@@ -1001,7 +1019,7 @@ static void web_crawler_setting_item_file_delete_clicked(void* context, uint32_t
     view_dispatcher_switch_to_view(app->view_dispatcher, WebCrawlerViewFileDelete);
 }
 
-static void web_crawler_setting_item_file_read_clicked(void* context, uint32_t index) {
+void web_crawler_setting_item_file_read_clicked(void* context, uint32_t index) {
     WebCrawlerApp* app = (WebCrawlerApp*)context;
     if(!app) {
         FURI_LOG_E(TAG, "WebCrawlerApp is NULL");
@@ -1009,6 +1027,25 @@ static void web_crawler_setting_item_file_read_clicked(void* context, uint32_t i
     }
     UNUSED(index);
     widget_reset(app->widget_file_read);
+
+    if(app->file_rename && app->file_type) {
+        snprintf(
+            fhttp.file_path,
+            sizeof(fhttp.file_path),
+            "%s%s%s",
+            RECEIVED_DATA_PATH,
+            app->file_rename,
+            app->file_type);
+    } else {
+        snprintf(
+            fhttp.file_path,
+            sizeof(fhttp.file_path),
+            "%s%s%s",
+            RECEIVED_DATA_PATH,
+            "received_data",
+            ".txt");
+    }
+
     // load the received data from the saved file
     FuriString* received_data = flipper_http_load_from_file(fhttp.file_path);
     if(received_data == NULL) {
