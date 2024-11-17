@@ -44,19 +44,27 @@ void wifi_marauder_console_output_handle_rx_data_cb(uint8_t* buf, size_t len, vo
     furi_assert(context);
     WifiMarauderApp* app = context;
 
+    // Always save to log if enabled
     if(app->is_writing_log) {
         app->has_saved_logs_this_session = true;
         storage_file_write(app->log_file, buf, len);
     }
 
-    // If text box store gets too big, then truncate it
+    // Clear display buffer for new command responses
+    if(app->is_command && app->selected_tx_string && 
+       (strncmp("list", app->selected_tx_string, strlen("list")) == 0 ||
+        strncmp("get", app->selected_tx_string, strlen("get")) == 0)) {
+        furi_string_reset(app->text_box_store);
+        app->text_box_store_strlen = 0;
+    }
+
+    // Regular buffer management
     app->text_box_store_strlen += len;
     if(app->text_box_store_strlen >= WIFI_MARAUDER_TEXT_BOX_STORE_SIZE - 1) {
         furi_string_right(app->text_box_store, app->text_box_store_strlen / 2);
         app->text_box_store_strlen = furi_string_size(app->text_box_store) + len;
     }
 
-    // Null-terminate buf and append to text box store
     buf[len] = '\0';
     furi_string_cat_printf(app->text_box_store, "%s", buf);
     view_dispatcher_send_custom_event(app->view_dispatcher, WifiMarauderEventRefreshConsoleOutput);
