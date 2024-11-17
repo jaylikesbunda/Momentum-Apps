@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+* Enabled extra functions for the `random` module.
+
 ## [1.5.0] - 2024-10-06
 
 ### Added
