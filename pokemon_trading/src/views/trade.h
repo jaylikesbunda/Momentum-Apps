@@ -8,7 +8,7 @@
 
 void* trade_alloc(
     PokemonData* pdata,
-    void *gblink_handle,
+    void* gblink_handle,
     ViewDispatcher* view_dispatcher,
     uint32_t view_id);
 

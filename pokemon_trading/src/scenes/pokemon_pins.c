@@ -33,7 +33,7 @@ static void select_pins_pin_callback(VariableItem* item) {
     uint8_t which = variable_item_list_get_selected_item_index(pokemon_fap->variable_item_list);
     gblink_bus_pins pin;
 
-    switch (which) {
+    switch(which) {
     case 1: // SI
         pin = PIN_SERIN;
         break;
@@ -48,7 +48,7 @@ static void select_pins_pin_callback(VariableItem* item) {
         break;
     }
 
-    if (index > gblink_pin_get(pokemon_fap->gblink_handle, pin))
+    if(index > gblink_pin_get(pokemon_fap->gblink_handle, pin))
         index = gblink_pin_get_next(index);
     else
         index = gblink_pin_get_prev(index);
@@ -60,29 +60,45 @@ static void select_pins_pin_callback(VariableItem* item) {
 static void select_pins_rebuild_list(PokemonFap* pokemon_fap, int mode) {
     int pinnum;
     int pinmax = gblink_pin_count_max() + 1;
-    VariableItem *item;
-    
+    VariableItem* item;
+
     variable_item_list_reset(pokemon_fap->variable_item_list);
 
     item = variable_item_list_add(
-        pokemon_fap->variable_item_list, "Mode", PINOUT_COUNT+1, select_pins_default_callback, pokemon_fap);
+        pokemon_fap->variable_item_list,
+        "Mode",
+        PINOUT_COUNT + 1,
+        select_pins_default_callback,
+        pokemon_fap);
     variable_item_set_current_value_index(item, mode);
     variable_item_set_current_value_text(item, named_groups[mode]);
 
     item = variable_item_list_add(
-        pokemon_fap->variable_item_list, "SI:", (mode < PINOUT_COUNT) ? 1 : pinmax, select_pins_pin_callback, pokemon_fap);
+        pokemon_fap->variable_item_list,
+        "SI:",
+        (mode < PINOUT_COUNT) ? 1 : pinmax,
+        select_pins_pin_callback,
+        pokemon_fap);
     pinnum = gblink_pin_get(pokemon_fap->gblink_handle, PIN_SERIN);
     variable_item_set_current_value_index(item, (mode < PINOUT_COUNT) ? 0 : pinnum);
     variable_item_set_current_value_text(item, gpio_pins[pinnum].name);
 
     item = variable_item_list_add(
-        pokemon_fap->variable_item_list, "SO:", (mode < PINOUT_COUNT) ? 1 : pinmax, select_pins_pin_callback, pokemon_fap);
+        pokemon_fap->variable_item_list,
+        "SO:",
+        (mode < PINOUT_COUNT) ? 1 : pinmax,
+        select_pins_pin_callback,
+        pokemon_fap);
     pinnum = gblink_pin_get(pokemon_fap->gblink_handle, PIN_SEROUT);
     variable_item_set_current_value_index(item, (mode < PINOUT_COUNT) ? 0 : pinnum);
     variable_item_set_current_value_text(item, gpio_pins[pinnum].name);
 
     item = variable_item_list_add(
-        pokemon_fap->variable_item_list, "CLK:", (mode < PINOUT_COUNT) ? 1 : pinmax, select_pins_pin_callback, pokemon_fap);
+        pokemon_fap->variable_item_list,
+        "CLK:",
+        (mode < PINOUT_COUNT) ? 1 : pinmax,
+        select_pins_pin_callback,
+        pokemon_fap);
     pinnum = gblink_pin_get(pokemon_fap->gblink_handle, PIN_CLK);
     variable_item_set_current_value_index(item, (mode < PINOUT_COUNT) ? 0 : pinnum);
     variable_item_set_current_value_text(item, gpio_pins[pinnum].name);

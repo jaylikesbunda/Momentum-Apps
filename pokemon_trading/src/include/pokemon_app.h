@@ -36,7 +36,7 @@ struct pokemon_fap {
     PokemonData* pdata;
 
     /* gblink interface */
-    void *gblink_handle;
+    void* gblink_handle;
 };
 
 typedef struct pokemon_fap PokemonFap;
