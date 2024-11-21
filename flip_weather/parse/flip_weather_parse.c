@@ -13,7 +13,7 @@ bool flip_weather_parse_ip_address() {
         FURI_LOG_E(TAG, "Failed to load received data from file.");
         return false;
     }
-    const char* data_cstr = furi_string_get_cstr(returned_data);
+    char* data_cstr = (char*)furi_string_get_cstr(returned_data);
     if(data_cstr == NULL) {
         FURI_LOG_E(TAG, "Failed to get C-string from FuriString.");
         furi_string_free(returned_data);
@@ -25,13 +25,14 @@ bool flip_weather_parse_ip_address() {
         sent_get_request = true;
         get_request_success = false;
         fhttp.state = ISSUE;
-        free(ip);
         furi_string_free(returned_data);
+        free(data_cstr);
         return false;
     }
     snprintf(ip_address, 16, "%s", ip);
     free(ip);
     furi_string_free(returned_data);
+    free(data_cstr);
     return true;
 }
 
@@ -105,6 +106,13 @@ void process_geo_location() {
         char* latitude = get_json_value("latitude", fhttp.last_response, MAX_TOKENS);
         char* longitude = get_json_value("longitude", fhttp.last_response, MAX_TOKENS);
 
+        if(city == NULL || region == NULL || country == NULL || latitude == NULL ||
+           longitude == NULL) {
+            FURI_LOG_E(TAG, "Failed to get geo location data");
+            fhttp.state = ISSUE;
+            return;
+        }
+
         snprintf(city_data, 64, "City: %s", city);
         snprintf(region_data, 64, "Region: %s", region);
         snprintf(country_data, 64, "Country: %s", country);
@@ -113,6 +121,11 @@ void process_geo_location() {
         snprintf(ip_data, 64, "IP Address: %s", ip_address);
 
         fhttp.state = IDLE;
+        free(city);
+        free(region);
+        free(country);
+        free(latitude);
+        free(longitude);
     }
 }
 
@@ -126,6 +139,13 @@ void process_weather() {
         char* showers = get_json_value("showers", current_data, MAX_TOKENS);
         char* snowfall = get_json_value("snowfall", current_data, MAX_TOKENS);
         char* time = get_json_value("time", current_data, MAX_TOKENS);
+
+        if(current_data == NULL || temperature == NULL || precipitation == NULL || rain == NULL ||
+           showers == NULL || snowfall == NULL || time == NULL) {
+            FURI_LOG_E(TAG, "Failed to get weather data");
+            fhttp.state = ISSUE;
+            return;
+        }
 
         // replace the "T" in time with a space
         char* ptr = strstr(time, "T");
@@ -141,6 +161,13 @@ void process_weather() {
         snprintf(time_data, 64, "Time: %s", time);
 
         fhttp.state = IDLE;
+        free(current_data);
+        free(temperature);
+        free(precipitation);
+        free(rain);
+        free(showers);
+        free(snowfall);
+        free(time);
     } else if(!weather_information_processed && fhttp.last_response == NULL) {
         FURI_LOG_E(TAG, "Failed to process weather data");
         // store error message

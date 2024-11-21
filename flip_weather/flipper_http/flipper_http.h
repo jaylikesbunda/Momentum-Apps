@@ -14,7 +14,7 @@
 #define HTTP_TAG               "FlipWeather" // change this to your app name
 #define http_tag               "flip_weather" // change this to your app id
 #define UART_CH                (momentum_settings.uart_esp_channel) // UART channel
-#define TIMEOUT_DURATION_TICKS (5 * 1000) // 5 seconds
+#define TIMEOUT_DURATION_TICKS (6 * 1000) // 6 seconds
 #define BAUDRATE               (115200) // UART baudrate
 #define RX_BUF_SIZE            1024 // UART RX buffer size
 #define RX_LINE_BUFFER_SIZE    4096 // UART RX line buffer size (increase for large responses)
@@ -74,12 +74,15 @@ typedef struct {
     bool is_bytes_request; // Flag to indicate if the request is for bytes
     bool save_bytes; // Flag to save the received data to a file
     bool save_received_data; // Flag to save the received data to a file
+
+    bool just_started_bytes; // Indicates if bytes data reception has just started
 } FlipperHTTP;
 
 extern FlipperHTTP fhttp;
 // Global static array for the line buffer
 extern char rx_line_buffer[RX_LINE_BUFFER_SIZE];
 extern uint8_t file_buffer[FILE_BUFFER_SIZE];
+extern size_t file_buffer_len;
 
 // fhttp.last_response holds the last received data from the UART
 
