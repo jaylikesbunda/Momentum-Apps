@@ -74,12 +74,15 @@ typedef struct {
     bool is_bytes_request; // Flag to indicate if the request is for bytes
     bool save_bytes; // Flag to save the received data to a file
     bool save_received_data; // Flag to save the received data to a file
+
+    bool just_started_bytes; // Indicates if bytes data reception has just started
 } FlipperHTTP;
 
 extern FlipperHTTP fhttp;
 // Global static array for the line buffer
 extern char rx_line_buffer[RX_LINE_BUFFER_SIZE];
 extern uint8_t file_buffer[FILE_BUFFER_SIZE];
+extern size_t file_buffer_len;
 
 // fhttp.last_response holds the last received data from the UART
 

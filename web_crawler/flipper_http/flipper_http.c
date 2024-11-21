@@ -2,6 +2,7 @@
 FlipperHTTP fhttp;
 char rx_line_buffer[RX_LINE_BUFFER_SIZE];
 uint8_t file_buffer[FILE_BUFFER_SIZE];
+size_t file_buffer_len = 0;
 // Function to append received data to file
 // make sure to initialize the file path before calling this function
 bool flipper_http_append_to_file(
@@ -13,6 +14,15 @@ bool flipper_http_append_to_file(
     File* file = storage_file_alloc(storage);
 
     if(start_new_file) {
+        // Delete the file if it already exists
+        if(storage_file_exists(storage, file_path)) {
+            if(!storage_simply_remove_recursive(storage, file_path)) {
+                FURI_LOG_E(HTTP_TAG, "Failed to delete file: %s", file_path);
+                storage_file_free(file);
+                furi_record_close(RECORD_STORAGE);
+                return false;
+            }
+        }
         // Open the file in write mode
         if(!storage_file_open(file, file_path, FSAM_WRITE, FSOM_CREATE_ALWAYS)) {
             FURI_LOG_E(HTTP_TAG, "Failed to open file for writing: %s", file_path);
@@ -131,12 +141,13 @@ FuriString* flipper_http_load_from_file(char* file_path) {
 int32_t flipper_http_worker(void* context) {
     UNUSED(context);
     size_t rx_line_pos = 0;
-    static size_t file_buffer_len = 0;
 
     while(1) {
         uint32_t events = furi_thread_flags_wait(
             WorkerEvtStop | WorkerEvtRxDone, FuriFlagWaitAny, FuriWaitForever);
-        if(events & WorkerEvtStop) break;
+        if(events & WorkerEvtStop) {
+            break;
+        }
         if(events & WorkerEvtRxDone) {
             // Continuously read from the stream buffer until it's empty
             while(!furi_stream_buffer_is_empty(fhttp.flipper_http_stream)) {
@@ -156,10 +167,14 @@ int32_t flipper_http_worker(void* context) {
                     // Write to file if buffer is full
                     if(file_buffer_len >= FILE_BUFFER_SIZE) {
                         if(!flipper_http_append_to_file(
-                               file_buffer, file_buffer_len, false, fhttp.file_path)) {
+                               file_buffer,
+                               file_buffer_len,
+                               fhttp.just_started_bytes,
+                               fhttp.file_path)) {
                             FURI_LOG_E(HTTP_TAG, "Failed to append data to file");
                         }
                         file_buffer_len = 0;
+                        fhttp.just_started_bytes = false;
                     }
                 }
 
@@ -181,36 +196,6 @@ int32_t flipper_http_worker(void* context) {
             }
         }
     }
-
-    if(fhttp.save_bytes) {
-        // Write the remaining data to the file
-        if(file_buffer_len > 0) {
-            if(!flipper_http_append_to_file(file_buffer, file_buffer_len, false, fhttp.file_path)) {
-                FURI_LOG_E(HTTP_TAG, "Failed to append remaining data to file");
-            }
-        }
-    }
-
-    // remove [POST/END] and/or [GET/END] from the file
-    if(fhttp.save_bytes) {
-        char* end = NULL;
-        if((end = strstr(fhttp.file_path, "[POST/END]")) != NULL) {
-            *end = '\0';
-        } else if((end = strstr(fhttp.file_path, "[GET/END]")) != NULL) {
-            *end = '\0';
-        }
-    }
-
-    // remove newline from the from the end of the file
-    if(fhttp.save_bytes) {
-        char* end = NULL;
-        if((end = strstr(fhttp.file_path, "\n")) != NULL) {
-            *end = '\0';
-        }
-    }
-
-    // Reset the file buffer length
-    file_buffer_len = 0;
 
     return 0;
 }
@@ -1006,8 +991,35 @@ void flipper_http_rx_callback(const char* line, void* context) {
             fhttp.just_started_get = false;
             fhttp.state = IDLE;
             fhttp.save_bytes = false;
-            fhttp.is_bytes_request = false;
             fhttp.save_received_data = false;
+
+            if(fhttp.is_bytes_request) {
+                // Search for the binary marker `[GET/END]` in the file buffer
+                const char marker[] = "[GET/END]";
+                const size_t marker_len = sizeof(marker) - 1; // Exclude null terminator
+
+                for(size_t i = 0; i <= file_buffer_len - marker_len; i++) {
+                    // Check if the marker is found
+                    if(memcmp(&file_buffer[i], marker, marker_len) == 0) {
+                        // Remove the marker by shifting the remaining data left
+                        size_t remaining_len = file_buffer_len - (i + marker_len);
+                        memmove(&file_buffer[i], &file_buffer[i + marker_len], remaining_len);
+                        file_buffer_len -= marker_len;
+                        break;
+                    }
+                }
+
+                // If there is data left in the buffer, append it to the file
+                if(file_buffer_len > 0) {
+                    if(!flipper_http_append_to_file(
+                           file_buffer, file_buffer_len, false, fhttp.file_path)) {
+                        FURI_LOG_E(HTTP_TAG, "Failed to append data to file.");
+                    }
+                    file_buffer_len = 0;
+                }
+            }
+
+            fhttp.is_bytes_request = false;
             return;
         }
 
@@ -1041,8 +1053,35 @@ void flipper_http_rx_callback(const char* line, void* context) {
             fhttp.just_started_post = false;
             fhttp.state = IDLE;
             fhttp.save_bytes = false;
-            fhttp.is_bytes_request = false;
             fhttp.save_received_data = false;
+
+            if(fhttp.is_bytes_request) {
+                // Search for the binary marker `[POST/END]` in the file buffer
+                const char marker[] = "[POST/END]";
+                const size_t marker_len = sizeof(marker) - 1; // Exclude null terminator
+
+                for(size_t i = 0; i <= file_buffer_len - marker_len; i++) {
+                    // Check if the marker is found
+                    if(memcmp(&file_buffer[i], marker, marker_len) == 0) {
+                        // Remove the marker by shifting the remaining data left
+                        size_t remaining_len = file_buffer_len - (i + marker_len);
+                        memmove(&file_buffer[i], &file_buffer[i + marker_len], remaining_len);
+                        file_buffer_len -= marker_len;
+                        break;
+                    }
+                }
+
+                // If there is data left in the buffer, append it to the file
+                if(file_buffer_len > 0) {
+                    if(!flipper_http_append_to_file(
+                           file_buffer, file_buffer_len, false, fhttp.file_path)) {
+                        FURI_LOG_E(HTTP_TAG, "Failed to append data to file.");
+                    }
+                    file_buffer_len = 0;
+                }
+            }
+
+            fhttp.is_bytes_request = false;
             return;
         }
 
@@ -1149,6 +1188,8 @@ void flipper_http_rx_callback(const char* line, void* context) {
         fhttp.state = RECEIVING;
         // for GET request, save data only if it's a bytes request
         fhttp.save_bytes = fhttp.is_bytes_request;
+        fhttp.just_started_bytes = true;
+        file_buffer_len = 0;
         return;
     } else if(strstr(line, "[POST/SUCCESS]") != NULL) {
         FURI_LOG_I(HTTP_TAG, "POST request succeeded.");
@@ -1157,6 +1198,8 @@ void flipper_http_rx_callback(const char* line, void* context) {
         fhttp.state = RECEIVING;
         // for POST request, save data only if it's a bytes request
         fhttp.save_bytes = fhttp.is_bytes_request;
+        fhttp.just_started_bytes = true;
+        file_buffer_len = 0;
         return;
     } else if(strstr(line, "[PUT/SUCCESS]") != NULL) {
         FURI_LOG_I(HTTP_TAG, "PUT request succeeded.");
