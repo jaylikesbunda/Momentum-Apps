@@ -193,7 +193,7 @@ static void _refresh_submenu(EspFlasherApp* app) {
     submenu_add_item(
         submenu,
         app->selected_flash_options[SelectedFlashS3Mode] ? "[x] Using ESP32-S3" :
-                                                           "[ ] Select if using S3",
+                                                           "[ ] Select for S3, C3, C6",
         SubmenuIndexS3Mode,
         esp_flasher_scene_browse_callback,
         app);
