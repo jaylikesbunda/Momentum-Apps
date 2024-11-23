@@ -180,9 +180,9 @@ static void esp_flasher_scene_browse_callback(void* context, uint32_t index) {
 #define STR_APP_A          "FirmwareA(" TOSTRING(ESP_ADDR_APP_A) ")"
 #define STR_APP_B          "FirmwareB(" TOSTRING(ESP_ADDR_APP_B) ")"
 #define STR_CUSTOM         "Custom"
-#define STR_FLASH_S3       "[>] FLASH - slow (S3)"
+#define STR_FLASH_S3       "[>] FLASH - slow (0x0)"
 #define STR_FLASH          "[>] FLASH - slow"
-#define STR_FLASH_TURBO_S3 "[>] FLASH - fast (S3)"
+#define STR_FLASH_TURBO_S3 "[>] FLASH - fast (0x0)"
 #define STR_FLASH_TURBO    "[>] FLASH - fast"
 static void _refresh_submenu(EspFlasherApp* app) {
     Submenu* submenu = app->submenu;
