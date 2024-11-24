@@ -253,7 +253,15 @@ int32_t wardriver_app() {
     ctx->access_points_index = 0;
     ctx->pressedButton = false;
     ctx->view_state = NO_APS;
-
+    
+    // Initialize active_access_point
+    ctx->active_access_point.ssid = malloc(MAX_SSID_LENGTH + 1);
+    ctx->active_access_point.bssid = malloc(MAX_BSSID_LENGTH + 1);
+    strcpy(ctx->active_access_point.ssid, "No APs");
+    strcpy(ctx->active_access_point.bssid, "00:00:00:00:00:00");
+    ctx->active_access_point.rssi = 0;
+    ctx->active_access_point.channel = 0;
+    
     wardriver_uart_init(ctx);
 
     ViewPort* view_port = view_port_alloc();
@@ -311,8 +319,7 @@ int32_t wardriver_app() {
                 }
                 break;
             case EventTypeTick:
-                // fix for the empty active access point when there was no interaction
-                if(!ctx->pressedButton) {
+                if(!ctx->pressedButton && ctx->access_points_count > 0) {
                     ctx->access_points_index = 0;
                     ctx->active_access_point = ctx->access_points[ctx->access_points_index];
                 }

@@ -34,7 +34,7 @@ static void sort_access_points(Context* ctx) {
 
 static void set_index_from_access_points(Context* ctx) {
     for(int i = 0; i < ctx->access_points_count; i++) {
-        if(ctx->access_points[i].bssid == ctx->active_access_point.bssid) {
+        if(strcmp(ctx->access_points[i].bssid, ctx->active_access_point.bssid) == 0) {
             ctx->access_points_index = i;
             break;
         }
