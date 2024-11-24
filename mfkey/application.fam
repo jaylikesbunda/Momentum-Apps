@@ -16,6 +16,7 @@ App(
     fap_weburl="https://github.com/noproto/FlipperMfkey",
     fap_description="MIFARE Classic key recovery tool",
     fap_version="3.0",
+    flags=["UnloadAssetPacks"],
 )
 
 App(

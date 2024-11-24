@@ -10,6 +10,7 @@ Many apps included in Momentum are modified (some lots more than others). This i
 - Removing/tweaking icons and/or their usages to **support our Asset Packs system**
 - Removing duplicate keyboard implementations to **use our extended system keyboard**
 - With our system keyboard also **support our CLI command `input keyboard`** to type with PC keyboard
+- Tweak UART/SPI usage to **support our GPIO Pins mapping settings**
 - **Moving location of save files** to a more appropriate location or changing how they are saved
 - **Changing application display names** to fit our naming scheme
 - **Changing how some menus work/look** or adding **new exclusive menus and features**

@@ -16,14 +16,14 @@ void nfc_maker_scene_mail_on_enter(void* context) {
 
     text_input_set_header_text(text_input, "Enter Mail Address:");
 
-    strlcpy(app->mail_buf, "johnsmith@email.com", MAIL_INPUT_LEN);
+    strlcpy(app->mail_buf, "johnsmith@email.com", sizeof(app->mail_buf));
 
     text_input_set_result_callback(
         text_input,
         nfc_maker_scene_mail_text_input_callback,
         app,
         app->mail_buf,
-        MAIL_INPUT_LEN,
+        sizeof(app->mail_buf),
         true);
 
     view_dispatcher_switch_to_view(app->view_dispatcher, NfcMakerViewTextInput);
