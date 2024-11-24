@@ -1,5 +1,7 @@
 #include "wardriver_uart.h"
 
+static void log_memory_stats(Context* ctx, const char* location);
+
 static void removeSpaces(char* str) {
     int i = 0;
     while(isspace((unsigned char)str[i])) {
@@ -43,6 +45,8 @@ static void uart_parse_esp(void* context, char* line) {
     Context* ctx = context;
 
     AccessPoint ap = {.ssid = malloc(MAX_SSID_LENGTH + 1), .bssid = malloc(MAX_BSSID_LENGTH + 1)};
+    FURI_LOG_I("MEMORY", "[%d APs] New AP allocated: ssid=%p bssid=%p", 
+        ctx->access_points_count, ap.ssid, ap.bssid);
 
     Packet pkt = {.recievedMac = malloc(18 + 1), .sentMac = malloc(18 + 1)};
 
@@ -148,6 +152,10 @@ static void uart_parse_esp(void* context, char* line) {
                     ctx->active_access_point.longitude = ap.longitude;
                 }
 
+                FURI_LOG_I("MEMORY", "[%d APs] Updating existing AP idx %d: old_ssid=%p new_ssid=%p", 
+                    ctx->access_points_count, i,
+                    ctx->access_points[i].ssid, ap.ssid);
+                
                 free(ap.ssid);
                 free(ap.bssid);
 
@@ -156,8 +164,24 @@ static void uart_parse_esp(void* context, char* line) {
         }
 
         if(!found) {
+            if(ctx->access_points_count >= MAX_ACCESS_POINTS) {
+                free(ap.ssid);
+                free(ap.bssid);
+                return;
+            }
+            FURI_LOG_I("MEMORY", "[%d APs] Adding new AP: ssid=%p(%s) bssid=%p(%s)", 
+                ctx->access_points_count, ap.ssid, ap.ssid, ap.bssid, ap.bssid);
             memcpy(&ctx->access_points[ctx->access_points_count], &ap, sizeof(AccessPoint));
+            
+            FURI_LOG_I("MEMORY", "[%d APs] Added AP at idx %d: ssid=%p(%s) bssid=%p(%s)", 
+                ctx->access_points_count, ctx->access_points_count,
+                ctx->access_points[ctx->access_points_count].ssid, 
+                ctx->access_points[ctx->access_points_count].ssid,
+                ctx->access_points[ctx->access_points_count].bssid,
+                ctx->access_points[ctx->access_points_count].bssid);
+            
             ctx->access_points_count++;
+            log_memory_stats(ctx, "After Adding AP");
         }
 
         sort_access_points(ctx);
@@ -404,6 +428,17 @@ static int32_t uart_worker_gps(void* context) {
     }
 
     return 0;
+}
+
+static void log_memory_stats(Context* ctx, const char* location) {
+    size_t total_memory = 0;
+    for(int i = 0; i < ctx->access_points_count; i++) {
+        total_memory += strlen(ctx->access_points[i].ssid) + 1;
+        total_memory += strlen(ctx->access_points[i].bssid) + 1;
+    }
+    
+    FURI_LOG_I("MEMORY", "[%s] Total APs: %d, Estimated Memory: %d bytes", 
+        location, ctx->access_points_count, total_memory);
 }
 
 void wardriver_uart_init(Context* ctx) {
