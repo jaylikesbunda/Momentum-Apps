@@ -45,9 +45,6 @@ static void uart_parse_esp(void* context, char* line) {
     Context* ctx = context;
 
     AccessPoint ap = {.ssid = malloc(MAX_SSID_LENGTH + 1), .bssid = malloc(MAX_BSSID_LENGTH + 1)};
-    FURI_LOG_I("MEMORY", "[%d APs] New AP allocated: ssid=%p bssid=%p", 
-        ctx->access_points_count, ap.ssid, ap.bssid);
-
     Packet pkt = {.recievedMac = malloc(18 + 1), .sentMac = malloc(18 + 1)};
 
     char* token = strtok(line, ",");
@@ -119,20 +116,20 @@ static void uart_parse_esp(void* context, char* line) {
             return;
         }
 
+        furi_hal_rtc_get_datetime(&ap.datetime);
+        ap.latitude = isnan(ctx->gps_data.latitude) ? 0 : ctx->gps_data.latitude;
+        ap.longitude = isnan(ctx->gps_data.longitude) ? 0 : ctx->gps_data.longitude;
+
+        // Start of critical section
+        furi_mutex_acquire(ctx->mutex, FuriWaitForever);
+
+        if(ctx->view_state == NO_APS) {
+            ctx->view_state = NORMAL;
+        }
+
         furi_hal_light_set(LightBlue, 0);
         furi_hal_light_set(LightGreen, 255);
 
-        furi_hal_rtc_get_datetime(&ap.datetime);
-
-        if(isnan(ctx->gps_data.latitude) || isnan(ctx->gps_data.longitude)) {
-            ap.latitude = 0;
-            ap.longitude = 0;
-        } else {
-            ap.latitude = ctx->gps_data.latitude;
-            ap.longitude = ctx->gps_data.longitude;
-        }
-
-        // check if ap is already in the list otherwise add it but update the rssi
         bool found = false;
         for(size_t i = 0; i < ctx->access_points_count; i++) {
             if(strcmp(ctx->access_points[i].bssid, ap.bssid) == 0) {
@@ -186,37 +183,48 @@ static void uart_parse_esp(void* context, char* line) {
 
         sort_access_points(ctx);
         set_index_from_access_points(ctx);
+
+        furi_mutex_release(ctx->mutex);
+        // End of critical section
+
+        if(found) {
+            free(ap.ssid);
+            free(ap.bssid);
+        }
+
     } else {
-        // it is a packet so screw the ap
+        // Handle packet data with mutex protection
         free(ap.ssid);
         free(ap.bssid);
 
-        // check if values are valid
-        // mac needs to be 6 characters long
-        if(strlen(pkt.recievedMac) != 17 || strlen(pkt.sentMac) != 17 ||
-           ctx->access_points_count == 0) {
+        if(strlen(pkt.recievedMac) != 17 || strlen(pkt.sentMac) != 17) {
             free(pkt.recievedMac);
             free(pkt.sentMac);
             return;
         }
 
-        furi_hal_light_set(LightGreen, 0);
-        furi_hal_light_set(LightBlue, 255);
+        furi_mutex_acquire(ctx->mutex, FuriWaitForever);
 
-        for(size_t i = 0; i < ctx->access_points_count; i++) {
-            if(strcmp(ctx->access_points[i].bssid, pkt.recievedMac) == 0) {
-                ctx->access_points[i].packetRxCount++;
-                break;
+        if(ctx->access_points_count > 0) {
+            furi_hal_light_set(LightGreen, 0);
+            furi_hal_light_set(LightBlue, 255);
+
+            for(size_t i = 0; i < ctx->access_points_count; i++) {
+                if(strcmp(ctx->access_points[i].bssid, pkt.recievedMac) == 0) {
+                    ctx->access_points[i].packetRxCount++;
+                    break;
+                }
+            }
+
+            for(size_t i = 0; i < ctx->access_points_count; i++) {
+                if(strcmp(ctx->access_points[i].bssid, pkt.sentMac) == 0) {
+                    ctx->access_points[i].packetTxCount++;
+                    break;
+                }
             }
         }
 
-        for(size_t i = 0; i < ctx->access_points_count; i++) {
-            if(strcmp(ctx->access_points[i].bssid, pkt.sentMac) == 0) {
-                ctx->access_points[i].packetTxCount++;
-                break;
-            }
-        }
-
+        furi_mutex_release(ctx->mutex);
         free(pkt.recievedMac);
         free(pkt.sentMac);
     }
