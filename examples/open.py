@@ -1,5 +1,5 @@
-fp = open('/ext/spam.txt', 'w')
+fp = open("/ext/spam.txt", "w")
 
-fp.write('Some spam')
+fp.write("Some spam")
 
 fp.close()
