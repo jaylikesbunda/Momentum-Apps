@@ -50,14 +50,6 @@ void wifi_marauder_console_output_handle_rx_data_cb(uint8_t* buf, size_t len, vo
         storage_file_write(app->log_file, buf, len);
     }
 
-    // Clear display buffer for new command responses
-    if(app->is_command && app->selected_tx_string && 
-       (strncmp("list", app->selected_tx_string, strlen("list")) == 0 ||
-        strncmp("get", app->selected_tx_string, strlen("get")) == 0)) {
-        furi_string_reset(app->text_box_store);
-        app->text_box_store_strlen = 0;
-    }
-
     // Regular buffer management
     app->text_box_store_strlen += len;
     if(app->text_box_store_strlen >= WIFI_MARAUDER_TEXT_BOX_STORE_SIZE - 1) {
@@ -135,6 +127,14 @@ void wifi_marauder_scene_console_output_on_enter(void* context) {
         }
         const char* prefix = prefix_buf ? prefix_buf : // Function name
                                           app->script->name; // Script name
+
+        // Clear buffer for list/get commands before sending
+        if(app->selected_tx_string && 
+           (strncmp("list", app->selected_tx_string, strlen("list")) == 0 ||
+            strncmp("get", app->selected_tx_string, strlen("get")) == 0)) {
+            furi_string_reset(app->text_box_store);
+            app->text_box_store_strlen = 0;
+        }
 
         // Create files *before* sending command
         // (it takes time to iterate through the directory)
