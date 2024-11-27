@@ -27,9 +27,7 @@
 #include <lib/toolbox/path.h>
 #include <dialogs/dialogs.h>
 
-#include <assets_icons.h>
-
-#define NUM_MENU_ITEMS (24)
+#define NUM_MENU_ITEMS (25)
 
 #define WIFI_MARAUDER_TEXT_BOX_STORE_SIZE   (4096)
 #define WIFI_MARAUDER_TEXT_INPUT_STORE_SIZE (512)

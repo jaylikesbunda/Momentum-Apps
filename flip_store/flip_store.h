@@ -12,17 +12,20 @@
 #include <dialogs/dialogs.h>
 #include <jsmn/jsmn.h>
 #include <flip_store_icons.h>
-#define TAG "FlipStore"
-
-// define the list of categories
-extern char* categories[];
+#define TAG            "FlipStore"
+#define FIRMWARE_COUNT 3
+#define FIRMWARE_LINKS 3
 
 // Define the submenu items for our FlipStore application
 typedef enum {
     FlipStoreSubmenuIndexMain, // Click to start downloading the selected app
     FlipStoreSubmenuIndexAbout,
     FlipStoreSubmenuIndexSettings,
+    //
+    FlipStoreSubmenuIndexOptions, // Click to view the options
+    //
     FlipStoreSubmenuIndexAppList,
+    FlipStoreSubmenuIndexFirmwares,
     //
     FlipStoreSubmenuIndexAppListBluetooth,
     FlipStoreSubmenuIndexAppListGames,
@@ -36,13 +39,18 @@ typedef enum {
     FlipStoreSubmenuIndexAppListTools,
     FlipStoreSubmenuIndexAppListUSB,
     //
-    FlipStoreSubmenuIndexStartAppList
+    FlipStoreSubmenuIndexStartFirmwares,
+    //
+    FlipStoreSubmenuIndexStartAppList = 100,
 } FlipStoreSubmenuIndex;
 
 // Define a single view for our FlipStore application
 typedef enum {
-    FlipStoreViewMain, // The main screen
+    FlipStoreViewMain, // The main screen for downloading apps
+    //
     FlipStoreViewSubmenu, // The submenu
+    FlipStoreViewSubmenuOptions, // The submenu options
+    //
     FlipStoreViewAbout, // The about screen
     FlipStoreViewSettings, // The settings screen
     FlipStoreViewTextInputSSID, // The text input screen for SSID
@@ -51,6 +59,10 @@ typedef enum {
     FlipStoreViewPopup, // The popup screen
     //
     FlipStoreViewAppList, // The app list screen
+    FlipStoreViewFirmwares, // The firmwares screen (submenu)
+    FlipStoreViewFirmwareDialog, // The firmware view (DialogEx) of the selected firmware
+    FlipStoreViewFirmwareDownload, // The firmware download screen
+    //
     FlipStoreViewAppInfo, // The app info screen (widget) of the selected app
     FlipStoreViewAppDownload, // The app download screen (widget) of the selected app
     FlipStoreViewAppDelete, // The app delete screen (DialogEx) of the selected app
@@ -73,9 +85,15 @@ typedef struct {
     ViewDispatcher* view_dispatcher; // Switches between our views
     View* view_main; // The main screen for downloading apps
     View* view_app_info; // The app info screen (view) of the selected app
-    Submenu* submenu; // The submenu (main)
     //
+    DialogEx* dialog_firmware; // The dialog for installing a firmware
+    View* view_firmware_download; // The firmware download screen (view) of the selected firmware
+    //
+    Submenu* submenu_main; // The submenu (main)
+    //
+    Submenu* submenu_options; // The submenu (options)
     Submenu* submenu_app_list; // The submenu (app list) for the selected category
+    Submenu* submenu_firmwares; // The submenu (firmwares)
     //
     Submenu* submenu_app_list_bluetooth; // The submenu (app list) for Bluetooth
     Submenu* submenu_app_list_games; // The submenu (app list) for Games
@@ -108,5 +126,7 @@ typedef struct {
 } FlipStoreApp;
 
 void flip_store_app_free(FlipStoreApp* app);
+
+void flip_store_request_error(Canvas* canvas);
 
 #endif // FLIP_STORE_E_H

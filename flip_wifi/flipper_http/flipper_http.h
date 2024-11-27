@@ -2,6 +2,10 @@
 #ifndef FLIPPER_HTTP_H
 #define FLIPPER_HTTP_H
 
+#include <gui/gui.h>
+#include <gui/view.h>
+#include <gui/view_dispatcher.h>
+#include <gui/modules/loading.h>
 #include <furi.h>
 #include <furi_hal.h>
 #include <furi_hal_gpio.h>
@@ -74,12 +78,15 @@ typedef struct {
     bool is_bytes_request; // Flag to indicate if the request is for bytes
     bool save_bytes; // Flag to save the received data to a file
     bool save_received_data; // Flag to save the received data to a file
+
+    bool just_started_bytes; // Indicates if bytes data reception has just started
 } FlipperHTTP;
 
 extern FlipperHTTP fhttp;
 // Global static array for the line buffer
 extern char rx_line_buffer[RX_LINE_BUFFER_SIZE];
 extern uint8_t file_buffer[FILE_BUFFER_SIZE];
+extern size_t file_buffer_len;
 
 // fhttp.last_response holds the last received data from the UART
 
@@ -357,5 +364,21 @@ char* trim(const char* str);
  * @return true if successful, false otherwise
  */
 bool flipper_http_process_response_async(bool (*http_request)(void), bool (*parse_json)(void));
+
+/**
+ * @brief Perform a task while displaying a loading screen
+ * @param http_request The function to send the request
+ * @param parse_response The function to parse the response
+ * @param success_view_id The view ID to switch to on success
+ * @param failure_view_id The view ID to switch to on failure
+ * @param view_dispatcher The view dispatcher to use
+ * @return
+ */
+void flipper_http_loading_task(
+    bool (*http_request)(void),
+    bool (*parse_response)(void),
+    uint32_t success_view_id,
+    uint32_t failure_view_id,
+    ViewDispatcher** view_dispatcher);
 
 #endif // FLIPPER_HTTP_H

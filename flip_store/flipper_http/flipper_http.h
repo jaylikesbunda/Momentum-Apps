@@ -16,10 +16,10 @@
 #define UART_CH                (momentum_settings.uart_esp_channel) // UART channel
 #define TIMEOUT_DURATION_TICKS (5 * 1000) // 5 seconds
 #define BAUDRATE               (115200) // UART baudrate
-#define RX_BUF_SIZE            1024 // UART RX buffer size
+#define RX_BUF_SIZE            2048 // UART RX buffer size
 #define RX_LINE_BUFFER_SIZE    8192 // UART RX line buffer size (increase for large responses)
 #define MAX_FILE_SHOW          8192 // Maximum data from file to show
-#define FILE_BUFFER_SIZE       512 // File buffer size
+#define FILE_BUFFER_SIZE       1024 // File buffer size
 
 // Forward declaration for callback
 typedef void (*FlipperHTTP_Callback)(const char* line, void* context);
@@ -74,12 +74,15 @@ typedef struct {
     bool is_bytes_request; // Flag to indicate if the request is for bytes
     bool save_bytes; // Flag to save the received data to a file
     bool save_received_data; // Flag to save the received data to a file
+
+    bool just_started_bytes; // Indicates if bytes data reception has just started
 } FlipperHTTP;
 
 extern FlipperHTTP fhttp;
 // Global static array for the line buffer
 extern char rx_line_buffer[RX_LINE_BUFFER_SIZE];
 extern uint8_t file_buffer[FILE_BUFFER_SIZE];
+extern size_t file_buffer_len;
 
 // fhttp.last_response holds the last received data from the UART
 

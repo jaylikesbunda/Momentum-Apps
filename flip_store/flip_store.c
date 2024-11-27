@@ -1,20 +1,5 @@
 #include <flip_store.h>
 
-// define the list of categories
-char* categories[] = {
-    "Bluetooth",
-    "Games",
-    "GPIO",
-    "Infrared",
-    "iButton",
-    "Media",
-    "NFC",
-    "RFID",
-    "Sub-GHz",
-    "Tools",
-    "USB",
-};
-
 // Function to free the resources used by FlipStoreApp
 void flip_store_app_free(FlipStoreApp* app) {
     if(!app) {
@@ -31,15 +16,27 @@ void flip_store_app_free(FlipStoreApp* app) {
         view_dispatcher_remove_view(app->view_dispatcher, FlipStoreViewAppInfo);
         view_free(app->view_app_info);
     }
+    if(app->view_firmware_download) {
+        view_dispatcher_remove_view(app->view_dispatcher, FlipStoreViewFirmwareDownload);
+        view_free(app->view_firmware_download);
+    }
 
     // Free Submenu(s)
-    if(app->submenu) {
+    if(app->submenu_main) {
         view_dispatcher_remove_view(app->view_dispatcher, FlipStoreViewSubmenu);
-        submenu_free(app->submenu);
+        submenu_free(app->submenu_main);
+    }
+    if(app->submenu_options) {
+        view_dispatcher_remove_view(app->view_dispatcher, FlipStoreViewSubmenuOptions);
+        submenu_free(app->submenu_options);
     }
     if(app->submenu_app_list) {
         view_dispatcher_remove_view(app->view_dispatcher, FlipStoreViewAppList);
         submenu_free(app->submenu_app_list);
+    }
+    if(app->submenu_firmwares) {
+        view_dispatcher_remove_view(app->view_dispatcher, FlipStoreViewFirmwares);
+        submenu_free(app->submenu_firmwares);
     }
     if(app->submenu_app_list_bluetooth) {
         view_dispatcher_remove_view(app->view_dispatcher, FlipStoreViewAppListBluetooth);
@@ -119,6 +116,10 @@ void flip_store_app_free(FlipStoreApp* app) {
         view_dispatcher_remove_view(app->view_dispatcher, FlipStoreViewAppDelete);
         dialog_ex_free(app->dialog_delete);
     }
+    if(app->dialog_firmware) {
+        view_dispatcher_remove_view(app->view_dispatcher, FlipStoreViewFirmwareDialog);
+        dialog_ex_free(app->dialog_firmware);
+    }
 
     // deinitalize flipper http
     flipper_http_deinit();
@@ -131,4 +132,31 @@ void flip_store_app_free(FlipStoreApp* app) {
 
     // free the app
     free(app);
+}
+
+void flip_store_request_error(Canvas* canvas) {
+    if(fhttp.last_response != NULL) {
+        if(strstr(fhttp.last_response, "[ERROR] Not connected to Wifi. Failed to reconnect.") !=
+           NULL) {
+            canvas_clear(canvas);
+            canvas_draw_str(canvas, 0, 10, "[ERROR] Not connected to Wifi.");
+            canvas_draw_str(canvas, 0, 50, "Update your WiFi settings.");
+            canvas_draw_str(canvas, 0, 60, "Press BACK to return.");
+        } else if(strstr(fhttp.last_response, "[ERROR] Failed to connect to Wifi.") != NULL) {
+            canvas_clear(canvas);
+            canvas_draw_str(canvas, 0, 10, "[ERROR] Not connected to Wifi.");
+            canvas_draw_str(canvas, 0, 50, "Update your WiFi settings.");
+            canvas_draw_str(canvas, 0, 60, "Press BACK to return.");
+        } else {
+            FURI_LOG_E(TAG, "Received an error: %s", fhttp.last_response);
+            canvas_draw_str(canvas, 0, 42, "Unusual error...");
+            canvas_draw_str(canvas, 0, 50, "Update your WiFi settings.");
+            canvas_draw_str(canvas, 0, 60, "Press BACK to return.");
+        }
+    } else {
+        canvas_clear(canvas);
+        canvas_draw_str(canvas, 0, 10, "[ERROR] Unknown error.");
+        canvas_draw_str(canvas, 0, 50, "Update your WiFi settings.");
+        canvas_draw_str(canvas, 0, 60, "Press BACK to return.");
+    }
 }

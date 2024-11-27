@@ -6,14 +6,21 @@
 #include <callback/flip_store_callback.h>
 
 // Define maximum limits
-#define MAX_APP_NAME_LENGTH 32
-#define MAX_ID_LENGTH       32
-#define MAX_APP_COUNT       100
+#define MAX_APP_NAME_LENGTH        32
+#define MAX_ID_LENGTH              32
+#define MAX_APP_COUNT              100
+#define MAX_APP_DESCRIPTION_LENGTH 100
+#define MAX_APP_VERSION_LENGTH     5
+
+// define the list of categories
+extern char* categories[];
 
 typedef struct {
     char* app_name;
     char* app_id;
     char* app_build_id;
+    char* app_version;
+    char* app_description;
 } FlipStoreAppInfo;
 
 extern FlipStoreAppInfo* flip_catalog;
@@ -44,8 +51,6 @@ bool flip_store_get_fap_file(
     uint8_t target,
     uint16_t api_major,
     uint16_t api_minor);
-
-void flip_store_request_error(Canvas* canvas);
 
 // function to handle the entire installation process "asynchronously"
 bool flip_store_install_app(Canvas* canvas, char* category);
