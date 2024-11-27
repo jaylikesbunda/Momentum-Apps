@@ -374,10 +374,11 @@ bool flipper_http_process_response_async(bool (*http_request)(void), bool (*pars
  * @param view_dispatcher The view dispatcher to use
  * @return
  */
-void flipper_http_loading_task(bool (*http_request)(void),
-                               bool (*parse_response)(void),
-                               uint32_t success_view_id,
-                               uint32_t failure_view_id,
-                               ViewDispatcher **view_dispatcher);
+void flipper_http_loading_task(
+    bool (*http_request)(void),
+    bool (*parse_response)(void),
+    uint32_t success_view_id,
+    uint32_t failure_view_id,
+    ViewDispatcher** view_dispatcher);
 
 #endif // FLIPPER_HTTP_H

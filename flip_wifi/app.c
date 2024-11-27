@@ -19,21 +19,18 @@ int32_t flip_wifi_main(void* p) {
     }
 
     // Thanks to Derek Jamison for the following code snippet:
-    if (app_instance->uart_text_input_buffer_add_ssid != NULL &&
-        app_instance->uart_text_input_buffer_add_password != NULL)
-    {
+    if(app_instance->uart_text_input_buffer_add_ssid != NULL &&
+       app_instance->uart_text_input_buffer_add_password != NULL) {
         // Try to wait for pong response.
         uint8_t counter = 10;
-        while (fhttp.state == INACTIVE && --counter > 0)
-        {
+        while(fhttp.state == INACTIVE && --counter > 0) {
             FURI_LOG_D(TAG, "Waiting for PONG");
             furi_delay_ms(100);
         }
 
-        if (counter == 0)
-        {
-            DialogsApp *dialogs = furi_record_open(RECORD_DIALOGS);
-            DialogMessage *message = dialog_message_alloc();
+        if(counter == 0) {
+            DialogsApp* dialogs = furi_record_open(RECORD_DIALOGS);
+            DialogMessage* message = dialog_message_alloc();
             dialog_message_set_header(
                 message, "[FlipperHTTP Error]", 64, 0, AlignCenter, AlignTop);
             dialog_message_set_text(

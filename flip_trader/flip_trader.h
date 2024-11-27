@@ -52,6 +52,7 @@ typedef struct {
     VariableItem* variable_item_password; // The variable item for the password
     TextInput* uart_text_input_ssid; // The text input for the SSID
     TextInput* uart_text_input_password; // The text input for the password
+
     char* uart_text_input_buffer_ssid; // Buffer for the text input (SSID)
     char* uart_text_input_temp_buffer_ssid; // Temporary buffer for the text input (SSID)
     uint32_t uart_text_input_buffer_size_ssid; // Size of the text input buffer (SSID)
