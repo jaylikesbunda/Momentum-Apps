@@ -53,7 +53,8 @@ static void flip_trader_request_error_draw(Canvas* canvas) {
     }
 }
 
-static bool send_price_request() {
+static bool send_price_request(AssetLoaderModel* model) {
+    UNUSED(model);
     if(fhttp.state == INACTIVE) {
         return false;
     }
@@ -84,7 +85,8 @@ static bool send_price_request() {
     return true;
 }
 
-static char* process_asset_price() {
+static char* process_asset_price(AssetLoaderModel* model) {
+    UNUSED(model);
     if(!request_processed) {
         // load the received data from the saved file
         FuriString* price_data = flipper_http_load_from_file(fhttp.file_path);
